@@ -188,6 +188,31 @@ function LightingDiagram({ analysis }: { analysis: LightingAnalysis }) {
   );
 }
 
+function compactSourceLabel(frame: Frame) {
+  const source = (
+    frame.source?.query ||
+    frame.source?.title ||
+    frame.collections[0] ||
+    "archive"
+  ).toLowerCase();
+
+  if (source.includes("a24")) return "A24 archive";
+  if (source.includes("music video")) return "Music video";
+  if (source.includes("fashion")) return "Fashion film";
+  if (source.includes("luxury")) return "Luxury commercial";
+  if (source.includes("car commercial")) return "Car commercial";
+  if (source.includes("short film")) return "Short film";
+  if (source.includes("official trailer")) return "Official trailer";
+  if (source.includes("movie clip")) return "Film clip";
+
+  return source
+    .replace(/\b(4k|uhd|official|cinematic|movie|film|scene|shots?)\b/g, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 4)
+    .join(" ") || "archive";
+}
+
 export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const [activeTag, setActiveTag] = useState("All");
   const [activeMood, setActiveMood] = useState("All");
@@ -789,122 +814,116 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
               />
             </div>
             <figcaption className="modal-details">
-              <section className="modal-primary-card">
+              <section className="modal-shot-header">
                 <div className="modal-kicker">
                   <span>{activeFrame.mood}</span>
                   <span>{activeFrame.aspectRatio.toFixed(2)}:1</span>
                 </div>
                 <h2>{activeFrame.title}</h2>
-                <p>
-                  {activeFrame.source?.title || "Cinematic archive frame"}
-                </p>
+                <p>{compactSourceLabel(activeFrame)}</p>
               </section>
 
-              <section className="modal-info-grid" aria-label="Shot metadata">
-                <div className="metadata-card">
-                  <span>Score</span>
-                  <strong>{activeFrame.quality.overall}</strong>
+              <section className="modal-analysis-grid">
+                <div className="modal-analysis-card lighting-panel">
+                  {activeLighting ? (
+                    <>
+                      <div className="modal-section-heading">
+                        <span>Lighting analysis</span>
+                        <strong>{activeLighting.contrastRatio}:1</strong>
+                      </div>
+                      <LightingDiagram analysis={activeLighting} />
+                      <div className="metadata-row-list">
+                        <div className="metadata-row">
+                          <span>Subject</span>
+                          <strong>{Math.round(activeLighting.subject.x * 100)} / {Math.round(activeLighting.subject.y * 100)}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Key</span>
+                          <strong>{activeLighting.keyLight.direction} · {activeLighting.keyLight.strength}%</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Fill</span>
+                          <strong>{activeLighting.fillLight.direction} · {activeLighting.fillLight.strength}%</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Rim</span>
+                          <strong>{activeLighting.rimLight.direction} · {activeLighting.rimLight.strength}%</strong>
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
                 </div>
-                <div className="metadata-card">
-                  <span>Source</span>
-                  <strong>{activeFrame.source?.query || activeFrame.collections[0] || "archive"}</strong>
-                </div>
-                <div className="metadata-card">
-                  <span>Director</span>
-                  <strong>{activeFrame.director || "unknown"}</strong>
-                </div>
-                <div className="metadata-card">
-                  <span>Lens</span>
-                  <strong>{activeFrame.lens || "not tagged"}</strong>
-                </div>
-              </section>
 
-              <section className="modal-sidecar">
-                {activeLighting ? (
-                  <div className="lighting-panel">
+                <div className="modal-analysis-card shot-metadata-card">
+                  <div className="modal-section-heading">
+                    <span>Shot metadata</span>
+                    <strong>{activeFrame.quality.overall}</strong>
+                  </div>
+                  <div className="modal-palette" aria-label="Extracted color palette">
+                    {activeFrame.palette.map((color) => (
+                      <span key={color} style={{ background: color }} />
+                    ))}
+                  </div>
+                  <div className="metadata-row-list">
+                    <div className="metadata-row">
+                      <span>Source</span>
+                      <strong>{compactSourceLabel(activeFrame)}</strong>
+                    </div>
+                    <div className="metadata-row">
+                      <span>Director</span>
+                      <strong>{activeFrame.director || "unknown"}</strong>
+                    </div>
+                    <div className="metadata-row">
+                      <span>Lens</span>
+                      <strong>{activeFrame.lens || "not tagged"}</strong>
+                    </div>
+                    <div className="metadata-row">
+                      <span>Resolution</span>
+                      <strong>{activeFrame.width} × {activeFrame.height}</strong>
+                    </div>
+                    <div className="metadata-row">
+                      <span>Contrast</span>
+                      <strong>{Math.round(activeFrame.metrics?.contrast || 0)}</strong>
+                    </div>
+                    <div className="metadata-row">
+                      <span>Color</span>
+                      <strong>{Math.round(activeFrame.metrics?.colorRichness || 0)}</strong>
+                    </div>
+                    <div className="metadata-row">
+                      <span>Depth</span>
+                      <strong>{activeFrame.quality.cinematicDepth}</strong>
+                    </div>
+                    <div className="metadata-row">
+                      <span>Isolation</span>
+                      <strong>{activeFrame.quality.subjectIsolation}</strong>
+                    </div>
+                  </div>
+                  {activeFrame.tags.length ? (
+                    <div className="modal-tag-section">
                     <div className="modal-section-heading">
-                      <span>Lighting analysis</span>
-                      <button className="lighting-diagram-button" type="button">
-                        Lighting Diagram
-                      </button>
+                        <span>Tags</span>
+                      </div>
+                      <div className="modal-tags">
+                        {activeFrame.tags.slice(0, 10).map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => {
+                              setActiveTag(tag);
+                              setActiveCollection("All");
+                              closeModal();
+                            }}
+                          >
+                            {tag}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <LightingDiagram analysis={activeLighting} />
-                    <div className="lighting-stats">
-                      <span>Subject {Math.round(activeLighting.subject.x * 100)} / {Math.round(activeLighting.subject.y * 100)}</span>
-                      <span>Key {activeLighting.keyLight.direction}</span>
-                      <span>Fill {activeLighting.fillLight.direction}</span>
-                      <span>Rim {activeLighting.rimLight.direction}</span>
-                      <span>Ratio {activeLighting.contrastRatio}:1</span>
-                      <span>Mood {activeLighting.mood}</span>
-                    </div>
-                  </div>
-                ) : null}
-                <div className="modal-palette" aria-label="Extracted color palette">
-                  {activeFrame.palette.map((color) => (
-                    <span key={color} style={{ background: color }} />
-                  ))}
+                  ) : null}
                 </div>
-                {activeFrame.metrics ? (
-                  <div className="modal-metrics">
-                    <span>Mood {activeFrame.mood}</span>
-                    <span>Quality {activeFrame.quality.overall}</span>
-                    <span>Contrast {Math.round(activeFrame.metrics.contrast || 0)}</span>
-                    <span>Color {Math.round(activeFrame.metrics.colorRichness || 0)}</span>
-                    <span>Light {Math.round(activeFrame.metrics.brightness || 0)}</span>
-                    <span>Aspect {activeFrame.aspectRatio.toFixed(2)}</span>
-                    <span>{activeFrame.width} x {activeFrame.height}</span>
-                    {activeFrame.lens ? <span>Lens {activeFrame.lens}</span> : null}
-                  </div>
-                ) : null}
-                <div className="modal-quality">
-                  <span>Composition {activeFrame.quality.composition}</span>
-                  <span>Depth {activeFrame.quality.cinematicDepth}</span>
-                  <span>Isolation {activeFrame.quality.subjectIsolation}</span>
-                  <span>Atmosphere {activeFrame.quality.mood}</span>
-                </div>
-                {activeFrame.tags.length ? (
-                  <div className="modal-tags">
-                    {activeFrame.tags.map((tag) => (
-                      <button
-                        key={tag}
-                        type="button"
-                        onClick={() => {
-                          setActiveTag(tag);
-                          setActiveCollection("All");
-                          closeModal();
-                        }}
-                      >
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
               </section>
 
-              <section className="modal-related-card">
-                <div className="modal-section-heading">
-                  <span>Collections</span>
-                  <strong>{activeFrame.collections.length}</strong>
-                </div>
-                {activeFrame.collections.length ? (
-                  <div className="modal-collections">
-                    {activeFrame.collections.slice(0, 3).map((collection) => (
-                      <button
-                        key={collection}
-                        type="button"
-                        onClick={() => {
-                          setActiveCollection(collection);
-                          closeModal();
-                        }}
-                      >
-                        {collection}
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
-              </section>
-
-              <section className="modal-related-card">
+              <section className="modal-similar-section">
                 <div className="modal-section-heading">
                   <span>Similar shots</span>
                   <strong>{similarFrames.length}</strong>
