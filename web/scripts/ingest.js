@@ -18,6 +18,9 @@ const minContrast = Number(process.env.MIN_FRAME_CONTRAST || 20);
 const minColorRichness = Number(process.env.MIN_FRAME_COLOR || 10);
 const minBrightness = Number(process.env.MIN_FRAME_BRIGHTNESS || 24);
 const maxBrightness = Number(process.env.MAX_FRAME_BRIGHTNESS || 232);
+const minFrameWidth = Number(process.env.MIN_FRAME_WIDTH || 1920);
+const minFrameHeight = Number(process.env.MIN_FRAME_HEIGHT || 1080);
+const minSharpness = Number(process.env.MIN_FRAME_SHARPNESS || 18);
 const nearbyDuplicateDistance = Number(process.env.NEARBY_DUPLICATE_DISTANCE || 0.2);
 const globalDuplicateDistance = Number(process.env.GLOBAL_DUPLICATE_DISTANCE || 0.13);
 const minAspectRatio = Number(process.env.MIN_FRAME_ASPECT_RATIO || 1.55);
@@ -111,7 +114,7 @@ async function extractCandidates(videoPath, outputDir) {
     "-i",
     videoPath,
     "-vf",
-    `fps=${extractFps},scale=960:-1:flags=lanczos`,
+    `fps=${extractFps},scale='if(gt(iw\\,1920)\\,1920\\,iw)':-2:flags=lanczos`,
     "-q:v",
     "3",
     path.join(outputDir, "candidate_%05d.jpg"),
@@ -211,20 +214,29 @@ async function imageMetrics(imagePath) {
   const colorSignature = colorSignatureFor(data, width, height);
   const diversity = signature.split("").filter((bit) => bit === "1").length / 64;
   const edgeEnergy = edgeEnergyFor(luminance, width, height);
+  const sharpness = sharpnessFor(luminance, width, height);
+  const blockiness = blockinessFor(luminance, width, height);
   const saturation = (saturationSum / pixels) * 100;
   const palette = Array.from(buckets.values())
     .sort((a, b) => b.count - a.count)
     .slice(0, 5)
     .map((bucket) => `#${toHex(bucket.r / bucket.count)}${toHex(bucket.g / bucket.count)}${toHex(bucket.b / bucket.count)}`);
   const blackBars = topBar / (width * 3) > 0.72 && bottomBar / (width * 3) > 0.72;
-  const textOverlayRisk = edgeEnergy > 24 && brightPixels / pixels > 0.16;
-  const diagramRisk = brightness > 175 && saturation > 42 && contrast < 46;
+  const blownHighlightRisk = brightPixels / pixels > 0.24 || (brightness > 188 && contrast < 38);
+  const textOverlayRisk =
+    (sharpness > 44 && edgeEnergy > 24 && brightPixels / pixels > 0.1) ||
+    (edgeEnergy > 30 && contrast > 62 && saturation < 22);
+  const diagramRisk =
+    (brightness > 170 && saturation > 36 && contrast < 48) ||
+    (brightness > 155 && sharpness > 36 && colorRichness < 28);
+  const compressionRisk = blockiness > 1.32 && sharpness < 24;
   const score = Math.round(
     contrast * 0.36 +
       colorRichness * 0.3 +
       Math.max(0, 100 - Math.abs(128 - brightness)) * 0.18 +
       diversity * 100 * 0.1 +
-      edgeEnergy * 0.06,
+      edgeEnergy * 0.04 +
+      sharpness * 0.02,
   );
 
   return {
@@ -239,8 +251,12 @@ async function imageMetrics(imagePath) {
     signature,
     colorSignature,
     blackBars,
+    blockiness,
+    blownHighlightRisk,
+    compressionRisk,
     diagramRisk,
     saturation,
+    sharpness,
     palette,
     textOverlayRisk,
     warmth: redAvg - blueAvg,
@@ -261,10 +277,10 @@ function moodFor(metrics) {
 }
 
 function qualityFor(metrics, mood) {
-  const composition = Math.min(100, Math.round(metrics.diversity * 80 + metrics.edgeEnergy));
+  const composition = Math.min(100, Math.round(metrics.diversity * 72 + metrics.edgeEnergy + metrics.sharpness * 0.24));
   const lightingContrast = Math.min(100, Math.round(metrics.contrast * 1.45));
   const colorHarmony = Math.min(100, Math.round(metrics.colorRichness * 1.15 + metrics.saturation * 0.55));
-  const cinematicDepth = Math.min(100, Math.round(metrics.edgeEnergy * 2.6 + (metrics.blackBars ? 20 : 8)));
+  const cinematicDepth = Math.min(100, Math.round(metrics.edgeEnergy * 2.2 + metrics.sharpness * 0.32 + (metrics.blackBars ? 20 : 8)));
   const subjectIsolation = Math.min(100, Math.round(lightingContrast * 0.52 + cinematicDepth * 0.32 + (metrics.darkRatio > 0.36 ? 14 : 0)));
   const moodScore = Math.min(100, Math.round((["noir", "cyberpunk", "amber"].includes(mood) ? 76 : 64) + metrics.contrast * 0.24));
   const overall = Math.round(
@@ -359,6 +375,55 @@ function edgeEnergyFor(luminance, width, height) {
   return total / Math.max(count, 1);
 }
 
+function sharpnessFor(luminance, width, height) {
+  let sum = 0;
+  let squareSum = 0;
+  let count = 0;
+
+  for (let y = 1; y < height - 1; y += 1) {
+    for (let x = 1; x < width - 1; x += 1) {
+      const center = luminance[y * width + x];
+      const laplacian =
+        center * 4 -
+        luminance[y * width + x - 1] -
+        luminance[y * width + x + 1] -
+        luminance[(y - 1) * width + x] -
+        luminance[(y + 1) * width + x];
+
+      sum += laplacian;
+      squareSum += laplacian ** 2;
+      count += 1;
+    }
+  }
+
+  const mean = sum / Math.max(count, 1);
+  return Math.sqrt(squareSum / Math.max(count, 1) - mean ** 2);
+}
+
+function blockinessFor(luminance, width, height) {
+  let boundaryDiff = 0;
+  let boundaryCount = 0;
+  let naturalDiff = 0;
+  let naturalCount = 0;
+
+  for (let y = 1; y < height; y += 1) {
+    for (let x = 1; x < width; x += 1) {
+      const horizontalDiff = Math.abs(luminance[y * width + x] - luminance[y * width + x - 1]);
+      const verticalDiff = Math.abs(luminance[y * width + x] - luminance[(y - 1) * width + x]);
+
+      if (x % 8 === 0 || y % 8 === 0) {
+        boundaryDiff += horizontalDiff + verticalDiff;
+        boundaryCount += 2;
+      } else {
+        naturalDiff += horizontalDiff + verticalDiff;
+        naturalCount += 2;
+      }
+    }
+  }
+
+  return (boundaryDiff / Math.max(boundaryCount, 1)) / (naturalDiff / Math.max(naturalCount, 1));
+}
+
 function signatureDistance(a, b) {
   if (!a || !b || a.length !== b.length) {
     return 1;
@@ -411,25 +476,46 @@ function frameDistance(a, b) {
   return luminanceDistance * 0.68 + colorDistance * 0.32;
 }
 
-function passesQuality(metrics) {
-  return (
-    metrics.score >= minScore &&
-    metrics.contrast >= minContrast &&
-    metrics.colorRichness >= minColorRichness &&
-    metrics.aspectRatio >= minAspectRatio &&
-    metrics.aspectRatio <= maxAspectRatio &&
-    metrics.brightness >= minBrightness &&
-    metrics.brightness <= maxBrightness &&
-    metrics.darkRatio < 0.82 &&
-    metrics.brightRatio < 0.82 &&
-    !metrics.textOverlayRisk &&
-    !metrics.diagramRisk &&
-    !(
-      metrics.brightness > 175 &&
-      metrics.saturation > 42 &&
-      metrics.contrast < 46
-    )
-  );
+function rejectionReasonFor(metrics) {
+  if (metrics.width < minFrameWidth || metrics.height < minFrameHeight) {
+    return "lowResolution";
+  }
+
+  if (metrics.sharpness < minSharpness || metrics.compressionRisk) {
+    return "blur";
+  }
+
+  if (
+    metrics.blownHighlightRisk ||
+    metrics.brightness > maxBrightness ||
+    metrics.brightRatio > 0.42 ||
+    (metrics.brightness > 174 && metrics.saturation < 18 && metrics.contrast < 34)
+  ) {
+    return "overexposure";
+  }
+
+  if (
+    metrics.textOverlayRisk ||
+    metrics.diagramRisk ||
+    (metrics.brightness > 175 && metrics.saturation > 42 && metrics.contrast < 46)
+  ) {
+    return "textGraphicBoard";
+  }
+
+  if (
+    metrics.score < minScore ||
+    metrics.contrast < minContrast ||
+    metrics.colorRichness < minColorRichness ||
+    metrics.aspectRatio < minAspectRatio ||
+    metrics.aspectRatio > maxAspectRatio ||
+    metrics.brightness < minBrightness ||
+    metrics.darkRatio > 0.82 ||
+    (metrics.brightness < 42 && metrics.contrast < 26 && metrics.edgeEnergy < 8)
+  ) {
+    return "lowQuality";
+  }
+
+  return null;
 }
 
 function tagsFor(metrics) {
@@ -488,7 +574,29 @@ function videoInfo(videoPath) {
   };
 }
 
-async function ingestVideo(videoPath, existingSignatures) {
+function createRejectStats() {
+  return {
+    blur: 0,
+    overexposure: 0,
+    lowResolution: 0,
+    textGraphicBoard: 0,
+    lowQuality: 0,
+  };
+}
+
+function addRejectStats(target, source) {
+  for (const [key, value] of Object.entries(source)) {
+    target[key] = (target[key] || 0) + value;
+  }
+}
+
+function logRejectStats(label, stats) {
+  console.log(
+    `${label} rejects: blur=${stats.blur}, overexposure=${stats.overexposure}, low resolution=${stats.lowResolution}, text/graphic board=${stats.textGraphicBoard}, low quality=${stats.lowQuality}`,
+  );
+}
+
+async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
   const info = videoInfo(videoPath);
 
   if (blockedFramePattern.test(`${info.title} ${info.query}`)) {
@@ -501,6 +609,7 @@ async function ingestVideo(videoPath, existingSignatures) {
   const candidates = await extractCandidates(videoPath, candidateDir);
   const analyzed = [];
   const recentSignatures = [];
+  const rejectStats = createRejectStats();
 
   for (const candidate of candidates) {
     const metrics = await imageMetrics(candidate);
@@ -508,8 +617,10 @@ async function ingestVideo(videoPath, existingSignatures) {
       signature: metrics.signature,
       colorSignature: metrics.colorSignature,
     };
+    const rejectionReason = rejectionReasonFor(metrics);
 
-    if (!passesQuality(metrics)) {
+    if (rejectionReason) {
+      rejectStats[rejectionReason] += 1;
       continue;
     }
 
@@ -529,6 +640,9 @@ async function ingestVideo(videoPath, existingSignatures) {
 
     analyzed.push({ candidate, metrics });
   }
+
+  addRejectStats(totalRejectStats, rejectStats);
+  logRejectStats(info.title, rejectStats);
 
   const selectedFrames = await Promise.all(analyzed
     .sort((a, b) => b.metrics.score - a.metrics.score)
@@ -566,11 +680,13 @@ async function ingestVideo(videoPath, existingSignatures) {
         tags: tagsFor(metrics),
         metrics: {
           brightness: Number(metrics.brightness.toFixed(2)),
+          blockiness: Number(metrics.blockiness.toFixed(3)),
           colorRichness: Number(metrics.colorRichness.toFixed(2)),
           contrast: Number(metrics.contrast.toFixed(2)),
           diversity: Number(metrics.diversity.toFixed(3)),
           edgeEnergy: Number(metrics.edgeEnergy.toFixed(2)),
           saturation: Number(metrics.saturation.toFixed(2)),
+          sharpness: Number(metrics.sharpness.toFixed(2)),
           blackBars: metrics.blackBars,
         },
         signature: metrics.signature,
@@ -627,9 +743,10 @@ async function main() {
     }))
     .filter((signature) => signature.signature);
   const newFrames = [];
+  const totalRejectStats = createRejectStats();
 
   for (const videoPath of listVideos()) {
-    const frames = await ingestVideo(videoPath, signatures);
+    const frames = await ingestVideo(videoPath, signatures, totalRejectStats);
 
     for (const frame of frames) {
       byFilename.set(frame.filename, frame);
@@ -650,6 +767,7 @@ async function main() {
   console.log(
     `Ingest complete: ${newFrames.length} new frames, ${frames.length} total frames.`,
   );
+  logRejectStats("Total frame quality", totalRejectStats);
 }
 
 main().catch((error) => {
