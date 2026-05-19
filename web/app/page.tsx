@@ -202,7 +202,50 @@ async function imageDimensions(filename: string, item: MetadataItem) {
 }
 
 function isCinematicFrame(frame: Frame) {
-  return frame.aspectRatio >= 1.55 && frame.aspectRatio <= 2.9;
+  return (
+    frame.aspectRatio >= 1.55 &&
+    frame.aspectRatio <= 2.9 &&
+    !isReferenceFrame(frame)
+  );
+}
+
+function isReferenceFrame(frame: Frame) {
+  const searchable = [
+    frame.filename,
+    frame.title,
+    ...(frame.tags || []),
+    ...(frame.collections || []),
+    frame.source?.title || "",
+    frame.source?.query || "",
+  ]
+    .join(" ")
+    .toLowerCase();
+  const metrics = frame.metrics || {};
+  const isLikelyGraphic =
+    (metrics.brightness || 0) > 175 &&
+    (metrics.saturation || 0) > 42 &&
+    (metrics.contrast || 0) < 46;
+
+  return (
+    isLikelyGraphic ||
+    /tutorial|lens|telephoto|shot\s*\d|rule\s*of\s*thirds|diagram|breakdown|camera|bts|behind|framing|composition|technique|setup|lesson|course|masterclass/.test(
+      searchable,
+    )
+  );
+}
+
+function isFrameDraft(frame: Partial<Frame>): frame is Frame {
+  return (
+    typeof frame.filename === "string" &&
+    typeof frame.src === "string" &&
+    typeof frame.score === "number" &&
+    typeof frame.title === "string" &&
+    Array.isArray(frame.tags) &&
+    Array.isArray(frame.collections) &&
+    typeof frame.width === "number" &&
+    typeof frame.height === "number" &&
+    typeof frame.aspectRatio === "number"
+  );
 }
 
 async function getFrames(): Promise<Frame[]> {
@@ -223,15 +266,34 @@ async function getFrames(): Promise<Frame[]> {
       item.categories,
       item.category,
     );
+    const baseFrame = {
+      filename,
+      src: `${publicPath}/${filename}`,
+      score: scoreFor(filename, item, index),
+      title: titleFor(filename, item),
+      metrics: item.metrics || null,
+      source: item.source || (item.video ? { title: item.video } : null),
+      width: dimensions.width,
+      height: dimensions.height,
+      aspectRatio: dimensions.aspectRatio,
+    };
+    const frameDraft = {
+      ...baseFrame,
+      tags: sourceTags,
+      collections: normalizeTags(item.collections, item.collection, item.video),
+    };
+    const referenceFrame = isFrameDraft(frameDraft) && isReferenceFrame(frameDraft);
     const tags = normalizeTags(
       sourceTags,
       dimensions.aspectRatio >= 2.2 ? "scope" : "widescreen",
       "cinematic",
+      referenceFrame ? "reference-board" : null,
     );
     const collections = normalizeTags(
       item.collections,
       item.collection,
       item.video,
+      referenceFrame ? "reference boards" : null,
       tags.includes("scope") ? "scope format" : "widescreen",
       tags.includes("high-contrast") ? "high contrast" : null,
       tags.includes("bright") ? "bright frames" : null,
@@ -240,17 +302,9 @@ async function getFrames(): Promise<Frame[]> {
     );
 
     return {
-      filename,
-      src: `${publicPath}/${filename}`,
-      score: scoreFor(filename, item, index),
-      title: titleFor(filename, item),
+      ...baseFrame,
       tags,
       collections,
-      metrics: item.metrics || null,
-      source: item.source || (item.video ? { title: item.video } : null),
-      width: dimensions.width,
-      height: dimensions.height,
-      aspectRatio: dimensions.aspectRatio,
     };
   }));
 

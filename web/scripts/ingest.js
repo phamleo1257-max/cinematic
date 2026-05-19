@@ -22,6 +22,8 @@ const nearbyDuplicateDistance = Number(process.env.NEARBY_DUPLICATE_DISTANCE || 
 const globalDuplicateDistance = Number(process.env.GLOBAL_DUPLICATE_DISTANCE || 0.13);
 const minAspectRatio = Number(process.env.MIN_FRAME_ASPECT_RATIO || 1.55);
 const maxAspectRatio = Number(process.env.MAX_FRAME_ASPECT_RATIO || 2.9);
+const blockedFramePattern =
+  /tutorial|lens|telephoto|shot\s*\d|rule\s*of\s*thirds|diagram|breakdown|camera|bts|behind|framing|composition|technique|setup|lesson|course|masterclass/i;
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
@@ -347,7 +349,12 @@ function passesQuality(metrics) {
     metrics.brightness >= minBrightness &&
     metrics.brightness <= maxBrightness &&
     metrics.darkRatio < 0.82 &&
-    metrics.brightRatio < 0.82
+    metrics.brightRatio < 0.82 &&
+    !(
+      metrics.brightness > 175 &&
+      metrics.saturation > 42 &&
+      metrics.contrast < 46
+    )
   );
 }
 
@@ -405,6 +412,12 @@ function videoInfo(videoPath) {
 
 async function ingestVideo(videoPath, existingSignatures) {
   const info = videoInfo(videoPath);
+
+  if (blockedFramePattern.test(`${info.title} ${info.query}`)) {
+    console.log(`Skipping reference/tutorial source: ${info.title}`);
+    return [];
+  }
+
   const videoId = slugify(info.id);
   const candidateDir = path.join(candidatesDir, videoId);
   const candidates = await extractCandidates(videoPath, candidateDir);
