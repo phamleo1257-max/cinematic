@@ -230,6 +230,7 @@ async function imageMetrics(imagePath) {
     (brightness > 170 && saturation > 36 && contrast < 48) ||
     (brightness > 155 && sharpness > 36 && colorRichness < 28);
   const compressionRisk = blockiness > 1.32 && sharpness < 24;
+  const spatial = spatialLightStats(luminance, width, height, brightness);
   const score = Math.round(
     contrast * 0.36 +
       colorRichness * 0.3 +
@@ -260,6 +261,7 @@ async function imageMetrics(imagePath) {
     palette,
     textOverlayRisk,
     warmth: redAvg - blueAvg,
+    spatial,
     width: originalWidth,
     height: originalHeight,
     aspectRatio,
@@ -300,6 +302,41 @@ function qualityFor(metrics, mood) {
     subjectIsolation,
     mood: moodScore,
     overall,
+  };
+}
+
+function lightingAnalysisFor(metrics, mood) {
+  const subjectX = Number(metrics.spatial.subjectX.toFixed(3));
+  const subjectY = Number(metrics.spatial.subjectY.toFixed(3));
+  const keySide = metrics.spatial.brightX < subjectX ? "left" : "right";
+  const keyVertical = metrics.spatial.brightY < 0.46 ? "front" : "side";
+  const keyDirection = `${keyVertical}-${keySide}`;
+  const fillDirection = keySide === "left" ? "front-right" : "front-left";
+  const backDirection = keySide === "left" ? "back-right" : "back-left";
+  const contrastRatio = Number(Math.max(1.2, Math.min(8.5, metrics.contrast / 12)).toFixed(1));
+  const keyStrength = Math.max(58, Math.min(96, Math.round(54 + metrics.contrast * 0.62)));
+  const fillStrength = Math.max(8, Math.min(48, Math.round(keyStrength / contrastRatio)));
+  const rimStrength = Math.max(14, Math.min(72, Math.round(metrics.edgeEnergy * 2.1 + (metrics.blackBars ? 12 : 4))));
+
+  return {
+    subject: {
+      x: subjectX,
+      y: subjectY,
+    },
+    keyLight: {
+      direction: keyDirection,
+      strength: keyStrength,
+    },
+    fillLight: {
+      direction: fillDirection,
+      strength: fillStrength,
+    },
+    rimLight: {
+      direction: backDirection,
+      strength: rimStrength,
+    },
+    contrastRatio,
+    mood,
   };
 }
 
@@ -422,6 +459,46 @@ function blockinessFor(luminance, width, height) {
   }
 
   return (boundaryDiff / Math.max(boundaryCount, 1)) / (naturalDiff / Math.max(naturalCount, 1));
+}
+
+function spatialLightStats(luminance, width, height, brightness) {
+  let subjectWeight = 0;
+  let subjectX = 0;
+  let subjectY = 0;
+  let brightWeight = 0;
+  let brightX = 0;
+  let brightY = 0;
+
+  for (let y = 1; y < height - 1; y += 1) {
+    for (let x = 1; x < width - 1; x += 1) {
+      const index = y * width + x;
+      const value = luminance[index];
+      const contrastWeight =
+        Math.abs(value - brightness) +
+        Math.abs(value - luminance[index - 1]) * 0.45 +
+        Math.abs(value - luminance[index + 1]) * 0.45 +
+        Math.abs(value - luminance[index - width]) * 0.45 +
+        Math.abs(value - luminance[index + width]) * 0.45;
+
+      subjectWeight += contrastWeight;
+      subjectX += (x / (width - 1)) * contrastWeight;
+      subjectY += (y / (height - 1)) * contrastWeight;
+
+      if (value > brightness) {
+        const highlightWeight = (value - brightness) ** 1.35;
+        brightWeight += highlightWeight;
+        brightX += (x / (width - 1)) * highlightWeight;
+        brightY += (y / (height - 1)) * highlightWeight;
+      }
+    }
+  }
+
+  return {
+    subjectX: subjectWeight ? subjectX / subjectWeight : 0.5,
+    subjectY: subjectWeight ? subjectY / subjectWeight : 0.5,
+    brightX: brightWeight ? brightX / brightWeight : 0.5,
+    brightY: brightWeight ? brightY / brightWeight : 0.32,
+  };
 }
 
 function signatureDistance(a, b) {
@@ -650,6 +727,7 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
     .map(async ({ candidate, metrics }, index) => {
       const mood = moodFor(metrics);
       const quality = qualityFor(metrics, mood);
+      const lighting = lightingAnalysisFor(metrics, mood);
       const duplicate = existingSignatures.some(
         (signature) => frameDistance(signature, metrics) < globalDuplicateDistance,
       );
@@ -675,6 +753,7 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
         score: Math.max(metrics.score, quality.overall),
         cinematicScore: quality.overall,
         mood,
+        lighting,
         palette: metrics.palette,
         quality,
         tags: tagsFor(metrics),
