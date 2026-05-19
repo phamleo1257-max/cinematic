@@ -27,6 +27,7 @@ type MetadataItem = {
   director?: string;
   lens?: string;
   mood?: string;
+  lighting?: Frame["lighting"];
   palette?: unknown;
   quality?: Partial<Frame["quality"]>;
   cinematicScore?: number;
@@ -414,6 +415,7 @@ async function getFrames(): Promise<Frame[]> {
       director: item.director,
       lens: item.lens,
       mood: inferredMood,
+      lighting: item.lighting,
       palette,
       quality,
       score: Math.max(baseFrame.score, quality.overall),
