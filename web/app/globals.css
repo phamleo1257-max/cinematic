@@ -629,86 +629,6 @@ h1 {
   text-transform: uppercase;
 }
 
-.frame-score {
-  align-items: center;
-  backdrop-filter: blur(14px);
-  background: rgba(0, 0, 0, 0.56);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.9);
-  display: inline-flex;
-  font-size: 0.68rem;
-  font-weight: 850;
-  height: 30px;
-  left: 10px;
-  min-width: 30px;
-  justify-content: center;
-  padding: 0 9px;
-  position: absolute;
-  top: 10px;
-}
-
-.frame-hover-meta {
-  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.86));
-  bottom: 0;
-  color: rgba(246, 242, 236, 0.92);
-  display: grid;
-  gap: 7px;
-  left: 0;
-  opacity: 0;
-  padding: 58px 13px 13px;
-  position: absolute;
-  right: 0;
-  transform: translate3d(0, 10px, 0);
-  transition:
-    opacity 220ms ease,
-    transform 220ms ease;
-}
-
-.frame-card:hover .frame-hover-meta {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-.frame-hover-meta div {
-  align-items: center;
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-}
-
-.frame-hover-meta span,
-.frame-hover-meta strong {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.72);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.frame-hover-meta span {
-  color: rgba(232, 180, 92, 0.86);
-  font-size: 0.6rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-}
-
-.frame-hover-meta strong {
-  font-size: 0.76rem;
-  line-height: 1.12;
-}
-
-.frame-hover-meta small {
-  color: rgba(246, 242, 236, 0.58);
-  font-size: 0.62rem;
-  font-weight: 760;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
 .score-badge {
   align-items: center;
   background: linear-gradient(135deg, var(--hot), var(--red));
@@ -753,7 +673,9 @@ h1 {
   .frame-card img,
   .frame-card::before,
   .frame-card::after,
-  .frame-hover-meta {
+  .frame-image-wrap::before,
+  .frame-image-wrap::after,
+  .frame-card-meta {
     transition: none;
   }
 
