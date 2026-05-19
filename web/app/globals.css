@@ -960,6 +960,19 @@ h1 {
   text-transform: uppercase;
 }
 
+.cinematographer-group {
+  background: linear-gradient(135deg, rgba(232, 180, 92, 0.12), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(232, 180, 92, 0.2);
+  padding: 14px;
+}
+
+.cinematographer-group p {
+  color: rgba(246, 242, 236, 0.96);
+  font-size: clamp(1rem, 1.35vw, 1.28rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
 .modal-palette {
   display: flex;
   gap: 7px;
