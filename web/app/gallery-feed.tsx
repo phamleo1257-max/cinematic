@@ -828,11 +828,15 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                   {activeLighting ? (
                     <>
                       <div className="modal-section-heading">
-                        <span>Lighting analysis</span>
+                        <span>Lighting</span>
                         <strong>{activeLighting.contrastRatio}:1</strong>
                       </div>
                       <LightingDiagram analysis={activeLighting} />
                       <div className="metadata-row-list">
+                        <div className="metadata-row">
+                          <span>Mood</span>
+                          <strong>{activeLighting.mood}</strong>
+                        </div>
                         <div className="metadata-row">
                           <span>Subject</span>
                           <strong>{Math.round(activeLighting.subject.x * 100)} / {Math.round(activeLighting.subject.y * 100)}</strong>
@@ -854,98 +858,115 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                   ) : null}
                 </div>
 
-                <div className="modal-analysis-card shot-metadata-card">
-                  <div className="modal-section-heading">
-                    <span>Shot metadata</span>
-                    <strong>{activeFrame.quality.overall}</strong>
-                  </div>
-                  <div className="modal-palette" aria-label="Extracted color palette">
-                    {activeFrame.palette.map((color) => (
-                      <span key={color} style={{ background: color }} />
-                    ))}
-                  </div>
-                  <div className="metadata-row-list">
-                    <div className="metadata-row">
-                      <span>Source</span>
-                      <strong>{compactSourceLabel(activeFrame)}</strong>
-                    </div>
-                    <div className="metadata-row">
-                      <span>Director</span>
-                      <strong>{activeFrame.director || "unknown"}</strong>
-                    </div>
-                    <div className="metadata-row">
-                      <span>Lens</span>
-                      <strong>{activeFrame.lens || "not tagged"}</strong>
-                    </div>
-                    <div className="metadata-row">
-                      <span>Resolution</span>
-                      <strong>{activeFrame.width} × {activeFrame.height}</strong>
-                    </div>
-                    <div className="metadata-row">
-                      <span>Contrast</span>
-                      <strong>{Math.round(activeFrame.metrics?.contrast || 0)}</strong>
-                    </div>
-                    <div className="metadata-row">
-                      <span>Color</span>
-                      <strong>{Math.round(activeFrame.metrics?.colorRichness || 0)}</strong>
-                    </div>
-                    <div className="metadata-row">
-                      <span>Depth</span>
-                      <strong>{activeFrame.quality.cinematicDepth}</strong>
-                    </div>
-                    <div className="metadata-row">
-                      <span>Isolation</span>
-                      <strong>{activeFrame.quality.subjectIsolation}</strong>
-                    </div>
-                  </div>
-                  {activeFrame.tags.length ? (
-                    <div className="modal-tag-section">
+                <div className="modal-right-column">
+                  <div className="modal-analysis-card shot-metadata-card">
                     <div className="modal-section-heading">
-                        <span>Tags</span>
+                      <span>Shot metadata</span>
+                      <strong>{activeFrame.quality.overall}</strong>
+                    </div>
+                    <div className="metadata-group">
+                      <span>Source</span>
+                      <p>{compactSourceLabel(activeFrame)}</p>
+                    </div>
+                    <div className="metadata-group">
+                      <span>Color</span>
+                      <div className="modal-palette" aria-label="Extracted color palette">
+                        {activeFrame.palette.map((color) => (
+                          <span key={color} style={{ background: color }} />
+                        ))}
                       </div>
-                      <div className="modal-tags">
-                        {activeFrame.tags.slice(0, 10).map((tag) => (
+                      <div className="metadata-row-list">
+                        <div className="metadata-row">
+                          <span>Richness</span>
+                          <strong>{Math.round(activeFrame.metrics?.colorRichness || 0)}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Contrast</span>
+                          <strong>{Math.round(activeFrame.metrics?.contrast || 0)}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="metadata-group">
+                      <span>Composition</span>
+                      <div className="metadata-row-list">
+                        <div className="metadata-row">
+                          <span>Depth</span>
+                          <strong>{activeFrame.quality.cinematicDepth}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Isolation</span>
+                          <strong>{activeFrame.quality.subjectIsolation}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Balance</span>
+                          <strong>{activeFrame.quality.composition}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="metadata-group">
+                      <span>Technical</span>
+                      <div className="metadata-row-list">
+                        <div className="metadata-row">
+                          <span>Director</span>
+                          <strong>{activeFrame.director || "unknown"}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Lens</span>
+                          <strong>{activeFrame.lens || "not tagged"}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Frame</span>
+                          <strong>{activeFrame.width} × {activeFrame.height}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    {activeFrame.tags.length ? (
+                      <div className="metadata-group modal-tag-section">
+                        <span>Tags</span>
+                        <div className="modal-tags">
+                          {activeFrame.tags.slice(0, 10).map((tag) => (
+                            <button
+                              key={tag}
+                              type="button"
+                              onClick={() => {
+                                setActiveTag(tag);
+                                setActiveCollection("All");
+                                closeModal();
+                              }}
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <section className="modal-similar-section">
+                    <div className="modal-section-heading">
+                      <span>Similar shots</span>
+                      <strong>{similarFrames.length}</strong>
+                    </div>
+                    {similarFrames.length ? (
+                      <div className="similar-shots">
+                        {similarFrames.map((frame) => (
                           <button
-                            key={tag}
+                            key={frame.filename}
                             type="button"
                             onClick={() => {
-                              setActiveTag(tag);
-                              setActiveCollection("All");
-                              closeModal();
+                              const nextIndex = filteredFrames.findIndex(
+                                (candidate) => candidate.filename === frame.filename,
+                              );
+                              setActiveIndex(nextIndex >= 0 ? nextIndex : 0);
                             }}
                           >
-                            {tag}
+                            <img src={frame.src} alt="" loading="lazy" />
                           </button>
                         ))}
                       </div>
-                    </div>
-                  ) : null}
+                    ) : null}
+                  </section>
                 </div>
-              </section>
-
-              <section className="modal-similar-section">
-                <div className="modal-section-heading">
-                  <span>Similar shots</span>
-                  <strong>{similarFrames.length}</strong>
-                </div>
-                {similarFrames.length ? (
-                  <div className="similar-shots">
-                    {similarFrames.map((frame) => (
-                      <button
-                        key={frame.filename}
-                        type="button"
-                        onClick={() => {
-                          const nextIndex = filteredFrames.findIndex(
-                            (candidate) => candidate.filename === frame.filename,
-                          );
-                          setActiveIndex(nextIndex >= 0 ? nextIndex : 0);
-                        }}
-                      >
-                        <img src={frame.src} alt="" loading="lazy" />
-                      </button>
-                    ))}
-                  </div>
-                ) : null}
               </section>
             </figcaption>
           </figure>
