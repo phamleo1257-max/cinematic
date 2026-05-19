@@ -403,6 +403,10 @@ h1 {
 }
 
 .frame-card {
+  --pan-x: 0px;
+  --pan-y: 0px;
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
   aspect-ratio: var(--frame-aspect, 1.78);
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.075), transparent 34%),
@@ -418,7 +422,13 @@ h1 {
   margin: 0 0 16px;
   overflow: hidden;
   position: relative;
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transform-style: preserve-3d;
+  transition:
+    box-shadow 260ms ease,
+    transform 220ms ease;
   vertical-align: top;
+  will-change: transform;
   width: 100%;
 }
 
@@ -435,8 +445,31 @@ h1 {
   transition: opacity 280ms ease;
 }
 
+.frame-card::after {
+  background-image:
+    repeating-radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.12) 0 0.5px, transparent 0.5px 2px),
+    linear-gradient(120deg, transparent 12%, rgba(255, 255, 255, 0.1), transparent 46%);
+  content: "";
+  inset: 0;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transform: translate3d(calc(var(--pan-x) * -0.25), calc(var(--pan-y) * -0.25), 0);
+  transition: opacity 260ms ease;
+}
+
 .frame-card.is-loaded::before {
   opacity: 0;
+}
+
+.frame-card:hover {
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.42);
+  z-index: 2;
+}
+
+.frame-card:hover::after {
+  opacity: 0.26;
 }
 
 .frame-card:focus-visible {
@@ -450,11 +483,12 @@ h1 {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transform: scale(1.001);
+  transform: translate3d(var(--pan-x), var(--pan-y), 0) scale(1.045);
   transition:
     filter 420ms ease,
     opacity 320ms ease,
-    transform 360ms ease;
+    transform 180ms ease;
+  will-change: transform, opacity, filter;
   width: 100%;
 }
 
@@ -465,12 +499,12 @@ h1 {
 
 .frame-card:hover img {
   filter: saturate(1.08) contrast(1.04);
-  transform: scale(1.035);
+  transform: translate3d(var(--pan-x), var(--pan-y), 0) scale(1.075);
 }
 
 .frame-card:not(.is-loaded):hover img {
   filter: blur(18px) saturate(0.9);
-  transform: scale(1.001);
+  transform: scale(1.045);
 }
 
 .frame-score {
@@ -492,17 +526,48 @@ h1 {
   top: 10px;
 }
 
-.frame-more {
-  bottom: -2px;
-  color: rgba(246, 242, 236, 0.82);
-  font-size: 1.2rem;
+.frame-hover-meta {
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
+  bottom: 0;
+  color: rgba(246, 242, 236, 0.92);
+  display: grid;
+  gap: 5px;
+  left: 0;
+  opacity: 0;
+  padding: 48px 12px 12px;
+  position: absolute;
+  right: 0;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+.frame-card:hover .frame-hover-meta {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.frame-hover-meta span,
+.frame-hover-meta strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.72);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.frame-hover-meta span {
+  color: rgba(232, 180, 92, 0.86);
+  font-size: 0.62rem;
   font-weight: 900;
   letter-spacing: 0.08em;
-  line-height: 1;
-  opacity: 0.72;
-  position: absolute;
-  right: 10px;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.65);
+}
+
+.frame-hover-meta strong {
+  font-size: 0.74rem;
+  line-height: 1.12;
 }
 
 .score-badge {
@@ -547,8 +612,17 @@ h1 {
   }
 
   .frame-card img,
-  .frame-card::before {
+  .frame-card::before,
+  .frame-card::after,
+  .frame-hover-meta {
     transition: none;
+  }
+
+  .frame-card,
+  .frame-card:hover,
+  .frame-card img,
+  .frame-card:hover img {
+    transform: none;
   }
 }
 

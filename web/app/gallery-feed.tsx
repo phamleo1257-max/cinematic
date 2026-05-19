@@ -145,6 +145,26 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
     });
   }
 
+  function handleCardPointerMove(
+    event: React.PointerEvent<HTMLElement>,
+  ) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+    event.currentTarget.style.setProperty("--tilt-x", `${(-y * 3).toFixed(2)}deg`);
+    event.currentTarget.style.setProperty("--tilt-y", `${(x * 3).toFixed(2)}deg`);
+    event.currentTarget.style.setProperty("--pan-x", `${(x * 10).toFixed(2)}px`);
+    event.currentTarget.style.setProperty("--pan-y", `${(y * 10).toFixed(2)}px`);
+  }
+
+  function resetCardMotion(event: React.PointerEvent<HTMLElement>) {
+    event.currentTarget.style.setProperty("--tilt-x", "0deg");
+    event.currentTarget.style.setProperty("--tilt-y", "0deg");
+    event.currentTarget.style.setProperty("--pan-x", "0px");
+    event.currentTarget.style.setProperty("--pan-y", "0px");
+  }
+
   useEffect(() => {
     setVisibleCount(INITIAL_RENDER_COUNT);
     setActiveIndex(null);
@@ -452,6 +472,8 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                         } as CSSProperties
                       }
                       onClick={() => setActiveIndex(index)}
+                      onPointerMove={handleCardPointerMove}
+                      onPointerLeave={resetCardMotion}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
                           event.preventDefault();
@@ -470,9 +492,10 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                         onLoad={() => markImageLoaded(frame.filename)}
                       />
                       <span className="frame-score">{frame.score}</span>
-                      <span className="frame-more" aria-hidden="true">
-                        ...
-                      </span>
+                      <div className="frame-hover-meta" aria-hidden="true">
+                        <span>{frame.collections[0] || "cinematic"}</span>
+                        <strong>{frame.title}</strong>
+                      </div>
                     </article>
                   );
                 })}
