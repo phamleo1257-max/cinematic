@@ -3,6 +3,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
+const { URL } = require("node:url");
 const sharp = require("sharp");
 
 const cwd = process.cwd();
@@ -10,6 +11,7 @@ const videosDir = path.join(cwd, "videos");
 const candidatesDir = path.join(cwd, "frames");
 const bestframesDir = path.join(cwd, "public", "bestframes");
 const metadataPath = path.join(bestframesDir, "metadata.json");
+const metadataCachePath = path.join(cwd, "scripts", "metadata-cache.json");
 const videoExtensions = new Set([".mp4", ".mov", ".mkv", ".webm"]);
 const maxFramesPerVideo = Number(process.env.MAX_FRAMES_PER_VIDEO || 12);
 const extractFps = process.env.EXTRACT_FPS || "1/4";
@@ -54,6 +56,219 @@ function readJson(file, fallback) {
   } catch {
     return fallback;
   }
+}
+
+function compactValue(value) {
+  if (!value) {
+    return "";
+  }
+
+  return String(value).replace(/\s+/g, " ").trim();
+}
+
+function titleCase(value) {
+  return compactValue(value)
+    .toLowerCase()
+    .replace(/\b([a-z])/g, (match) => match.toUpperCase());
+}
+
+function normalizeSourceTitle(rawTitle) {
+  const firstSegment = compactValue(rawTitle)
+    .split(/\s+\|\s+|\s+-\s+|\s+–\s+|\s+—\s+/)[0]
+    .replace(/\[[^\]]+\]/g, "")
+    .replace(/\([^\)]*(official|trailer|teaser|clip|hd|4k|uhd)[^\)]*\)/gi, "")
+    .replace(/\b(official|final|trailer|teaser|clip|promo|scene|movie|film|hd|uhd|4k|8k|a24)\b/gi, "")
+    .replace(/\b(full|new|extended|director'?s?\s+cut)\b/gi, "")
+    .replace(/[#:]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return titleCase(firstSegment || rawTitle);
+}
+
+function sourceTypeForText(value) {
+  const text = compactValue(value).toLowerCase();
+
+  if (/music\s+video/.test(text)) return "music video";
+  if (/commercial|advert|ad\b|luxury|fashion\s+film|car\s+commercial/.test(text)) return "commercial";
+  if (/series|episode|season|tv\b/.test(text)) return "series";
+  if (/short\s+film/.test(text)) return "short film";
+  return "film";
+}
+
+function productionHouseForInfo(info) {
+  const text = `${info.title || ""} ${info.uploader || ""} ${info.channel || ""} ${info.query || ""}`.toLowerCase();
+
+  if (text.includes("a24")) return "A24";
+  if (info.channel || info.uploader) return compactValue(info.channel || info.uploader);
+  if (text.includes("archive")) return "Internet Archive";
+  return "";
+}
+
+function releaseYearForInfo(info) {
+  const uploadDate = compactValue(info.uploadDate || "");
+  const titleYear = compactValue(info.title || "").match(/\b(19|20)\d{2}\b/);
+
+  if (titleYear) return titleYear[0];
+  if (/^\d{8}$/.test(uploadDate)) return uploadDate.slice(0, 4);
+  return "";
+}
+
+function isMissingMetadataValue(value) {
+  return (
+    !value ||
+    /^(unknown|not tagged|archive|metadata unavailable)$/i.test(String(value)) ||
+    /\b(archive still|archive frame|color study|light study|shadow study|dream frame|high contrast frame|neon night frame)\b/i.test(
+      String(value),
+    )
+  );
+}
+
+function metadataCacheKey(title, sourceType) {
+  return slugify(`${sourceType}-${title}`);
+}
+
+function tmdbRequestUrl(pathname, params = {}) {
+  const apiKey = process.env.TMDB_API_KEY;
+  const baseUrl = `https://api.themoviedb.org/3${pathname}`;
+  const url = new URL(baseUrl);
+
+  for (const [key, value] of Object.entries(params)) {
+    if (value !== undefined && value !== null && value !== "") {
+      url.searchParams.set(key, String(value));
+    }
+  }
+
+  if (apiKey && !process.env.TMDB_BEARER_TOKEN) {
+    url.searchParams.set("api_key", apiKey);
+  }
+
+  return url;
+}
+
+async function fetchJsonOrNull(url, headers = {}) {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "user-agent": "cinematic-feed/1.0",
+        ...headers,
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return response.json();
+  } catch {
+    return null;
+  }
+}
+
+async function fetchTmdbMetadata(title, sourceType) {
+  if (!process.env.TMDB_API_KEY && !process.env.TMDB_BEARER_TOKEN) {
+    return null;
+  }
+
+  const headers = process.env.TMDB_BEARER_TOKEN
+    ? { authorization: `Bearer ${process.env.TMDB_BEARER_TOKEN}` }
+    : {};
+  const searchType = sourceType === "series" ? "tv" : "movie";
+  const search = await fetchJsonOrNull(
+    tmdbRequestUrl(`/search/${searchType}`, {
+      query: title,
+      include_adult: "false",
+      language: "en-US",
+      page: "1",
+    }),
+    headers,
+  );
+  const match = search?.results?.[0];
+
+  if (!match?.id) {
+    return null;
+  }
+
+  const credits = await fetchJsonOrNull(
+    tmdbRequestUrl(`/${searchType}/${match.id}/credits`, { language: "en-US" }),
+    headers,
+  );
+  const crew = Array.isArray(credits?.crew) ? credits.crew : [];
+  const director = crew.find((person) => person.job === "Director")?.name || "";
+  const cinematographer =
+    crew.find((person) =>
+      /director of photography|cinematographer|cinematography/i.test(person.job || ""),
+    )?.name || "";
+
+  return {
+    title: match.title || match.name || title,
+    year: compactValue(match.release_date || match.first_air_date).slice(0, 4),
+    director,
+    cinematographer,
+    sourceType: searchType === "tv" ? "series" : "film",
+    metadataProvider: "tmdb",
+  };
+}
+
+async function fetchOmdbMetadata(title, sourceType) {
+  if (!process.env.OMDB_API_KEY) {
+    return null;
+  }
+
+  const url = new URL("https://www.omdbapi.com/");
+  url.searchParams.set("apikey", process.env.OMDB_API_KEY);
+  url.searchParams.set("t", title);
+  url.searchParams.set("type", sourceType === "series" ? "series" : "movie");
+
+  const match = await fetchJsonOrNull(url);
+
+  if (!match || match.Response === "False") {
+    return null;
+  }
+
+  return {
+    title: match.Title || title,
+    year: match.Year ? String(match.Year).slice(0, 4) : "",
+    director: match.Director && match.Director !== "N/A" ? match.Director : "",
+    cinematographer: "",
+    sourceType: match.Type === "series" ? "series" : sourceType,
+    metadataProvider: "omdb",
+  };
+}
+
+async function enrichSourceMetadata(info, cache) {
+  const originalSource = compactValue(info.title);
+  const normalizedTitle = normalizeSourceTitle(originalSource);
+  const sourceType = sourceTypeForText(`${originalSource} ${info.query}`);
+  const key = metadataCacheKey(normalizedTitle, sourceType);
+
+  if (cache[key]) {
+    return {
+      ...cache[key],
+      originalSource,
+    };
+  }
+
+  const remoteMetadata =
+    (await fetchTmdbMetadata(normalizedTitle, sourceType)) ||
+    (await fetchOmdbMetadata(normalizedTitle, sourceType));
+  const fallback = {
+    title: normalizedTitle || "Metadata unavailable",
+    year: releaseYearForInfo(info),
+    director: "",
+    cinematographer: "",
+    sourceType,
+    metadataProvider: "local",
+  };
+  const metadata = {
+    ...fallback,
+    ...(remoteMetadata || {}),
+    productionHouse: productionHouseForInfo(info),
+    originalSource,
+  };
+
+  cache[key] = metadata;
+  return metadata;
 }
 
 function writeJson(file, data) {
@@ -648,6 +863,9 @@ function videoInfo(videoPath) {
     title: info.title || fallbackTitle,
     url: info.webpage_url || info.original_url || "",
     query: info.playlist || info.search_query || "",
+    channel: info.channel || "",
+    uploader: info.uploader || "",
+    uploadDate: info.upload_date || "",
   };
 }
 
@@ -687,13 +905,15 @@ function logRejectStats(label, stats) {
   );
 }
 
-async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
+async function ingestVideo(videoPath, existingSignatures, totalRejectStats, metadataCache) {
   const info = videoInfo(videoPath);
 
   if (blockedFramePattern.test(`${info.title} ${info.query}`)) {
     console.log(`Skipping reference/tutorial source: ${info.title}`);
     return [];
   }
+
+  const sourceMetadata = await enrichSourceMetadata(info, metadataCache);
 
   const videoId = slugify(info.id);
   const candidateDir = path.join(candidatesDir, videoId);
@@ -757,13 +977,23 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
 
       const filename = `${videoId}_${String(index + 1).padStart(2, "0")}.jpg`;
       const destination = path.join(bestframesDir, filename);
-      await sharp(candidate)
-        .jpeg({ quality: 84, mozjpeg: true })
-        .toFile(destination);
+
+      if (!fs.existsSync(destination)) {
+        await sharp(candidate)
+          .jpeg({ quality: 84, mozjpeg: true })
+          .toFile(destination);
+      }
 
       const frame = {
         filename,
-        title: "",
+        title: sourceMetadata.title || archiveTitleFor({ mood, tags: tagsFor(metrics), aspectRatio: metrics.aspectRatio }),
+        year: sourceMetadata.year || "",
+        director: sourceMetadata.director || "",
+        cinematographer: sourceMetadata.cinematographer || "",
+        sourceType: sourceMetadata.sourceType || sourceTypeForText(`${info.title} ${info.query}`),
+        originalSource: sourceMetadata.originalSource || info.title,
+        productionHouse: sourceMetadata.productionHouse || "",
+        metadataProvider: sourceMetadata.metadataProvider || "local",
         score: Math.max(metrics.score, quality.overall),
         cinematicScore: quality.overall,
         mood,
@@ -789,15 +1019,13 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
         aspectRatio: Number(metrics.aspectRatio.toFixed(4)),
         source: {
           video: path.relative(cwd, videoPath),
-          title: "",
+          title: sourceMetadata.originalSource || info.title,
           url: info.url,
           query: info.query,
         },
       };
 
       frame.collections = collectionsFor(frame);
-      frame.title = archiveTitleFor(frame);
-      frame.source.title = frame.title;
       return frame;
     }));
 
@@ -839,9 +1067,10 @@ async function main() {
     .filter((signature) => signature.signature);
   const newFrames = [];
   const totalRejectStats = createRejectStats();
+  const metadataCache = readJson(metadataCachePath, {});
 
   for (const videoPath of listVideos()) {
-    const frames = await ingestVideo(videoPath, signatures, totalRejectStats);
+    const frames = await ingestVideo(videoPath, signatures, totalRejectStats, metadataCache);
 
     for (const frame of frames) {
       byFilename.set(frame.filename, frame);
@@ -849,15 +1078,48 @@ async function main() {
     }
   }
 
-  const frames = Array.from(byFilename.values()).sort(
-    (a, b) => (b.score || 0) - (a.score || 0),
-  );
+  const frames = Array.from(byFilename.values())
+    .map((frame) => {
+      const originalSource =
+        frame.originalSource ||
+        frame.source?.title ||
+        frame.video ||
+        frame.title ||
+        "";
+      const normalizedTitle = normalizeSourceTitle(
+        originalSource || frame.title || "Metadata unavailable",
+      );
+      const title = isMissingMetadataValue(frame.title)
+        ? isMissingMetadataValue(normalizedTitle)
+          ? "Metadata unavailable"
+          : normalizedTitle
+        : frame.title;
+      const sourceType = frame.sourceType || sourceTypeForText(`${originalSource} ${frame.source?.query || ""}`);
+
+      return {
+        ...frame,
+        title,
+        year: frame.year || "",
+        director: isMissingMetadataValue(frame.director) ? "" : frame.director,
+        cinematographer: isMissingMetadataValue(frame.cinematographer) ? "" : frame.cinematographer,
+        sourceType,
+        originalSource: isMissingMetadataValue(originalSource) ? "" : originalSource,
+        productionHouse: isMissingMetadataValue(frame.productionHouse)
+          ? productionHouseForInfo({
+              title: originalSource,
+              query: frame.source?.query || "",
+            })
+          : frame.productionHouse,
+      };
+    })
+    .sort((a, b) => (b.score || 0) - (a.score || 0));
 
   writeJson(metadataPath, {
     generatedAt: new Date().toISOString(),
     frames,
     collections: buildCollections(frames),
   });
+  writeJson(metadataCachePath, metadataCache);
 
   console.log(
     `Ingest complete: ${newFrames.length} new frames, ${frames.length} total frames.`,
