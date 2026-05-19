@@ -156,36 +156,89 @@ function LightingDiagram({ analysis }: { analysis: LightingAnalysis }) {
   const rim = pointForDirection(analysis.rimLight.direction);
 
   return (
-    <svg className="lighting-svg" viewBox="0 0 340 300" role="img" aria-label="Top-down lighting diagram">
+    <svg className="lighting-svg" viewBox="0 0 420 320" role="img" aria-label="Top-down lighting diagram">
       <defs>
-        <marker id="light-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <radialGradient id="keyGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(232, 180, 92, 0.9)" />
+          <stop offset="100%" stopColor="rgba(232, 180, 92, 0)" />
+        </radialGradient>
+        <marker id="light-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" />
         </marker>
       </defs>
-      <rect x="1" y="1" width="338" height="298" rx="16" />
-      <line className="diagram-axis" x1="170" y1="38" x2="170" y2="262" />
-      <line className="diagram-axis" x1="48" y1="150" x2="292" y2="150" />
-      <circle className="diagram-subject-zone" cx={subject.x} cy={subject.y} r="42" />
-      <circle className="diagram-subject" cx={subject.x} cy={subject.y} r="16" />
-      <path className="diagram-camera" d="M148 267h44l-7 16h-30z" />
-      <text x="170" y="258" textAnchor="middle">Camera</text>
+      <rect x="1" y="1" width="418" height="318" rx="18" />
+      <text className="diagram-card-title" x="24" y="34">Top-down lighting estimate</text>
+      <text className="diagram-card-ratio" x="396" y="34" textAnchor="end">{analysis.contrastRatio}:1</text>
+      <line className="diagram-axis" x1="210" y1="58" x2="210" y2="282" />
+      <line className="diagram-axis" x1="58" y1="166" x2="362" y2="166" />
+      <circle className="diagram-glow" cx={key.x + 45} cy={key.y + 20} r="74" />
+      <circle className="diagram-subject-zone" cx={subject.x + 40} cy={subject.y + 16} r="48" />
+      <path className="diagram-subject" d={`M ${subject.x + 40} ${subject.y - 8} a18 18 0 1 0 0.1 0 M ${subject.x + 14} ${subject.y + 28} q26 -18 52 0 v20 h-52z`} />
+      <path className="diagram-camera" d="M184 284h52l-8 18h-36z" />
+      <text x="210" y="278" textAnchor="middle">Camera</text>
       <g className="diagram-light diagram-key">
-        <circle cx={key.x} cy={key.y} r="16" />
-        <line x1={key.x} y1={key.y} x2={subject.x} y2={subject.y} markerEnd="url(#light-arrow)" />
-        <text x={key.x} y={key.y - 23} textAnchor="middle">Key {analysis.keyLight.strength}%</text>
+        <circle cx={key.x + 40} cy={key.y + 16} r="19" />
+        <line x1={key.x + 40} y1={key.y + 16} x2={subject.x + 40} y2={subject.y + 16} markerEnd="url(#light-arrow)" />
+        <text x={key.x + 40} y={key.y - 13} textAnchor="middle">Key {analysis.keyLight.strength}%</text>
       </g>
       <g className="diagram-light diagram-fill">
-        <circle cx={fill.x} cy={fill.y} r="12" />
-        <line x1={fill.x} y1={fill.y} x2={subject.x} y2={subject.y} markerEnd="url(#light-arrow)" />
-        <text x={fill.x} y={fill.y - 20} textAnchor="middle">Fill {analysis.fillLight.strength}%</text>
+        <circle cx={fill.x + 40} cy={fill.y + 16} r="14" />
+        <line x1={fill.x + 40} y1={fill.y + 16} x2={subject.x + 40} y2={subject.y + 16} markerEnd="url(#light-arrow)" />
+        <text x={fill.x + 40} y={fill.y - 10} textAnchor="middle">Fill {analysis.fillLight.strength}%</text>
       </g>
       <g className="diagram-light diagram-rim">
-        <circle cx={rim.x} cy={rim.y} r="13" />
-        <line x1={rim.x} y1={rim.y} x2={subject.x} y2={subject.y} markerEnd="url(#light-arrow)" />
-        <text x={rim.x} y={rim.y + 30} textAnchor="middle">Rim {analysis.rimLight.strength}%</text>
+        <circle cx={rim.x + 40} cy={rim.y + 16} r="15" />
+        <line x1={rim.x + 40} y1={rim.y + 16} x2={subject.x + 40} y2={subject.y + 16} markerEnd="url(#light-arrow)" />
+        <text x={rim.x + 40} y={rim.y + 55} textAnchor="middle">Rim/Back {analysis.rimLight.strength}%</text>
       </g>
     </svg>
   );
+}
+
+function directionLabel(value: string) {
+  return value.replace(/-/g, " ");
+}
+
+function exposureNote(frame: Frame) {
+  const brightness = frame.metrics?.brightness || 0;
+  const contrast = frame.metrics?.contrast || 0;
+
+  if (brightness > 168 && contrast < 42) {
+    return "High-key exposure with soft contrast; keep highlights controlled to avoid a washed frame.";
+  }
+
+  if (brightness < 78) {
+    return "Low-key exposure; preserve shadow detail with a soft fill or practical source near camera.";
+  }
+
+  if (contrast > 58) {
+    return "Contrast is strong, giving the frame a shaped, directional look.";
+  }
+
+  return "Exposure is balanced, with enough contrast for shape without crushing the image.";
+}
+
+function lightingNotesFor(frame: Frame, analysis: LightingAnalysis) {
+  const key = directionLabel(analysis.keyLight.direction);
+  const fill = directionLabel(analysis.fillLight.direction);
+  const rim = directionLabel(analysis.rimLight.direction);
+  const fillFeel =
+    analysis.fillLight.strength < 20
+      ? "very low fill"
+      : analysis.fillLight.strength < 38
+        ? "controlled fill"
+        : "soft open fill";
+  const rimFeel =
+    analysis.rimLight.strength > 45
+      ? "clear back separation"
+      : "subtle edge separation";
+
+  return {
+    direction: `Key appears to come from ${key}, with ${fillFeel} from ${fill}.`,
+    ratio: `${analysis.contrastRatio}:1 contrast ratio; key at ${analysis.keyLight.strength}% and fill at ${analysis.fillLight.strength}%.`,
+    mood: `${analysis.mood} lighting with ${rimFeel}. ${exposureNote(frame)}`,
+    setup: `Recreate with a large key placed ${key}, dim fill from ${fill}, and a small rim/back light from ${rim}. Estimated from brightness distribution, contrast, and subject position.`,
+  };
 }
 
 function compactSourceLabel(frame: Frame) {
@@ -293,6 +346,8 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const activeLighting = activeFrame
     ? activeFrame.lighting || fallbackLighting(activeFrame)
     : null;
+  const activeLightingNotes =
+    activeFrame && activeLighting ? lightingNotesFor(activeFrame, activeLighting) : null;
   const similarFrames = useMemo(() => {
     if (!activeFrame) {
       return [];
@@ -832,28 +887,26 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                         <strong>{activeLighting.contrastRatio}:1</strong>
                       </div>
                       <LightingDiagram analysis={activeLighting} />
-                      <div className="metadata-row-list">
-                        <div className="metadata-row">
-                          <span>Mood</span>
-                          <strong>{activeLighting.mood}</strong>
+                      {activeLightingNotes ? (
+                        <div className="lighting-breakdown">
+                          <div>
+                            <span>Direction</span>
+                            <p>{activeLightingNotes.direction}</p>
+                          </div>
+                          <div>
+                            <span>Ratio</span>
+                            <p>{activeLightingNotes.ratio}</p>
+                          </div>
+                          <div>
+                            <span>Mood</span>
+                            <p>{activeLightingNotes.mood}</p>
+                          </div>
+                          <div>
+                            <span>Recreate Setup</span>
+                            <p>{activeLightingNotes.setup}</p>
+                          </div>
                         </div>
-                        <div className="metadata-row">
-                          <span>Subject</span>
-                          <strong>{Math.round(activeLighting.subject.x * 100)} / {Math.round(activeLighting.subject.y * 100)}</strong>
-                        </div>
-                        <div className="metadata-row">
-                          <span>Key</span>
-                          <strong>{activeLighting.keyLight.direction} · {activeLighting.keyLight.strength}%</strong>
-                        </div>
-                        <div className="metadata-row">
-                          <span>Fill</span>
-                          <strong>{activeLighting.fillLight.direction} · {activeLighting.fillLight.strength}%</strong>
-                        </div>
-                        <div className="metadata-row">
-                          <span>Rim</span>
-                          <strong>{activeLighting.rimLight.direction} · {activeLighting.rimLight.strength}%</strong>
-                        </div>
-                      </div>
+                      ) : null}
                     </>
                   ) : null}
                 </div>
