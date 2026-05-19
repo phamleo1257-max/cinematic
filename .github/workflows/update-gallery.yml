@@ -40,8 +40,10 @@ jobs:
 
       - name: Discover and ingest new frames
         env:
+          DISCOVERY_PROVIDERS: "archive,youtube"
           RESULTS_PER_QUERY: "1"
           MAX_FRAMES_PER_VIDEO: "8"
+          MAX_ARCHIVE_FILE_MB: "250"
           MIN_FRAME_SCORE: "38"
         run: |
           if npm run refresh; then

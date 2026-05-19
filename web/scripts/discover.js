@@ -3,6 +3,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { spawn } = require("node:child_process");
+const { Readable } = require("node:stream");
+const { pipeline } = require("node:stream/promises");
 
 const cwd = process.cwd();
 const videosDir = path.join(cwd, "videos");
@@ -30,12 +32,48 @@ const queries = (
   .map((query) => query.trim())
   .filter(Boolean);
 const resultsPerQuery = Number(process.env.RESULTS_PER_QUERY || 3);
+const providers = (process.env.DISCOVERY_PROVIDERS || "archive,youtube")
+  .split(",")
+  .map((provider) => provider.trim().toLowerCase())
+  .filter(Boolean);
+const maxArchiveFileMb = Number(process.env.MAX_ARCHIVE_FILE_MB || 350);
 const blockedTitlePattern =
   "(?i)(tutorial|how\\s+to|techniques?|framing|composition\\s+tips|cinematography\\s+tips|youtube\\s+advice|filmmaking\\s+advice|breakdown|explained|\\bbts\\b|behind\\s+the\\s+scenes|lesson|course|masterclass|gear\\s+review|camera\\s+settings|lighting\\s+setup)";
 const matchFilter = [
   "duration < 1800",
   `title !~= '${blockedTitlePattern}'`,
 ].join(" & ");
+
+function readArchive() {
+  try {
+    if (!fs.existsSync(archivePath)) {
+      return new Set();
+    }
+
+    return new Set(
+      fs
+        .readFileSync(archivePath, "utf8")
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean),
+    );
+  } catch {
+    return new Set();
+  }
+}
+
+function rememberDownload(key) {
+  fs.mkdirSync(path.dirname(archivePath), { recursive: true });
+  fs.appendFileSync(archivePath, `${key}\n`);
+}
+
+function slugify(value) {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 90);
+}
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
@@ -74,16 +112,150 @@ async function downloadQuery(query) {
   ]);
 }
 
+async function fetchJson(url) {
+  const response = await fetch(url, {
+    headers: {
+      "user-agent": "cinematic-feed/1.0",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed ${response.status}: ${url}`);
+  }
+
+  return response.json();
+}
+
+function archiveSearchUrl(query) {
+  const params = new URLSearchParams({
+    q: `mediatype:(movies) AND (${query})`,
+    fl: "identifier,title,description,downloads,year",
+    rows: String(resultsPerQuery),
+    page: "1",
+    output: "json",
+    sort: "downloads desc",
+  });
+
+  return `https://archive.org/advancedsearch.php?${params.toString()}`;
+}
+
+function isUsableArchiveMovie(file) {
+  const name = String(file.name || "");
+  const format = String(file.format || "").toLowerCase();
+  const sizeMb = Number(file.size || 0) / 1024 / 1024;
+
+  return (
+    /\.(mp4|mov|m4v)$/i.test(name) &&
+    !/sample|thumb|trailer/i.test(name) &&
+    (format.includes("mpeg4") || format.includes("h.264") || format.includes("quicktime")) &&
+    sizeMb > 2 &&
+    sizeMb <= maxArchiveFileMb
+  );
+}
+
+async function downloadArchiveItem(item, query, downloaded) {
+  const identifier = item.identifier;
+  const metadata = await fetchJson(`https://archive.org/metadata/${identifier}`);
+  const file = (metadata.files || []).find(isUsableArchiveMovie);
+
+  if (!file) {
+    console.log(`No usable Internet Archive video file: ${identifier}`);
+    return false;
+  }
+
+  const key = `archive ${identifier}/${file.name}`;
+
+  if (downloaded.has(key)) {
+    console.log(`Already downloaded: ${key}`);
+    return false;
+  }
+
+  const filename = `${slugify(identifier)}_${slugify(file.name) || "video"}.mp4`;
+  const destination = path.join(videosDir, filename);
+
+  if (fs.existsSync(destination)) {
+    rememberDownload(key);
+    downloaded.add(key);
+    return false;
+  }
+
+  const sourceUrl = `https://archive.org/download/${encodeURIComponent(identifier)}/${file.name
+    .split("/")
+    .map(encodeURIComponent)
+    .join("/")}`;
+  console.log(`Downloading Internet Archive: ${item.title || identifier}`);
+
+  const response = await fetch(sourceUrl, {
+    headers: {
+      "user-agent": "cinematic-feed/1.0",
+    },
+  });
+
+  if (!response.ok || !response.body) {
+    throw new Error(`Download failed ${response.status}: ${sourceUrl}`);
+  }
+
+  await pipeline(Readable.fromWeb(response.body), fs.createWriteStream(destination));
+  fs.writeFileSync(
+    destination.replace(/\.[^.]+$/, ".info.json"),
+    `${JSON.stringify(
+      {
+        id: identifier,
+        title: item.title || identifier,
+        webpage_url: `https://archive.org/details/${identifier}`,
+        original_url: sourceUrl,
+        search_query: query,
+        source: "internet-archive",
+      },
+      null,
+      2,
+    )}\n`,
+  );
+
+  rememberDownload(key);
+  downloaded.add(key);
+  return true;
+}
+
+async function downloadArchiveQuery(query, downloaded) {
+  console.log(`Searching Internet Archive: ${query}`);
+  const results = await fetchJson(archiveSearchUrl(query));
+  const docs = results?.response?.docs || [];
+
+  for (const item of docs) {
+    try {
+      await downloadArchiveItem(item, query, downloaded);
+    } catch (error) {
+      console.warn(`Internet Archive item skipped: ${error.message}`);
+    }
+  }
+}
+
 async function main() {
   fs.mkdirSync(videosDir, { recursive: true });
+  const downloaded = readArchive();
 
   if (process.env.DRY_RUN === "1") {
-    console.log(`Discovery ready: ${queries.length} queries, output ${videosDir}`);
+    console.log(
+      `Discovery ready: ${providers.join(", ")} providers, ${queries.length} queries, output ${videosDir}`,
+    );
     return;
   }
 
-  for (const query of queries) {
-    await downloadQuery(query);
+  if (providers.includes("archive")) {
+    for (const query of queries) {
+      await downloadArchiveQuery(query, downloaded);
+    }
+  }
+
+  if (providers.includes("youtube")) {
+    for (const query of queries) {
+      try {
+        await downloadQuery(query);
+      } catch (error) {
+        console.warn(`YouTube query skipped: ${error.message}`);
+      }
+    }
   }
 
   if (!process.argv.includes("--no-ingest")) {
