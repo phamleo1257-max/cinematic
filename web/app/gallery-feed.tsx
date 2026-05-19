@@ -776,7 +776,17 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="modal-image-stage">
-              <img src={activeFrame.src} alt={activeFrame.title} />
+              <img
+                src={activeFrame.src}
+                alt={activeFrame.title}
+                style={
+                  {
+                    "--modal-natural-width": activeFrame.width
+                      ? `${activeFrame.width}px`
+                      : "100%",
+                  } as CSSProperties
+                }
+              />
             </div>
             <figcaption className="modal-details">
               <section className="modal-primary-card">
