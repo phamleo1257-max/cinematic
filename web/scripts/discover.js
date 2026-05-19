@@ -37,12 +37,70 @@ const providers = (process.env.DISCOVERY_PROVIDERS || "archive,youtube")
   .map((provider) => provider.trim().toLowerCase())
   .filter(Boolean);
 const maxArchiveFileMb = Number(process.env.MAX_ARCHIVE_FILE_MB || 350);
-const blockedTitlePattern =
-  "(?i)(tutorial|how\\s+to|techniques?|framing|composition\\s+tips|cinematography\\s+tips|youtube\\s+advice|filmmaking\\s+advice|breakdown|explained|\\bbts\\b|behind\\s+the\\s+scenes|lesson|course|masterclass|gear\\s+review|camera\\s+settings|lighting\\s+setup)";
+const blockedSourceTerms = [
+  "tutorial",
+  "how to",
+  "technique",
+  "techniques",
+  "tips",
+  "framing",
+  "setup",
+  "review",
+  "camera",
+  "filmmaking",
+  "commercial filmmaking",
+  "best scenes",
+  "compilation",
+  "upcoming",
+  "trailers 2026",
+  "only the best",
+  "fight scene",
+  "final battle",
+  "composition tips",
+  "cinematography tips",
+  "youtube advice",
+  "filmmaking advice",
+  "breakdown",
+  "explained",
+  "behind the scenes",
+  "lesson",
+  "course",
+  "masterclass",
+  "gear review",
+  "camera settings",
+  "lighting setup",
+];
+const preferredSourceTerms = [
+  "official trailer",
+  "fashion film",
+  "luxury commercial",
+  "car commercial",
+  "short film",
+  "music video",
+  "a24",
+  "noir",
+  "sci-fi",
+  "sci fi",
+  "director cut",
+  "director's cut",
+];
+const blockedTitlePattern = `(?i)(${blockedSourceTerms
+  .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"))
+  .join("|")})`;
 const matchFilter = [
   "duration < 1800",
   `title !~= '${blockedTitlePattern}'`,
 ].join(" & ");
+
+function hasBlockedSourceText(value) {
+  const normalized = String(value || "").toLowerCase();
+  return blockedSourceTerms.some((term) => normalized.includes(term));
+}
+
+function hasPreferredSourceText(value) {
+  const normalized = String(value || "").toLowerCase();
+  return preferredSourceTerms.some((term) => normalized.includes(term));
+}
 
 function readArchive() {
   try {
@@ -155,6 +213,18 @@ function isUsableArchiveMovie(file) {
 
 async function downloadArchiveItem(item, query, downloaded) {
   const identifier = item.identifier;
+  const sourceText = `${item.title || ""} ${item.description || ""} ${query}`;
+
+  if (hasBlockedSourceText(sourceText)) {
+    console.log(`Skipping blocked Internet Archive source: ${item.title || identifier}`);
+    return false;
+  }
+
+  if (!hasPreferredSourceText(sourceText)) {
+    console.log(`Skipping low-priority Internet Archive source: ${item.title || identifier}`);
+    return false;
+  }
+
   const metadata = await fetchJson(`https://archive.org/metadata/${identifier}`);
   const file = (metadata.files || []).find(isUsableArchiveMovie);
 
