@@ -785,14 +785,14 @@ h1 {
 .modal-frame {
   align-content: start;
   display: grid;
-  gap: 22px;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: 24px;
+  grid-template-columns: 1fr;
   justify-content: stretch;
   margin: 0;
   max-height: 100vh;
-  max-width: min(1320px, 92vw);
+  max-width: min(1360px, 92vw);
   overflow: auto;
-  padding: 74px 0 52px;
+  padding: 76px 0 56px;
   position: relative;
   width: 100%;
   z-index: 100000;
@@ -809,7 +809,7 @@ h1 {
 .modal-image-stage img {
   box-shadow: 0 32px 110px rgba(0, 0, 0, 0.62);
   height: auto;
-  max-height: min(72vh, 760px);
+  max-height: min(76vh, 780px);
   max-width: min(100%, var(--modal-natural-width, 100%));
   object-fit: contain;
   width: auto;
@@ -818,27 +818,25 @@ h1 {
 .modal-details {
   align-content: start;
   display: grid;
-  gap: 12px;
+  gap: 16px;
   grid-column: 1 / -1;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   overflow: visible;
   padding: 0 0 8px;
 }
 
-.modal-primary-card,
-.metadata-card,
-.modal-sidecar,
-.modal-related-card {
+.modal-shot-header,
+.modal-analysis-card,
+.modal-similar-section {
   backdrop-filter: blur(18px);
-  background: rgba(12, 12, 14, 0.66);
+  background: rgba(12, 12, 14, 0.58);
   border: 1px solid rgba(255, 255, 255, 0.11);
-  padding: 14px;
+  padding: 16px;
 }
 
-.modal-primary-card {
+.modal-shot-header {
   display: grid;
-  gap: 10px;
-  grid-column: span 5;
+  gap: 8px;
   min-width: 0;
 }
 
@@ -850,8 +848,7 @@ h1 {
 }
 
 .modal-kicker span,
-.modal-section-heading span,
-.metadata-card span {
+.modal-section-heading span {
   color: var(--muted);
   font-size: 0.62rem;
   font-weight: 900;
@@ -859,7 +856,7 @@ h1 {
   text-transform: uppercase;
 }
 
-.modal-primary-card p {
+.modal-shot-header p {
   color: var(--muted);
   font-size: 0.78rem;
   font-weight: 720;
@@ -870,70 +867,65 @@ h1 {
 
 .modal-frame h2 {
   color: var(--text);
-  font-size: clamp(1.1rem, 2vw, 1.8rem);
+  font-size: clamp(1.4rem, 2.6vw, 2.3rem);
   font-weight: 900;
   line-height: 1.04;
   margin: 0;
   text-transform: uppercase;
 }
 
-.modal-info-grid {
+.modal-analysis-grid {
   display: grid;
-  gap: 10px;
-  grid-column: span 7;
+  gap: 16px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.metadata-card {
+.modal-analysis-card {
   display: grid;
-  gap: 8px;
-  min-height: 78px;
+  gap: 14px;
+  align-content: start;
 }
 
-.metadata-card strong {
-  color: rgba(246, 242, 236, 0.92);
-  font-size: 0.82rem;
-  line-height: 1.15;
-  overflow-wrap: anywhere;
+.modal-section-heading strong {
+  color: rgba(246, 242, 236, 0.86);
+  font-size: 0.72rem;
+  font-weight: 900;
   text-transform: uppercase;
 }
 
-.modal-sidecar {
+.metadata-row-list {
   display: grid;
-  gap: 10px;
-  grid-column: 2;
-  grid-row: 1;
-  justify-items: stretch;
+  gap: 0;
 }
 
-.modal-related-card {
-  grid-column: span 6;
+.metadata-row {
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(96px, 0.45fr) minmax(0, 1fr);
+  min-height: 38px;
+  padding: 9px 0;
 }
 
-.modal-metrics,
-.modal-tags,
-.modal-collections,
-.modal-quality {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: start;
-  max-width: 100%;
+.metadata-row:first-child {
+  border-top: 0;
 }
 
-.modal-metrics span,
-.modal-quality span,
-.modal-tags button,
-.modal-collections button {
-  appearance: none;
-  background: rgba(255, 255, 255, 0.065);
-  border: 1px solid var(--line);
-  color: rgba(246, 242, 236, 0.78);
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 800;
-  min-height: 28px;
-  padding: 0 9px;
+.metadata-row span {
+  color: rgba(246, 242, 236, 0.5);
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.metadata-row strong {
+  color: rgba(246, 242, 236, 0.9);
+  font-size: 0.78rem;
+  font-weight: 820;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
 }
 
@@ -951,14 +943,41 @@ h1 {
   min-width: 34px;
 }
 
-.similar-shots {
+.modal-tag-section {
   display: grid;
+  gap: 9px;
+}
+
+.modal-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.modal-tags button {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.052);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(246, 242, 236, 0.68);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 780;
+  min-height: 26px;
+  padding: 0 8px;
+  text-transform: uppercase;
+}
+
+.similar-shots {
+  display: flex;
   gap: 8px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow-x: auto;
   max-width: 100%;
+  padding-bottom: 2px;
 }
 
 .similar-shots button {
+  flex: 0 0 150px;
   appearance: none;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--line);
@@ -969,7 +988,7 @@ h1 {
 
 .similar-shots img {
   aspect-ratio: 16 / 9;
-  height: 100%;
+  height: auto;
   object-fit: cover;
   transition: transform 180ms ease;
   width: 100%;
@@ -977,11 +996,6 @@ h1 {
 
 .similar-shots button:hover img {
   transform: scale(1.05);
-}
-
-.modal-tags button,
-.modal-collections button {
-  cursor: pointer;
 }
 
 .modal-tags button:hover {
@@ -992,22 +1006,8 @@ h1 {
 
 .lighting-panel {
   display: grid;
-  gap: 8px;
-  max-width: 280px;
-}
-
-.lighting-diagram-button {
-  appearance: none;
-  background: rgba(232, 180, 92, 0.14);
-  border: 1px solid rgba(232, 180, 92, 0.48);
-  color: var(--text);
-  cursor: default;
-  font: inherit;
-  font-size: 0.56rem;
-  font-weight: 900;
-  min-height: 24px;
-  padding: 0 8px;
-  text-transform: uppercase;
+  gap: 14px;
+  max-width: none;
 }
 
 .lighting-svg {
@@ -1017,7 +1017,7 @@ h1 {
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: block;
   height: auto;
-  max-width: 280px;
+  max-width: 520px;
   width: 100%;
 }
 
@@ -1028,7 +1028,7 @@ h1 {
 
 .lighting-svg text {
   fill: rgba(246, 242, 236, 0.72);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -1178,10 +1178,9 @@ h1 {
     padding-right: 0;
   }
 
-  .modal-primary-card,
-  .modal-info-grid,
-  .modal-sidecar,
-  .modal-related-card {
+  .modal-shot-header,
+  .modal-analysis-grid,
+  .modal-similar-section {
     grid-column: 1 / -1;
   }
 
@@ -1189,11 +1188,10 @@ h1 {
     max-height: 58vh;
   }
 
-  .modal-info-grid {
+  .modal-analysis-grid {
     grid-template-columns: 1fr;
   }
 
-  .modal-sidecar,
   .modal-tags,
   .similar-shots {
     justify-items: start;
