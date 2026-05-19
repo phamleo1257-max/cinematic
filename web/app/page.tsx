@@ -24,6 +24,7 @@ type MetadataItem = {
   collections?: unknown;
   collection?: unknown;
   video?: string;
+  productionHouse?: string;
   director?: string;
   lens?: string;
   mood?: string;
@@ -52,6 +53,11 @@ type MetadataItem = {
 };
 
 type MetadataMap = Record<string, MetadataItem>;
+type VideoInfo = {
+  title?: string;
+  uploader?: string;
+  channel?: string;
+};
 
 const framesDir = path.join(process.cwd(), "public", "bestframes");
 const publicPath = "/bestframes";
@@ -162,6 +168,57 @@ function titleFor(filename: string, item: MetadataItem) {
     item.scene ||
     item.video?.replace(/\.[a-z0-9]+$/i, "") ||
     filename.replace(/\.(jpe?g)$/i, "").replace(/[-_]+/g, " ")
+  );
+}
+
+function readVideoInfo(item: MetadataItem): VideoInfo | null {
+  const videoPath = item.source?.video || item.video;
+
+  if (!videoPath) {
+    return null;
+  }
+
+  const infoPath = path.join(
+    process.cwd(),
+    videoPath.replace(/\.[a-z0-9]+$/i, ".info.json"),
+  );
+
+  try {
+    if (!fs.existsSync(infoPath)) {
+      return null;
+    }
+
+    const parsed = JSON.parse(fs.readFileSync(infoPath, "utf8")) as unknown;
+    return isRecord(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function cleanFilmTitle(rawTitle?: string) {
+  if (!rawTitle) {
+    return null;
+  }
+
+  const firstSegment = rawTitle.split("|")[0] || rawTitle;
+  const cleaned = firstSegment
+    .replace(/\[[^\]]+\]/g, "")
+    .replace(/\([12][0-9]{3}\)/g, "")
+    .replace(/\b(official|trailer|promo|teaser|clip|hd|uhd|4k|a24)\b/gi, "")
+    .replace(/[-_:]+$/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return cleaned || null;
+}
+
+function productionHouseFor(item: MetadataItem, videoInfo: VideoInfo | null) {
+  return (
+    item.productionHouse ||
+    videoInfo?.channel ||
+    videoInfo?.uploader ||
+    (item.source?.query?.toLowerCase().includes("a24") ? "A24" : null) ||
+    "Archive"
   );
 }
 
@@ -361,6 +418,11 @@ async function getFrames(): Promise<Frame[]> {
       metadata[path.join(publicPath, filename)] ||
       metadata[filename.replace(/\.(jpe?g)$/i, "")] ||
       {};
+    const videoInfo = readVideoInfo(item);
+    const productionHouse = productionHouseFor(item, videoInfo);
+    const filmTitle =
+      cleanFilmTitle(videoInfo?.title || item.source?.title) ||
+      titleFor(filename, item);
     const dimensions = await imageDimensions(filename, item);
     const sourceTags = normalizeTags(
       item.tags,
@@ -373,9 +435,17 @@ async function getFrames(): Promise<Frame[]> {
       filename,
       src: `${publicPath}/${filename}`,
       score: scoreFor(filename, item, index),
-      title: titleFor(filename, item),
+      title: filmTitle,
+      productionHouse,
       metrics: item.metrics || null,
-      source: item.source || (item.video ? { title: item.video } : null),
+      source: item.source
+        ? {
+            ...item.source,
+            title: productionHouse,
+          }
+        : item.video
+          ? { title: productionHouse }
+          : { title: productionHouse },
       width: dimensions.width,
       height: dimensions.height,
       aspectRatio: dimensions.aspectRatio,
