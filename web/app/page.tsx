@@ -25,7 +25,11 @@ type MetadataItem = {
   collection?: unknown;
   video?: string;
   productionHouse?: string;
+  year?: string;
   director?: string;
+  cinematographer?: string;
+  sourceType?: string;
+  originalSource?: string;
   lens?: string;
   mood?: string;
   lighting?: Frame["lighting"];
@@ -220,6 +224,20 @@ function productionHouseFor(item: MetadataItem, videoInfo: VideoInfo | null) {
     (item.source?.query?.toLowerCase().includes("a24") ? "A24" : null) ||
     "Archive"
   );
+}
+
+function cleanMetadataValue(value?: string) {
+  if (
+    !value ||
+    /^(unknown|not tagged|archive)$/i.test(value) ||
+    /\b(archive still|archive frame|color study|light study|shadow study|dream frame|high contrast frame|neon night frame)\b/i.test(
+      value,
+    )
+  ) {
+    return undefined;
+  }
+
+  return value;
 }
 
 function normalizeTags(...sources: unknown[]) {
@@ -419,9 +437,10 @@ async function getFrames(): Promise<Frame[]> {
       metadata[filename.replace(/\.(jpe?g)$/i, "")] ||
       {};
     const videoInfo = readVideoInfo(item);
-    const productionHouse = productionHouseFor(item, videoInfo);
+    const productionHouse = cleanMetadataValue(item.productionHouse) || productionHouseFor(item, videoInfo);
     const filmTitle =
-      cleanFilmTitle(videoInfo?.title || item.source?.title) ||
+      cleanMetadataValue(item.title) ||
+      cleanFilmTitle(item.originalSource || videoInfo?.title || item.source?.title) ||
       titleFor(filename, item);
     const dimensions = await imageDimensions(filename, item);
     const sourceTags = normalizeTags(
@@ -437,6 +456,10 @@ async function getFrames(): Promise<Frame[]> {
       score: scoreFor(filename, item, index),
       title: filmTitle,
       productionHouse,
+      year: item.year,
+      cinematographer: item.cinematographer,
+      sourceType: item.sourceType,
+      originalSource: item.originalSource || item.source?.title || videoInfo?.title,
       metrics: item.metrics || null,
       source: item.source
         ? {
@@ -482,7 +505,8 @@ async function getFrames(): Promise<Frame[]> {
 
     return {
       ...baseFrame,
-      director: item.director,
+      director: cleanMetadataValue(item.director),
+      cinematographer: cleanMetadataValue(item.cinematographer),
       lens: item.lens,
       mood: inferredMood,
       lighting: item.lighting,
