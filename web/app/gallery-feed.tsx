@@ -43,6 +43,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const [sortMode, setSortMode] = useState("score");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(INITIAL_RENDER_COUNT);
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(() => new Set());
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const tags = useMemo(
@@ -132,6 +133,18 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
     });
   }
 
+  function markImageLoaded(filename: string) {
+    setLoadedImages((currentImages) => {
+      if (currentImages.has(filename)) {
+        return currentImages;
+      }
+
+      const nextImages = new Set(currentImages);
+      nextImages.add(filename);
+      return nextImages;
+    });
+  }
+
   useEffect(() => {
     setVisibleCount(INITIAL_RENDER_COUNT);
     setActiveIndex(null);
@@ -155,11 +168,17 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
         }
 
         setVisibleCount((currentCount) =>
-          Math.min(currentCount + RENDER_BATCH_SIZE, filteredFrames.length),
+          Math.min(
+            currentCount +
+              (window.matchMedia("(max-width: 640px)").matches
+                ? Math.round(RENDER_BATCH_SIZE / 2)
+                : RENDER_BATCH_SIZE),
+            filteredFrames.length,
+          ),
         );
       },
       {
-        rootMargin: "1200px 0px",
+        rootMargin: "1400px 0px",
         threshold: 0.01,
       },
     );
@@ -419,9 +438,11 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
             <>
               <section className="masonry" aria-label="Cinematic frame gallery">
                 {visibleFrames.map((frame, index) => {
+                  const isLoaded = loadedImages.has(frame.filename);
+
                   return (
                     <article
-                      className="frame-card"
+                      className={`frame-card ${isLoaded ? "is-loaded" : ""}`}
                       key={frame.filename}
                       role="button"
                       tabIndex={0}
@@ -441,8 +462,12 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       <img
                         src={frame.src}
                         alt={frame.title}
+                        width={frame.width || undefined}
+                        height={frame.height || undefined}
                         loading="lazy"
                         decoding="async"
+                        className="frame-image"
+                        onLoad={() => markImageLoaded(frame.filename)}
                       />
                       <span className="frame-score">{frame.score}</span>
                       <span className="frame-more" aria-hidden="true">
