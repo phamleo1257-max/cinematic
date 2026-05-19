@@ -1,0 +1,6 @@
+web/.next/
+web/node_modules/
+web/frames/
+web/videos/
+web/.env*
+.DS_Store

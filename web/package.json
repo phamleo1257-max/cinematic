@@ -1,0 +1,26 @@
+{
+  "name": "cinematic-feed",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "discover": "node scripts/discover.js",
+    "ingest": "node scripts/ingest.js",
+    "refresh": "node scripts/discover.js"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.8.0",
+    "@types/react": "^19.2.14",
+    "eslint": "^10.4.0",
+    "typescript": "^6.0.3"
+  }
+}
