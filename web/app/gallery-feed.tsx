@@ -8,6 +8,7 @@ export type Frame = {
   src: string;
   score: number;
   title: string;
+  productionHouse?: string;
   director?: string;
   lens?: string;
   mood: string;
@@ -242,9 +243,13 @@ function lightingNotesFor(frame: Frame, analysis: LightingAnalysis) {
 }
 
 function compactSourceLabel(frame: Frame) {
+  if (frame.productionHouse) {
+    return frame.productionHouse;
+  }
+
   const source = (
-    frame.source?.query ||
     frame.source?.title ||
+    frame.source?.query ||
     frame.collections[0] ||
     "archive"
   ).toLowerCase();
