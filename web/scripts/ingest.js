@@ -23,7 +23,7 @@ const globalDuplicateDistance = Number(process.env.GLOBAL_DUPLICATE_DISTANCE || 
 const minAspectRatio = Number(process.env.MIN_FRAME_ASPECT_RATIO || 1.55);
 const maxAspectRatio = Number(process.env.MAX_FRAME_ASPECT_RATIO || 2.9);
 const blockedFramePattern =
-  /tutorial|lens|telephoto|shot\s*\d|rule\s*of\s*thirds|diagram|breakdown|camera|bts|behind|framing|composition|technique|setup|lesson|course|masterclass/i;
+  /tutorial|how\s+to|techniques?|tips|lens|telephoto|shot\s*\d|rule\s*of\s*thirds|diagram|breakdown|camera|bts|behind|framing|composition|setup|review|commercial\s+filmmaking|filmmaking|best\s+scenes|compilation|upcoming|trailers\s+2026|only\s+the\s+best|fight\s+scene|final\s+battle|lesson|course|masterclass/i;
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
