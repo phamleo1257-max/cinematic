@@ -12,6 +12,8 @@
     "refresh": "node scripts/discover.js"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
