@@ -1043,10 +1043,9 @@ h1 {
 
 .lighting-svg {
   background:
-    radial-gradient(circle at 50% 48%, rgba(232, 180, 92, 0.12), transparent 40%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
-    rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.026), transparent),
+    rgba(7, 7, 8, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   display: block;
   height: auto;
   max-width: 680px;
@@ -1054,27 +1053,26 @@ h1 {
 }
 
 .lighting-svg rect {
-  fill: rgba(4, 4, 5, 0.52);
-  stroke: rgba(255, 255, 255, 0.08);
+  fill: rgba(5, 5, 6, 0.42);
+  stroke: rgba(255, 255, 255, 0.065);
 }
 
 .lighting-svg text {
-  fill: rgba(246, 242, 236, 0.72);
-  font-size: 11px;
-  font-weight: 800;
+  fill: rgba(246, 242, 236, 0.64);
+  font-size: 10px;
+  font-weight: 720;
   letter-spacing: 0;
-  text-transform: uppercase;
 }
 
 .lighting-svg .diagram-card-title {
-  fill: rgba(246, 242, 236, 0.86);
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  fill: rgba(246, 242, 236, 0.72);
+  font-size: 11px;
+  letter-spacing: 0.04em;
 }
 
 .lighting-svg .diagram-card-ratio {
-  fill: rgba(232, 180, 92, 0.9);
-  font-size: 13px;
+  fill: rgba(232, 180, 92, 0.78);
+  font-size: 12px;
 }
 
 .lighting-svg marker path {
@@ -1082,69 +1080,69 @@ h1 {
 }
 
 .diagram-axis {
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-dasharray: 4 8;
-}
-
-.diagram-glow {
-  fill: url("#keyGlow");
-  opacity: 0.72;
+  stroke: rgba(255, 255, 255, 0.055);
+  stroke-dasharray: 3 9;
 }
 
 .diagram-subject-zone {
-  fill: rgba(255, 255, 255, 0.045);
-  stroke: rgba(255, 255, 255, 0.12);
+  fill: rgba(255, 255, 255, 0.026);
+  stroke: rgba(255, 255, 255, 0.09);
 }
 
 .diagram-subject {
-  fill: rgba(246, 242, 236, 0.9);
-  stroke: rgba(0, 0, 0, 0.72);
-  stroke-width: 3;
+  fill: rgba(246, 242, 236, 0.78);
+  stroke: rgba(246, 242, 236, 0.36);
+  stroke-width: 1.5;
+}
+
+.diagram-subject-facing {
+  stroke: rgba(5, 5, 6, 0.74);
+  stroke-linecap: round;
+  stroke-width: 2;
 }
 
 .diagram-camera {
-  fill: rgba(246, 242, 236, 0.18);
-  stroke: rgba(246, 242, 236, 0.56);
+  fill: rgba(246, 242, 236, 0.1);
+  stroke: rgba(246, 242, 236, 0.34);
 }
 
 .diagram-light circle {
-  fill: rgba(232, 180, 92, 0.18);
-  stroke-width: 2.2;
+  fill: rgba(255, 255, 255, 0.035);
+  stroke-width: 1.4;
 }
 
 .diagram-light line {
   stroke-linecap: round;
-  stroke-width: 3;
+  stroke-width: 1.8;
 }
 
 .diagram-key circle,
 .diagram-key line {
-  color: rgba(232, 180, 92, 0.92);
-  stroke: rgba(232, 180, 92, 0.92);
+  color: rgba(232, 180, 92, 0.76);
+  stroke: rgba(232, 180, 92, 0.76);
 }
 
 .diagram-fill circle,
 .diagram-fill line {
-  color: rgba(118, 168, 205, 0.78);
-  stroke: rgba(118, 168, 205, 0.76);
+  color: rgba(118, 168, 205, 0.62);
+  stroke: rgba(118, 168, 205, 0.62);
 }
 
 .diagram-rim circle,
 .diagram-rim line {
-  color: rgba(246, 242, 236, 0.74);
-  stroke: rgba(246, 242, 236, 0.7);
+  color: rgba(246, 242, 236, 0.56);
+  stroke: rgba(246, 242, 236, 0.56);
 }
 
 .lighting-breakdown {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .lighting-breakdown div {
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
   display: grid;
-  gap: 5px;
-  padding-top: 10px;
+  gap: 6px;
+  padding-top: 0;
 }
 
 .lighting-breakdown div:first-child {
@@ -1153,18 +1151,18 @@ h1 {
 }
 
 .lighting-breakdown span {
-  color: rgba(232, 180, 92, 0.74);
-  font-size: 0.62rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  color: rgba(232, 180, 92, 0.66);
+  font-size: 0.64rem;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: none;
 }
 
 .lighting-breakdown p {
-  color: rgba(246, 242, 236, 0.76);
-  font-size: 0.86rem;
-  font-weight: 620;
-  line-height: 1.45;
+  color: rgba(246, 242, 236, 0.7);
+  font-size: 0.88rem;
+  font-weight: 520;
+  line-height: 1.5;
   margin: 0;
 }
 
