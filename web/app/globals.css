@@ -27,8 +27,9 @@ body {
     var(--bg);
   color: var(--text);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Inter", "SF Pro Display", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+  letter-spacing: 0;
 }
 
 img {
@@ -40,7 +41,7 @@ img {
   isolation: isolate;
   min-height: 100vh;
   overflow: hidden;
-  padding: 30px clamp(16px, 4vw, 56px) 64px;
+  padding: 28px clamp(14px, 3.4vw, 48px) 64px;
   position: relative;
 }
 
@@ -86,8 +87,9 @@ img {
 }
 
 h1 {
-  font-size: clamp(3.3rem, 10vw, 10.5rem);
-  line-height: 0.82;
+  font-size: clamp(3.1rem, 9.2vw, 9.2rem);
+  font-weight: 940;
+  line-height: 0.84;
   margin: 0;
   max-width: 11ch;
   text-transform: uppercase;
@@ -95,10 +97,10 @@ h1 {
 
 .subtitle {
   color: var(--muted);
-  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  font-size: clamp(0.98rem, 1.45vw, 1.22rem);
   line-height: 1.45;
-  margin: 22px 0 0;
-  max-width: 720px;
+  margin: 18px 0 0;
+  max-width: 680px;
 }
 
 .hero-stat {
@@ -471,7 +473,7 @@ h1 {
     linear-gradient(135deg, rgba(255, 255, 255, 0.075), transparent 34%),
     #101010;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   break-inside: avoid;
   box-shadow: none;
   content-visibility: auto;
@@ -484,8 +486,8 @@ h1 {
   transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
   transform-style: preserve-3d;
   transition:
-    box-shadow 260ms ease,
-    transform 220ms ease;
+    box-shadow 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
   vertical-align: top;
   will-change: transform;
   width: 100%;
@@ -507,6 +509,7 @@ h1 {
 .frame-card::after {
   background-image:
     repeating-radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.12) 0 0.5px, transparent 0.5px 2px),
+    linear-gradient(180deg, transparent 36%, rgba(0, 0, 0, 0.8)),
     linear-gradient(120deg, transparent 12%, rgba(255, 255, 255, 0.1), transparent 46%);
   content: "";
   inset: 0;
@@ -523,7 +526,9 @@ h1 {
 }
 
 .frame-card:hover {
-  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.42);
+  box-shadow:
+    0 24px 90px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
   z-index: 2;
 }
 
@@ -557,8 +562,8 @@ h1 {
 }
 
 .frame-card:hover img {
-  filter: saturate(1.08) contrast(1.04);
-  transform: translate3d(var(--pan-x), var(--pan-y), 0) scale(1.075);
+  filter: saturate(1.06) contrast(1.05) brightness(0.9);
+  transform: translate3d(var(--pan-x), var(--pan-y), 0) scale(1.065);
 }
 
 .frame-card:not(.is-loaded):hover img {
@@ -569,12 +574,12 @@ h1 {
 .frame-score {
   align-items: center;
   backdrop-filter: blur(14px);
-  background: rgba(0, 0, 0, 0.48);
+  background: rgba(0, 0, 0, 0.56);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
   color: rgba(255, 255, 255, 0.9);
   display: inline-flex;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 850;
   height: 30px;
   left: 10px;
@@ -586,14 +591,14 @@ h1 {
 }
 
 .frame-hover-meta {
-  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.86));
   bottom: 0;
   color: rgba(246, 242, 236, 0.92);
   display: grid;
-  gap: 5px;
+  gap: 7px;
   left: 0;
   opacity: 0;
-  padding: 48px 12px 12px;
+  padding: 58px 13px 13px;
   position: absolute;
   right: 0;
   transform: translate3d(0, 10px, 0);
@@ -605,6 +610,13 @@ h1 {
 .frame-card:hover .frame-hover-meta {
   opacity: 1;
   transform: translate3d(0, 0, 0);
+}
+
+.frame-hover-meta div {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
 }
 
 .frame-hover-meta span,
@@ -619,14 +631,24 @@ h1 {
 
 .frame-hover-meta span {
   color: rgba(232, 180, 92, 0.86);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 900;
   letter-spacing: 0.08em;
 }
 
 .frame-hover-meta strong {
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   line-height: 1.12;
+}
+
+.frame-hover-meta small {
+  color: rgba(246, 242, 236, 0.58);
+  font-size: 0.62rem;
+  font-weight: 760;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .score-badge {
@@ -686,8 +708,8 @@ h1 {
 }
 
 .frame-modal {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.92);
+  align-items: stretch;
+  background: #000;
   display: flex;
   height: 100vh;
   inset: 0;
@@ -700,8 +722,10 @@ h1 {
 }
 
 .frame-modal::before {
-  backdrop-filter: blur(24px);
-  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(28px);
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.05), transparent 34rem),
+    rgba(0, 0, 0, 0.58);
   content: "";
   inset: 0;
   pointer-events: none;
@@ -725,7 +749,7 @@ h1 {
 .modal-nav {
   appearance: none;
   backdrop-filter: blur(16px);
-  background: rgba(8, 8, 10, 0.62);
+  background: rgba(10, 10, 12, 0.58);
   border: 1px solid var(--line);
   color: var(--text);
   cursor: pointer;
@@ -745,26 +769,29 @@ h1 {
 }
 
 .modal-close {
-  font-size: 1rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
   font-weight: 900;
-  height: 42px;
+  height: 38px;
+  letter-spacing: 0.08em;
+  padding: 0 14px;
   right: 24px;
   text-transform: uppercase;
-  top: 24px;
-  width: 42px;
+  top: 22px;
 }
 
 .modal-nav {
   align-items: center;
   display: flex;
-  font-size: clamp(2.2rem, 5vw, 4.5rem);
+  border-radius: 999px;
+  font-size: clamp(2rem, 4vw, 3.4rem);
   font-weight: 300;
-  height: clamp(56px, 10vw, 88px);
+  height: clamp(50px, 7vw, 70px);
   justify-content: center;
   line-height: 1;
   top: 50%;
   transform: translateY(-50%);
-  width: clamp(44px, 7vw, 72px);
+  width: clamp(44px, 6vw, 64px);
 }
 
 .modal-nav.previous {
@@ -776,68 +803,120 @@ h1 {
 }
 
 .modal-frame {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  justify-content: center;
+  align-items: stretch;
+  display: grid;
+  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+  justify-content: stretch;
   margin: 0;
-  max-height: 100%;
-  max-width: 92vw;
+  max-height: 100vh;
+  max-width: min(1680px, 94vw);
+  padding: 70px 0 38px;
   position: relative;
   width: 100%;
   z-index: 100000;
 }
 
-.modal-frame img {
+.modal-image-stage {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.modal-image-stage img {
   box-shadow: 0 32px 110px rgba(0, 0, 0, 0.62);
   height: auto;
-  max-height: 90vh;
-  max-width: 92vw;
+  max-height: calc(100vh - 118px);
+  max-width: 100%;
   object-fit: contain;
   width: auto;
 }
 
-.modal-frame figcaption {
-  align-items: start;
-  display: flex;
-  gap: 22px;
-  justify-content: space-between;
-  width: min(100%, 1220px);
+.modal-details {
+  align-content: start;
+  display: grid;
+  gap: 12px;
+  max-height: calc(100vh - 118px);
+  overflow: auto;
+  padding-right: 4px;
 }
 
-.modal-title-group {
+.modal-primary-card,
+.metadata-card,
+.modal-sidecar,
+.modal-related-card {
+  backdrop-filter: blur(18px);
+  background: rgba(12, 12, 14, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  padding: 14px;
+}
+
+.modal-primary-card {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
-.modal-title-group > div {
+.modal-kicker,
+.modal-section-heading {
   align-items: center;
   display: flex;
-  gap: 12px;
+  justify-content: space-between;
 }
 
-.modal-title-group p {
+.modal-kicker span,
+.modal-section-heading span,
+.metadata-card span {
   color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 750;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modal-primary-card p {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 720;
+  line-height: 1.35;
   margin: 0;
   text-transform: uppercase;
 }
 
 .modal-frame h2 {
   color: var(--text);
-  font-size: clamp(1rem, 2vw, 1.65rem);
-  line-height: 1.1;
+  font-size: clamp(1.1rem, 2vw, 1.8rem);
+  font-weight: 900;
+  line-height: 1.04;
   margin: 0;
+  text-transform: uppercase;
+}
+
+.modal-info-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metadata-card {
+  display: grid;
+  gap: 8px;
+  min-height: 78px;
+}
+
+.metadata-card strong {
+  color: rgba(246, 242, 236, 0.92);
+  font-size: 0.82rem;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
   text-transform: uppercase;
 }
 
 .modal-sidecar {
   display: grid;
   gap: 10px;
-  justify-items: end;
+  justify-items: stretch;
 }
 
 .modal-metrics,
@@ -847,8 +926,8 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  justify-content: end;
-  max-width: min(460px, 42vw);
+  justify-content: start;
+  max-width: 100%;
 }
 
 .modal-metrics span,
@@ -856,7 +935,7 @@ h1 {
 .modal-tags button,
 .modal-collections button {
   appearance: none;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.065);
   border: 1px solid var(--line);
   color: rgba(246, 242, 236, 0.78);
   font: inherit;
@@ -870,21 +949,22 @@ h1 {
 .modal-palette {
   display: flex;
   gap: 7px;
-  justify-content: end;
+  justify-content: start;
 }
 
 .modal-palette span {
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: block;
   height: 30px;
-  width: 42px;
+  flex: 1 1 0;
+  min-width: 34px;
 }
 
 .similar-shots {
   display: grid;
   gap: 8px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  max-width: min(460px, 42vw);
+  max-width: 100%;
 }
 
 .similar-shots button {
@@ -984,15 +1064,29 @@ h1 {
   }
 
   .modal-frame {
-    max-width: 88vw;
+    grid-template-columns: 1fr;
+    max-width: 92vw;
+    overflow: auto;
+    padding: 70px 0 110px;
   }
 
-  .modal-frame figcaption {
-    flex-direction: column;
+  .modal-details {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .modal-image-stage img {
+    max-height: 58vh;
+  }
+
+  .modal-info-grid {
+    grid-template-columns: 1fr;
   }
 
   .modal-sidecar,
-  .modal-tags {
+  .modal-tags,
+  .similar-shots {
     justify-items: start;
     justify-content: start;
     max-width: 100%;
@@ -1010,15 +1104,16 @@ h1 {
   }
 
   .frame-modal {
-    padding: 58px 14px 28px;
+    padding: 0 14px;
   }
 
   .modal-frame {
     max-width: 100%;
+    padding: 66px 0 112px;
   }
 
-  .modal-frame img {
-    max-height: 66vh;
+  .modal-image-stage img {
+    max-height: 52vh;
   }
 
   .modal-nav {

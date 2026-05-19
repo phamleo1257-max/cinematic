@@ -113,27 +113,27 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
 
     return frames
       .filter((frame) => {
-      const matchesTag = activeTag === "All" || frame.tags.includes(activeTag);
-      const matchesMood = activeMood === "All" || frame.mood === activeMood;
-      const matchesCollection =
-        activeCollection === "All" ||
-        frame.collections.includes(activeCollection);
-      const searchable = [
-        frame.filename,
-        frame.title,
-        frame.mood,
-        frame.director || "",
-        frame.lens || "",
-        frame.palette.join(" "),
-        ...frame.tags,
-        ...frame.collections,
-      ]
-        .join(" ")
-        .toLowerCase();
-      const matchesSearch = fuzzyIncludes(searchable, normalizedSearch);
+        const matchesTag = activeTag === "All" || frame.tags.includes(activeTag);
+        const matchesMood = activeMood === "All" || frame.mood === activeMood;
+        const matchesCollection =
+          activeCollection === "All" ||
+          frame.collections.includes(activeCollection);
+        const searchable = [
+          frame.filename,
+          frame.title,
+          frame.mood,
+          frame.director || "",
+          frame.lens || "",
+          frame.palette.join(" "),
+          ...frame.tags,
+          ...frame.collections,
+        ]
+          .join(" ")
+          .toLowerCase();
+        const matchesSearch = fuzzyIncludes(searchable, normalizedSearch);
 
-      return matchesTag && matchesMood && matchesCollection && matchesSearch;
-    })
+        return matchesTag && matchesMood && matchesCollection && matchesSearch;
+      })
       .sort((a, b) => {
         if (sortMode === "title") {
           return a.title.localeCompare(b.title);
@@ -506,14 +506,14 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
               All
             </button>
             {tags.map((tag) => (
-          <button
-            className={activeTag === tag ? "active" : ""}
-            key={tag}
-            type="button"
-            onClick={() => setActiveTag(tag)}
-          >
-            {tag}
-          </button>
+              <button
+                className={activeTag === tag ? "active" : ""}
+                key={tag}
+                type="button"
+                onClick={() => setActiveTag(tag)}
+              >
+                {tag}
+              </button>
             ))}
           </section>
 
@@ -578,8 +578,12 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       />
                       <span className="frame-score">{frame.score}</span>
                       <div className="frame-hover-meta" aria-hidden="true">
-                  <span>{frame.collections[0] || "cinematic"}</span>
-                  <strong>{frame.title}</strong>
+                        <div>
+                          <span>{frame.mood}</span>
+                          <span>{frame.quality.overall}</span>
+                        </div>
+                        <strong>{frame.title}</strong>
+                        <small>{frame.collections[0] || "cinematic archive"}</small>
                       </div>
                     </article>
                   );
@@ -622,7 +626,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
             aria-label="Close fullscreen frame"
             onClick={closeModal}
           >
-            x
+            Close
           </button>
           {filteredFrames.length > 1 ? (
             <>
@@ -654,16 +658,41 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
             className="modal-frame"
             onClick={(event) => event.stopPropagation()}
           >
-            <img src={activeFrame.src} alt={activeFrame.title} />
-            <figcaption>
-              <div className="modal-title-group">
-                <div>
-                  <span className="score-badge">{activeFrame.score}</span>
-                  <h2>{activeFrame.title}</h2>
+            <div className="modal-image-stage">
+              <img src={activeFrame.src} alt={activeFrame.title} />
+            </div>
+            <figcaption className="modal-details">
+              <section className="modal-primary-card">
+                <div className="modal-kicker">
+                  <span>{activeFrame.mood}</span>
+                  <span>{activeFrame.aspectRatio.toFixed(2)}:1</span>
                 </div>
-                <p>{activeFrame.director ? `Director ${activeFrame.director}` : activeFrame.source?.title || activeFrame.mood}</p>
-              </div>
-              <div className="modal-sidecar">
+                <h2>{activeFrame.title}</h2>
+                <p>
+                  {activeFrame.source?.title || "Cinematic archive frame"}
+                </p>
+              </section>
+
+              <section className="modal-info-grid" aria-label="Shot metadata">
+                <div className="metadata-card">
+                  <span>Score</span>
+                  <strong>{activeFrame.quality.overall}</strong>
+                </div>
+                <div className="metadata-card">
+                  <span>Source</span>
+                  <strong>{activeFrame.source?.query || activeFrame.collections[0] || "archive"}</strong>
+                </div>
+                <div className="metadata-card">
+                  <span>Director</span>
+                  <strong>{activeFrame.director || "unknown"}</strong>
+                </div>
+                <div className="metadata-card">
+                  <span>Lens</span>
+                  <strong>{activeFrame.lens || "not tagged"}</strong>
+                </div>
+              </section>
+
+              <section className="modal-sidecar">
                 <div className="modal-palette" aria-label="Extracted color palette">
                   {activeFrame.palette.map((color) => (
                     <span key={color} style={{ background: color }} />
@@ -675,7 +704,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     <span>Quality {activeFrame.quality.overall}</span>
                     <span>Contrast {Math.round(activeFrame.metrics.contrast || 0)}</span>
                     <span>Color {Math.round(activeFrame.metrics.colorRichness || 0)}</span>
-                    <span>Bright {Math.round(activeFrame.metrics.brightness || 0)}</span>
+                    <span>Light {Math.round(activeFrame.metrics.brightness || 0)}</span>
                     <span>Aspect {activeFrame.aspectRatio.toFixed(2)}</span>
                     <span>{activeFrame.width} x {activeFrame.height}</span>
                     {activeFrame.lens ? <span>Lens {activeFrame.lens}</span> : null}
@@ -704,6 +733,13 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     ))}
                   </div>
                 ) : null}
+              </section>
+
+              <section className="modal-related-card">
+                <div className="modal-section-heading">
+                  <span>Collections</span>
+                  <strong>{activeFrame.collections.length}</strong>
+                </div>
                 {activeFrame.collections.length ? (
                   <div className="modal-collections">
                     {activeFrame.collections.slice(0, 3).map((collection) => (
@@ -720,6 +756,13 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     ))}
                   </div>
                 ) : null}
+              </section>
+
+              <section className="modal-related-card">
+                <div className="modal-section-heading">
+                  <span>Similar shots</span>
+                  <strong>{similarFrames.length}</strong>
+                </div>
                 {similarFrames.length ? (
                   <div className="similar-shots">
                     {similarFrames.map((frame) => (
@@ -738,7 +781,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     ))}
                   </div>
                 ) : null}
-              </div>
+              </section>
             </figcaption>
           </figure>
         </div>
