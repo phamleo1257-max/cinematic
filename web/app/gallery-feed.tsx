@@ -11,6 +11,7 @@ export type Frame = {
   director?: string;
   lens?: string;
   mood: string;
+  lighting?: LightingAnalysis;
   palette: string[];
   quality: {
     composition: number;
@@ -40,6 +41,27 @@ export type Frame = {
   width: number;
   height: number;
   aspectRatio: number;
+};
+
+export type LightingAnalysis = {
+  subject: {
+    x: number;
+    y: number;
+  };
+  keyLight: {
+    direction: string;
+    strength: number;
+  };
+  fillLight: {
+    direction: string;
+    strength: number;
+  };
+  rimLight: {
+    direction: string;
+    strength: number;
+  };
+  contrastRatio: number;
+  mood: string;
 };
 
 type GalleryFeedProps = {
@@ -79,6 +101,91 @@ function fuzzyIncludes(source: string, query: string) {
 
     return false;
   });
+}
+
+function fallbackLighting(frame: Frame): LightingAnalysis {
+  const contrastRatio = Number(
+    Math.max(1.2, Math.min(8.5, (frame.metrics?.contrast || 42) / 12)).toFixed(1),
+  );
+  const keyDirection = frame.tags.includes("cold") ? "front-left" : "front-right";
+  const keyStrength = Math.max(58, Math.min(94, Math.round(58 + (frame.metrics?.contrast || 42) * 0.58)));
+
+  return {
+    subject: {
+      x: 0.5,
+      y: 0.52,
+    },
+    keyLight: {
+      direction: keyDirection,
+      strength: keyStrength,
+    },
+    fillLight: {
+      direction: keyDirection.endsWith("left") ? "front-right" : "front-left",
+      strength: Math.max(12, Math.min(46, Math.round(keyStrength / contrastRatio))),
+    },
+    rimLight: {
+      direction: keyDirection.endsWith("left") ? "back-right" : "back-left",
+      strength: Math.max(18, Math.min(70, Math.round((frame.metrics?.edgeEnergy || 14) * 2.2))),
+    },
+    contrastRatio,
+    mood: frame.mood,
+  };
+}
+
+function pointForDirection(direction: string) {
+  const points: Record<string, { x: number; y: number }> = {
+    "front-left": { x: 54, y: 66 },
+    "front-right": { x: 286, y: 66 },
+    "front-side": { x: 286, y: 92 },
+    "side-left": { x: 46, y: 140 },
+    "side-right": { x: 294, y: 140 },
+    "back-left": { x: 74, y: 238 },
+    "back-right": { x: 266, y: 238 },
+  };
+
+  return points[direction] || points["front-left"];
+}
+
+function LightingDiagram({ analysis }: { analysis: LightingAnalysis }) {
+  const subject = {
+    x: 130 + analysis.subject.x * 80,
+    y: 120 + analysis.subject.y * 54,
+  };
+  const key = pointForDirection(analysis.keyLight.direction);
+  const fill = pointForDirection(analysis.fillLight.direction);
+  const rim = pointForDirection(analysis.rimLight.direction);
+
+  return (
+    <svg className="lighting-svg" viewBox="0 0 340 300" role="img" aria-label="Top-down lighting diagram">
+      <defs>
+        <marker id="light-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" />
+        </marker>
+      </defs>
+      <rect x="1" y="1" width="338" height="298" rx="16" />
+      <line className="diagram-axis" x1="170" y1="38" x2="170" y2="262" />
+      <line className="diagram-axis" x1="48" y1="150" x2="292" y2="150" />
+      <circle className="diagram-subject-zone" cx={subject.x} cy={subject.y} r="42" />
+      <circle className="diagram-subject" cx={subject.x} cy={subject.y} r="16" />
+      <path className="diagram-camera" d="M148 267h44l-7 16h-30z" />
+      <text x="170" y="258" textAnchor="middle">Camera</text>
+      <g className="diagram-light diagram-key">
+        <circle cx={key.x} cy={key.y} r="16" />
+        <line x1={key.x} y1={key.y} x2={subject.x} y2={subject.y} markerEnd="url(#light-arrow)" />
+        <text x={key.x} y={key.y - 23} textAnchor="middle">Key {analysis.keyLight.strength}%</text>
+      </g>
+      <g className="diagram-light diagram-fill">
+        <circle cx={fill.x} cy={fill.y} r="12" />
+        <line x1={fill.x} y1={fill.y} x2={subject.x} y2={subject.y} markerEnd="url(#light-arrow)" />
+        <text x={fill.x} y={fill.y - 20} textAnchor="middle">Fill {analysis.fillLight.strength}%</text>
+      </g>
+      <g className="diagram-light diagram-rim">
+        <circle cx={rim.x} cy={rim.y} r="13" />
+        <line x1={rim.x} y1={rim.y} x2={subject.x} y2={subject.y} markerEnd="url(#light-arrow)" />
+        <text x={rim.x} y={rim.y + 30} textAnchor="middle">Rim {analysis.rimLight.strength}%</text>
+      </g>
+    </svg>
+  );
 }
 
 export default function GalleryFeed({ frames }: GalleryFeedProps) {
@@ -158,6 +265,9 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const hasMoreFrames = visibleCount < filteredFrames.length;
   const activeFrame =
     activeIndex === null ? null : filteredFrames[activeIndex] || null;
+  const activeLighting = activeFrame
+    ? activeFrame.lighting || fallbackLighting(activeFrame)
+    : null;
   const similarFrames = useMemo(() => {
     if (!activeFrame) {
       return [];
@@ -693,6 +803,25 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
               </section>
 
               <section className="modal-sidecar">
+                {activeLighting ? (
+                  <div className="lighting-panel">
+                    <div className="modal-section-heading">
+                      <span>Lighting analysis</span>
+                      <button className="lighting-diagram-button" type="button">
+                        Lighting Diagram
+                      </button>
+                    </div>
+                    <LightingDiagram analysis={activeLighting} />
+                    <div className="lighting-stats">
+                      <span>Subject {Math.round(activeLighting.subject.x * 100)} / {Math.round(activeLighting.subject.y * 100)}</span>
+                      <span>Key {activeLighting.keyLight.direction}</span>
+                      <span>Fill {activeLighting.fillLight.direction}</span>
+                      <span>Rim {activeLighting.rimLight.direction}</span>
+                      <span>Ratio {activeLighting.contrastRatio}:1</span>
+                      <span>Mood {activeLighting.mood}</span>
+                    </div>
+                  </div>
+                ) : null}
                 <div className="modal-palette" aria-label="Extracted color palette">
                   {activeFrame.palette.map((color) => (
                     <span key={color} style={{ background: color }} />
