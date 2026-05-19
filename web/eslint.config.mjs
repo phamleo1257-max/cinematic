@@ -9,8 +9,10 @@ export default [
       sourceType: "commonjs",
       globals: {
         console: "readonly",
+        fetch: "readonly",
         process: "readonly",
         require: "readonly",
+        URLSearchParams: "readonly",
         __dirname: "readonly",
       },
     },

@@ -20,6 +20,8 @@ const minBrightness = Number(process.env.MIN_FRAME_BRIGHTNESS || 24);
 const maxBrightness = Number(process.env.MAX_FRAME_BRIGHTNESS || 232);
 const nearbyDuplicateDistance = Number(process.env.NEARBY_DUPLICATE_DISTANCE || 0.2);
 const globalDuplicateDistance = Number(process.env.GLOBAL_DUPLICATE_DISTANCE || 0.13);
+const minAspectRatio = Number(process.env.MIN_FRAME_ASPECT_RATIO || 1.55);
+const maxAspectRatio = Number(process.env.MAX_FRAME_ASPECT_RATIO || 2.9);
 
 function run(command, args) {
   return new Promise((resolve, reject) => {
@@ -116,6 +118,10 @@ async function extractCandidates(videoPath, outputDir) {
 async function imageMetrics(imagePath) {
   const width = 64;
   const height = 36;
+  const metadata = await sharp(imagePath).metadata();
+  const originalWidth = metadata.width || 0;
+  const originalHeight = metadata.height || 0;
+  const aspectRatio = originalHeight ? originalWidth / originalHeight : 0;
   const { data } = await sharp(imagePath)
     .resize(width, height, { fit: "fill" })
     .removeAlpha()
@@ -201,6 +207,9 @@ async function imageMetrics(imagePath) {
     colorSignature,
     saturation,
     warmth: redAvg - blueAvg,
+    width: originalWidth,
+    height: originalHeight,
+    aspectRatio,
   };
 }
 
@@ -333,6 +342,8 @@ function passesQuality(metrics) {
     metrics.score >= minScore &&
     metrics.contrast >= minContrast &&
     metrics.colorRichness >= minColorRichness &&
+    metrics.aspectRatio >= minAspectRatio &&
+    metrics.aspectRatio <= maxAspectRatio &&
     metrics.brightness >= minBrightness &&
     metrics.brightness <= maxBrightness &&
     metrics.darkRatio < 0.82 &&
@@ -356,6 +367,8 @@ function tagsFor(metrics) {
     metrics.darkRatio > 0.36 ? "shadow-heavy" : null,
     metrics.brightRatio > 0.22 ? "highlight-heavy" : null,
     metrics.score > 68 ? "editorial-pick" : null,
+    metrics.aspectRatio >= 2.2 ? "scope" : "widescreen",
+    "cinematic",
   ].filter(Boolean);
 }
 
@@ -368,6 +381,8 @@ function collectionsFor(frame) {
         frame.tags.includes("dark") ? "noir energy" : null,
         frame.tags.includes("warm") ? "warm palette" : null,
         frame.tags.includes("cold") ? "cold palette" : null,
+        frame.tags.includes("scope") ? "scope format" : null,
+        frame.tags.includes("widescreen") ? "widescreen" : null,
         frame.source.query || null,
       ]
         .filter(Boolean)
@@ -460,6 +475,9 @@ async function ingestVideo(videoPath, existingSignatures) {
         },
         signature: metrics.signature,
         colorSignature: metrics.colorSignature,
+        width: metrics.width,
+        height: metrics.height,
+        aspectRatio: Number(metrics.aspectRatio.toFixed(4)),
         source: {
           video: path.relative(cwd, videoPath),
           title: info.title,

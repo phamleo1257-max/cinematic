@@ -395,23 +395,24 @@ h1 {
 }
 
 .masonry {
-  column-gap: 14px;
-  column-width: 230px;
+  column-gap: 16px;
+  column-width: 320px;
   margin: 0;
   width: 100%;
 }
 
 .frame-card {
+  aspect-ratio: var(--frame-aspect, 1.78);
   background: #101010;
   border: 0;
-  border-radius: 16px;
+  border-radius: 10px;
   break-inside: avoid;
   box-shadow: none;
   content-visibility: auto;
   contain-intrinsic-size: 320px 190px;
   cursor: zoom-in;
   display: inline-block;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
   overflow: hidden;
   position: relative;
   vertical-align: top;
@@ -424,10 +425,9 @@ h1 {
 }
 
 .frame-card img {
-  aspect-ratio: auto;
-  height: auto;
-  object-fit: contain;
   border-radius: inherit;
+  height: 100%;
+  object-fit: cover;
   transform: scale(1.001);
   transition:
     filter 220ms ease,
@@ -713,7 +713,7 @@ h1 {
   }
 
   .masonry {
-    column-width: 220px;
+    column-width: 300px;
   }
 }
 
@@ -756,7 +756,7 @@ h1 {
 
   .masonry {
     column-gap: 12px;
-    column-width: 190px;
+    column-width: 240px;
   }
 
   .frame-card {
@@ -782,18 +782,6 @@ h1 {
 @media (max-width: 540px) {
   .masonry {
     column-width: 100%;
-  }
-
-  .frame-overlay {
-    padding: 58px 10px 10px;
-  }
-
-  .frame-meta {
-    max-width: 58%;
-  }
-
-  .frame-title-block {
-    max-width: 54%;
   }
 
   .score-badge {

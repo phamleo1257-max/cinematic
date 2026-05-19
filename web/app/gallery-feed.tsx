@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 
 export type Frame = {
   filename: string;
@@ -14,6 +15,8 @@ export type Frame = {
     colorRichness?: number;
     contrast?: number;
     diversity?: number;
+    edgeEnergy?: number;
+    saturation?: number;
   } | null;
   source: {
     title?: string;
@@ -21,6 +24,9 @@ export type Frame = {
     query?: string;
     video?: string;
   } | null;
+  width: number;
+  height: number;
+  aspectRatio: number;
 };
 
 type GalleryFeedProps = {
@@ -419,6 +425,11 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       key={frame.filename}
                       role="button"
                       tabIndex={0}
+                      style={
+                        {
+                          "--frame-aspect": frame.aspectRatio.toFixed(4),
+                        } as CSSProperties
+                      }
                       onClick={() => setActiveIndex(index)}
                       onKeyDown={(event) => {
                         if (event.key === "Enter" || event.key === " ") {
@@ -527,6 +538,8 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     <span>Contrast {Math.round(activeFrame.metrics.contrast || 0)}</span>
                     <span>Color {Math.round(activeFrame.metrics.colorRichness || 0)}</span>
                     <span>Bright {Math.round(activeFrame.metrics.brightness || 0)}</span>
+                    <span>Aspect {activeFrame.aspectRatio.toFixed(2)}</span>
+                    <span>{activeFrame.width} x {activeFrame.height}</span>
                   </div>
                 ) : null}
                 {activeFrame.tags.length ? (

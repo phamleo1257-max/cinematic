@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import sharp from "sharp";
 import GalleryFeed, { type Frame } from "./gallery-feed";
 
 type MetadataItem = {
@@ -28,7 +29,12 @@ type MetadataItem = {
     colorRichness?: number;
     contrast?: number;
     diversity?: number;
+    edgeEnergy?: number;
+    saturation?: number;
   };
+  width?: number;
+  height?: number;
+  aspectRatio?: number;
   source?: {
     title?: string;
     url?: string;
@@ -171,50 +177,90 @@ function normalizeTags(...sources: unknown[]) {
   );
 }
 
-function getFrames(): Frame[] {
+async function imageDimensions(filename: string, item: MetadataItem) {
+  const width = item.width;
+  const height = item.height;
+  const aspectRatio = item.aspectRatio;
+
+  if (width && height && aspectRatio) {
+    return { width, height, aspectRatio };
+  }
+
+  try {
+    const metadata = await sharp(path.join(framesDir, filename)).metadata();
+    const imageWidth = metadata.width || 0;
+    const imageHeight = metadata.height || 0;
+
+    return {
+      width: imageWidth,
+      height: imageHeight,
+      aspectRatio: imageHeight ? imageWidth / imageHeight : 0,
+    };
+  } catch {
+    return { width: 0, height: 0, aspectRatio: 0 };
+  }
+}
+
+function isCinematicFrame(frame: Frame) {
+  return frame.aspectRatio >= 1.55 && frame.aspectRatio <= 2.9;
+}
+
+async function getFrames(): Promise<Frame[]> {
   const files = readFrameFiles();
   const metadata = files.length ? readMetadata() : {};
+  const frames = await Promise.all(
+    files.map(async (filename, index) => {
+    const item =
+      metadata[filename] ||
+      metadata[path.join(publicPath, filename)] ||
+      metadata[filename.replace(/\.(jpe?g)$/i, "")] ||
+      {};
+    const dimensions = await imageDimensions(filename, item);
+    const sourceTags = normalizeTags(
+      item.tags,
+      item.tag,
+      item.keywords,
+      item.categories,
+      item.category,
+    );
+    const tags = normalizeTags(
+      sourceTags,
+      dimensions.aspectRatio >= 2.2 ? "scope" : "widescreen",
+      "cinematic",
+    );
+    const collections = normalizeTags(
+      item.collections,
+      item.collection,
+      item.video,
+      tags.includes("scope") ? "scope format" : "widescreen",
+      tags.includes("high-contrast") ? "high contrast" : null,
+      tags.includes("bright") ? "bright frames" : null,
+      tags.includes("warm") ? "warm palette" : null,
+      tags.includes("cold") ? "cold palette" : null,
+    );
 
-  return files
-    .map((filename, index) => {
-      const item =
-        metadata[filename] ||
-        metadata[path.join(publicPath, filename)] ||
-        metadata[filename.replace(/\.(jpe?g)$/i, "")] ||
-        {};
-      const tags = normalizeTags(
-        item.tags,
-        item.tag,
-        item.keywords,
-        item.categories,
-        item.category,
-      );
-      const collections = normalizeTags(
-        item.collections,
-        item.collection,
-        item.video,
-        tags.includes("high-contrast") ? "high contrast" : null,
-        tags.includes("bright") ? "bright frames" : null,
-        tags.includes("warm") ? "warm palette" : null,
-        tags.includes("cold") ? "cold palette" : null,
-      );
+    return {
+      filename,
+      src: `${publicPath}/${filename}`,
+      score: scoreFor(filename, item, index),
+      title: titleFor(filename, item),
+      tags,
+      collections,
+      metrics: item.metrics || null,
+      source: item.source || (item.video ? { title: item.video } : null),
+      width: dimensions.width,
+      height: dimensions.height,
+      aspectRatio: dimensions.aspectRatio,
+    };
+  }));
 
-      return {
-        filename,
-        src: `${publicPath}/${filename}`,
-        score: scoreFor(filename, item, index),
-        title: titleFor(filename, item),
-        tags,
-        collections,
-        metrics: item.metrics || null,
-        source: item.source || (item.video ? { title: item.video } : null),
-      };
-    })
+  return frames
+    .filter(isCinematicFrame)
     .sort((a, b) => b.score - a.score);
 }
 
-export default function Home() {
-  const frames = getFrames();
+export default async function Home() {
+  const frames = await getFrames();
   const heroFrame = frames[0];
 
   return (
