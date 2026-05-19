@@ -676,24 +676,31 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                         }
                       }}
                     >
-                      <img
-                        src={frame.src}
-                        alt={frame.title}
-                        width={frame.width || undefined}
-                        height={frame.height || undefined}
-                        loading="lazy"
-                        decoding="async"
-                        className="frame-image"
-                        onLoad={() => markImageLoaded(frame.filename)}
-                      />
-                      <span className="frame-score">{frame.score}</span>
-                      <div className="frame-hover-meta" aria-hidden="true">
-                        <div>
-                          <span>{frame.mood}</span>
+                      <div className="frame-image-wrap">
+                        <img
+                          src={frame.src}
+                          alt={frame.title}
+                          width={frame.width || undefined}
+                          height={frame.height || undefined}
+                          loading="lazy"
+                          decoding="async"
+                          className="frame-image"
+                          onLoad={() => markImageLoaded(frame.filename)}
+                        />
+                      </div>
+                      <div className="frame-card-meta">
+                        <div className="frame-title-row">
+                          <strong>{frame.title}</strong>
                           <span>{frame.quality.overall}</span>
                         </div>
-                        <strong>{frame.title}</strong>
-                        <small>{frame.collections[0] || "cinematic archive"}</small>
+                        <div className="frame-card-tags" aria-label="Frame tags">
+                          {[frame.mood, ...frame.tags]
+                            .filter((tag, tagIndex, allTags) => allTags.indexOf(tag) === tagIndex)
+                            .slice(0, 4)
+                            .map((tag) => (
+                              <span key={tag}>{tag}</span>
+                            ))}
+                        </div>
                       </div>
                     </article>
                   );
