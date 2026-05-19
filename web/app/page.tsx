@@ -24,6 +24,12 @@ type MetadataItem = {
   collections?: unknown;
   collection?: unknown;
   video?: string;
+  director?: string;
+  lens?: string;
+  mood?: string;
+  palette?: unknown;
+  quality?: Partial<Frame["quality"]>;
+  cinematicScore?: number;
   metrics?: {
     brightness?: number;
     colorRichness?: number;
@@ -129,6 +135,8 @@ function readFrameFiles(): string[] {
 
 function scoreFor(filename: string, item: MetadataItem, index: number) {
   const rawScore =
+    item.cinematicScore ??
+    item.quality?.overall ??
     item.score ??
     item.rank_score ??
     item.visual_score ??
@@ -201,6 +209,114 @@ async function imageDimensions(filename: string, item: MetadataItem) {
   }
 }
 
+function toHex(value: number) {
+  return Math.max(0, Math.min(255, Math.round(value)))
+    .toString(16)
+    .padStart(2, "0");
+}
+
+async function colorPalette(filename: string, item: MetadataItem) {
+  if (Array.isArray(item.palette) && item.palette.length) {
+    return item.palette.map(String).slice(0, 5);
+  }
+
+  try {
+    const { data, info } = await sharp(path.join(framesDir, filename))
+      .resize(36, 24, { fit: "inside" })
+      .removeAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const buckets = new Map<string, { count: number; r: number; g: number; b: number }>();
+
+    for (let index = 0; index < info.width * info.height; index += 1) {
+      const offset = index * 3;
+      const red = data[offset];
+      const green = data[offset + 1];
+      const blue = data[offset + 2];
+      const brightness = (red + green + blue) / 3;
+
+      if (brightness < 8 || brightness > 247) {
+        continue;
+      }
+
+      const key = [red, green, blue].map((channel) => Math.round(channel / 42)).join("-");
+      const bucket = buckets.get(key) || { count: 0, r: 0, g: 0, b: 0 };
+      bucket.count += 1;
+      bucket.r += red;
+      bucket.g += green;
+      bucket.b += blue;
+      buckets.set(key, bucket);
+    }
+
+    return Array.from(buckets.values())
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+      .map(
+        (bucket) =>
+          `#${toHex(bucket.r / bucket.count)}${toHex(bucket.g / bucket.count)}${toHex(
+            bucket.b / bucket.count,
+          )}`,
+      );
+  } catch {
+    return ["#111111", "#2a2a2a", "#8a7b62"];
+  }
+}
+
+function moodFor(tags: string[], palette: string[], metrics: MetadataItem["metrics"]) {
+  const joined = `${tags.join(" ")} ${palette.join(" ")}`.toLowerCase();
+  const brightness = metrics?.brightness || 0;
+  const contrast = metrics?.contrast || 0;
+  const saturation = metrics?.saturation || 0;
+
+  if (tags.includes("cold") && saturation > 36 && contrast > 42) return "cyberpunk";
+  if (tags.includes("warm") && tags.includes("cold")) return "teal-orange";
+  if (tags.includes("warm") || /#(8|9|a|b|c|d|e|f)[0-9a-f]{5}/.test(joined)) return "amber";
+  if (saturation < 16 || tags.includes("muted")) return "monochrome";
+  if (brightness > 145 && saturation > 28) return "dreamcore";
+  if (brightness < 90 || tags.includes("dark") || contrast > 56) return "noir";
+  return "teal-orange";
+}
+
+function qualityFor(item: MetadataItem, tags: string[], mood: string) {
+  const metrics = item.metrics || {};
+  const composition = Math.min(100, Math.round((metrics.diversity || 0.5) * 80 + (metrics.edgeEnergy || 8)));
+  const lightingContrast = Math.min(100, Math.round((metrics.contrast || 34) * 1.45));
+  const colorHarmony = Math.min(
+    100,
+    Math.round((metrics.colorRichness || 28) * 1.15 + (metrics.saturation || 24) * 0.55),
+  );
+  const cinematicDepth = Math.min(
+    100,
+    Math.round((metrics.edgeEnergy || 8) * 2.6 + (tags.includes("scope") ? 18 : 8)),
+  );
+  const subjectIsolation = Math.min(
+    100,
+    Math.round(lightingContrast * 0.52 + cinematicDepth * 0.32 + (tags.includes("shadow-heavy") ? 14 : 0)),
+  );
+  const moodScore = Math.min(
+    100,
+    Math.round((["noir", "cyberpunk", "amber"].includes(mood) ? 76 : 64) + (metrics.contrast || 0) * 0.24),
+  );
+  const inferred = {
+    composition,
+    lightingContrast,
+    colorHarmony,
+    cinematicDepth,
+    subjectIsolation,
+    mood: moodScore,
+    overall: Math.round(
+      composition * 0.18 +
+        lightingContrast * 0.2 +
+        colorHarmony * 0.17 +
+        cinematicDepth * 0.17 +
+        subjectIsolation * 0.14 +
+        moodScore * 0.14,
+    ),
+  };
+
+  return { ...inferred, ...item.quality };
+}
+
 function isCinematicFrame(frame: Frame) {
   return (
     frame.aspectRatio >= 1.55 &&
@@ -209,7 +325,7 @@ function isCinematicFrame(frame: Frame) {
   );
 }
 
-function isReferenceFrame(frame: Frame) {
+function isReferenceFrame(frame: Partial<Frame> & { filename: string; title: string }) {
   const searchable = [
     frame.filename,
     frame.title,
@@ -231,20 +347,6 @@ function isReferenceFrame(frame: Frame) {
     /tutorial|lens|telephoto|shot\s*\d|rule\s*of\s*thirds|diagram|breakdown|camera|bts|behind|framing|composition|technique|setup|lesson|course|masterclass/.test(
       searchable,
     )
-  );
-}
-
-function isFrameDraft(frame: Partial<Frame>): frame is Frame {
-  return (
-    typeof frame.filename === "string" &&
-    typeof frame.src === "string" &&
-    typeof frame.score === "number" &&
-    typeof frame.title === "string" &&
-    Array.isArray(frame.tags) &&
-    Array.isArray(frame.collections) &&
-    typeof frame.width === "number" &&
-    typeof frame.height === "number" &&
-    typeof frame.aspectRatio === "number"
   );
 }
 
@@ -282,9 +384,12 @@ async function getFrames(): Promise<Frame[]> {
       tags: sourceTags,
       collections: normalizeTags(item.collections, item.collection, item.video),
     };
-    const referenceFrame = isFrameDraft(frameDraft) && isReferenceFrame(frameDraft);
+    const referenceFrame = isReferenceFrame(frameDraft);
+    const palette = await colorPalette(filename, item);
+    const inferredMood = item.mood || moodFor(sourceTags, palette, item.metrics);
     const tags = normalizeTags(
       sourceTags,
+      inferredMood,
       dimensions.aspectRatio >= 2.2 ? "scope" : "widescreen",
       "cinematic",
       referenceFrame ? "reference-board" : null,
@@ -294,6 +399,7 @@ async function getFrames(): Promise<Frame[]> {
       item.collection,
       item.video,
       referenceFrame ? "reference boards" : null,
+      inferredMood,
       tags.includes("scope") ? "scope format" : "widescreen",
       tags.includes("high-contrast") ? "high contrast" : null,
       tags.includes("bright") ? "bright frames" : null,
@@ -301,8 +407,16 @@ async function getFrames(): Promise<Frame[]> {
       tags.includes("cold") ? "cold palette" : null,
     );
 
+    const quality = qualityFor(item, tags, inferredMood);
+
     return {
       ...baseFrame,
+      director: item.director,
+      lens: item.lens,
+      mood: inferredMood,
+      palette,
+      quality,
+      score: Math.max(baseFrame.score, quality.overall),
       tags,
       collections,
     };
@@ -310,7 +424,7 @@ async function getFrames(): Promise<Frame[]> {
 
   return frames
     .filter(isCinematicFrame)
-    .sort((a, b) => b.score - a.score);
+    .sort((a, b) => b.quality.overall - a.quality.overall);
 }
 
 export default async function Home() {

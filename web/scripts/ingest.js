@@ -66,6 +66,12 @@ function slugify(value) {
     .slice(0, 90);
 }
 
+function toHex(value) {
+  return Math.max(0, Math.min(255, Math.round(value)))
+    .toString(16)
+    .padStart(2, "0");
+}
+
 function listVideos() {
   if (!fs.existsSync(videosDir)) {
     return [];
@@ -139,6 +145,9 @@ async function imageMetrics(imagePath) {
   let saturationSum = 0;
   let darkPixels = 0;
   let brightPixels = 0;
+  let topBar = 0;
+  let bottomBar = 0;
+  const buckets = new Map();
 
   for (let i = 0; i < pixels; i += 1) {
     const offset = i * 3;
@@ -155,6 +164,13 @@ async function imageMetrics(imagePath) {
     greenSum += green;
     blueSum += blue;
     saturationSum += maxChannel === 0 ? 0 : (maxChannel - minChannel) / maxChannel;
+    const bucketKey = [red, green, blue].map((channel) => Math.round(channel / 42)).join("-");
+    const bucket = buckets.get(bucketKey) || { count: 0, r: 0, g: 0, b: 0 };
+    bucket.count += 1;
+    bucket.r += red;
+    bucket.g += green;
+    bucket.b += blue;
+    buckets.set(bucketKey, bucket);
 
     if (y < 32) {
       darkPixels += 1;
@@ -162,6 +178,14 @@ async function imageMetrics(imagePath) {
 
     if (y > 224) {
       brightPixels += 1;
+    }
+
+    if (i < width * 3 && y < 18) {
+      topBar += 1;
+    }
+
+    if (i >= pixels - width * 3 && y < 18) {
+      bottomBar += 1;
     }
   }
 
@@ -188,6 +212,13 @@ async function imageMetrics(imagePath) {
   const diversity = signature.split("").filter((bit) => bit === "1").length / 64;
   const edgeEnergy = edgeEnergyFor(luminance, width, height);
   const saturation = (saturationSum / pixels) * 100;
+  const palette = Array.from(buckets.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5)
+    .map((bucket) => `#${toHex(bucket.r / bucket.count)}${toHex(bucket.g / bucket.count)}${toHex(bucket.b / bucket.count)}`);
+  const blackBars = topBar / (width * 3) > 0.72 && bottomBar / (width * 3) > 0.72;
+  const textOverlayRisk = edgeEnergy > 24 && brightPixels / pixels > 0.16;
+  const diagramRisk = brightness > 175 && saturation > 42 && contrast < 46;
   const score = Math.round(
     contrast * 0.36 +
       colorRichness * 0.3 +
@@ -207,11 +238,52 @@ async function imageMetrics(imagePath) {
     score,
     signature,
     colorSignature,
+    blackBars,
+    diagramRisk,
     saturation,
+    palette,
+    textOverlayRisk,
     warmth: redAvg - blueAvg,
     width: originalWidth,
     height: originalHeight,
     aspectRatio,
+  };
+}
+
+function moodFor(metrics) {
+  if (metrics.warmth < -8 && metrics.saturation > 36 && metrics.contrast > 42) return "cyberpunk";
+  if (metrics.warmth > 12 && metrics.warmth < 42 && metrics.saturation > 28) return "teal-orange";
+  if (metrics.warmth >= 20) return "amber";
+  if (metrics.saturation < 16) return "monochrome";
+  if (metrics.brightness > 145 && metrics.saturation > 28) return "dreamcore";
+  if (metrics.brightness < 90 || metrics.contrast > 56) return "noir";
+  return "teal-orange";
+}
+
+function qualityFor(metrics, mood) {
+  const composition = Math.min(100, Math.round(metrics.diversity * 80 + metrics.edgeEnergy));
+  const lightingContrast = Math.min(100, Math.round(metrics.contrast * 1.45));
+  const colorHarmony = Math.min(100, Math.round(metrics.colorRichness * 1.15 + metrics.saturation * 0.55));
+  const cinematicDepth = Math.min(100, Math.round(metrics.edgeEnergy * 2.6 + (metrics.blackBars ? 20 : 8)));
+  const subjectIsolation = Math.min(100, Math.round(lightingContrast * 0.52 + cinematicDepth * 0.32 + (metrics.darkRatio > 0.36 ? 14 : 0)));
+  const moodScore = Math.min(100, Math.round((["noir", "cyberpunk", "amber"].includes(mood) ? 76 : 64) + metrics.contrast * 0.24));
+  const overall = Math.round(
+    composition * 0.18 +
+      lightingContrast * 0.2 +
+      colorHarmony * 0.17 +
+      cinematicDepth * 0.17 +
+      subjectIsolation * 0.14 +
+      moodScore * 0.14,
+  );
+
+  return {
+    composition,
+    lightingContrast,
+    colorHarmony,
+    cinematicDepth,
+    subjectIsolation,
+    mood: moodScore,
+    overall,
   };
 }
 
@@ -350,6 +422,8 @@ function passesQuality(metrics) {
     metrics.brightness <= maxBrightness &&
     metrics.darkRatio < 0.82 &&
     metrics.brightRatio < 0.82 &&
+    !metrics.textOverlayRisk &&
+    !metrics.diagramRisk &&
     !(
       metrics.brightness > 175 &&
       metrics.saturation > 42 &&
@@ -359,7 +433,9 @@ function passesQuality(metrics) {
 }
 
 function tagsFor(metrics) {
+  const mood = moodFor(metrics);
   return [
+    mood,
     metrics.warmth > 10 ? "warm" : null,
     metrics.warmth < -8 ? "cold" : null,
     metrics.brightness < 82 ? "dark" : null,
@@ -375,6 +451,7 @@ function tagsFor(metrics) {
     metrics.brightRatio > 0.22 ? "highlight-heavy" : null,
     metrics.score > 68 ? "editorial-pick" : null,
     metrics.aspectRatio >= 2.2 ? "scope" : "widescreen",
+    metrics.blackBars ? "black-bars" : null,
     "cinematic",
   ].filter(Boolean);
 }
@@ -390,6 +467,7 @@ function collectionsFor(frame) {
         frame.tags.includes("cold") ? "cold palette" : null,
         frame.tags.includes("scope") ? "scope format" : null,
         frame.tags.includes("widescreen") ? "widescreen" : null,
+        frame.mood || null,
         frame.source.query || null,
       ]
         .filter(Boolean)
@@ -452,10 +530,12 @@ async function ingestVideo(videoPath, existingSignatures) {
     analyzed.push({ candidate, metrics });
   }
 
-  return analyzed
+  const selectedFrames = await Promise.all(analyzed
     .sort((a, b) => b.metrics.score - a.metrics.score)
     .slice(0, maxFramesPerVideo)
-    .map(({ candidate, metrics }, index) => {
+    .map(async ({ candidate, metrics }, index) => {
+      const mood = moodFor(metrics);
+      const quality = qualityFor(metrics, mood);
       const duplicate = existingSignatures.some(
         (signature) => frameDistance(signature, metrics) < globalDuplicateDistance,
       );
@@ -471,12 +551,18 @@ async function ingestVideo(videoPath, existingSignatures) {
 
       const filename = `${videoId}_${String(index + 1).padStart(2, "0")}.jpg`;
       const destination = path.join(bestframesDir, filename);
-      fs.copyFileSync(candidate, destination);
+      await sharp(candidate)
+        .jpeg({ quality: 84, mozjpeg: true })
+        .toFile(destination);
 
       const frame = {
         filename,
         title: info.title,
-        score: metrics.score,
+        score: Math.max(metrics.score, quality.overall),
+        cinematicScore: quality.overall,
+        mood,
+        palette: metrics.palette,
+        quality,
         tags: tagsFor(metrics),
         metrics: {
           brightness: Number(metrics.brightness.toFixed(2)),
@@ -485,6 +571,7 @@ async function ingestVideo(videoPath, existingSignatures) {
           diversity: Number(metrics.diversity.toFixed(3)),
           edgeEnergy: Number(metrics.edgeEnergy.toFixed(2)),
           saturation: Number(metrics.saturation.toFixed(2)),
+          blackBars: metrics.blackBars,
         },
         signature: metrics.signature,
         colorSignature: metrics.colorSignature,
@@ -501,8 +588,9 @@ async function ingestVideo(videoPath, existingSignatures) {
 
       frame.collections = collectionsFor(frame);
       return frame;
-    })
-    .filter(Boolean);
+    }));
+
+  return selectedFrames.filter(Boolean);
 }
 
 function buildCollections(frames) {

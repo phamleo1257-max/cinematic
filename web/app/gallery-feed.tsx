@@ -8,6 +8,19 @@ export type Frame = {
   src: string;
   score: number;
   title: string;
+  director?: string;
+  lens?: string;
+  mood: string;
+  palette: string[];
+  quality: {
+    composition: number;
+    lightingContrast: number;
+    colorHarmony: number;
+    cinematicDepth: number;
+    subjectIsolation: number;
+    mood: number;
+    overall: number;
+  };
   tags: string[];
   collections: string[];
   metrics: {
@@ -35,9 +48,42 @@ type GalleryFeedProps = {
 
 const INITIAL_RENDER_COUNT = 72;
 const RENDER_BATCH_SIZE = 48;
+const MOODS = ["All", "noir", "amber", "cyberpunk", "teal-orange", "monochrome", "dreamcore"];
+
+function fuzzyIncludes(source: string, query: string) {
+  if (!query) return true;
+  if (source.includes(query)) return true;
+
+  const aliases: Record<string, string[]> = {
+    lonely: ["noir", "dark", "shadow-heavy", "wide"],
+    neon: ["cyberpunk", "cold", "saturated", "color-rich"],
+    rain: ["cyberpunk", "noir", "cold", "dark"],
+    desert: ["amber", "warm", "widescreen"],
+    silhouette: ["noir", "shadow-heavy", "high-contrast"],
+    tungsten: ["amber", "warm"],
+    soft: ["dreamcore", "muted"],
+    wide: ["widescreen", "scope"],
+    closeup: ["subject", "isolation", "portrait"],
+    "close-up": ["subject", "isolation", "portrait"],
+  };
+  const words = query.split(/\s+/).filter(Boolean);
+  return words.every((word) => {
+    if (source.includes(word)) return true;
+    if ((aliases[word] || []).some((alias) => source.includes(alias))) return true;
+
+    let cursor = 0;
+    for (const character of source) {
+      if (character === word[cursor]) cursor += 1;
+      if (cursor === word.length) return true;
+    }
+
+    return false;
+  });
+}
 
 export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const [activeTag, setActiveTag] = useState("All");
+  const [activeMood, setActiveMood] = useState("All");
   const [activeCollection, setActiveCollection] = useState("All");
   const [search, setSearch] = useState("");
   const [sortMode, setSortMode] = useState("score");
@@ -68,21 +114,25 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
     return frames
       .filter((frame) => {
       const matchesTag = activeTag === "All" || frame.tags.includes(activeTag);
+      const matchesMood = activeMood === "All" || frame.mood === activeMood;
       const matchesCollection =
         activeCollection === "All" ||
         frame.collections.includes(activeCollection);
       const searchable = [
         frame.filename,
         frame.title,
+        frame.mood,
+        frame.director || "",
+        frame.lens || "",
+        frame.palette.join(" "),
         ...frame.tags,
         ...frame.collections,
       ]
         .join(" ")
         .toLowerCase();
-      const matchesSearch =
-        !normalizedSearch || searchable.includes(normalizedSearch);
+      const matchesSearch = fuzzyIncludes(searchable, normalizedSearch);
 
-      return matchesTag && matchesCollection && matchesSearch;
+      return matchesTag && matchesMood && matchesCollection && matchesSearch;
     })
       .sort((a, b) => {
         if (sortMode === "title") {
@@ -97,9 +147,9 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
           return (b.metrics?.colorRichness || 0) - (a.metrics?.colorRichness || 0);
         }
 
-        return b.score - a.score;
+        return b.quality.overall - a.quality.overall;
       });
-  }, [activeCollection, activeTag, frames, search, sortMode]);
+  }, [activeCollection, activeMood, activeTag, frames, search, sortMode]);
 
   const visibleFrames = useMemo(
     () => filteredFrames.slice(0, visibleCount),
@@ -108,6 +158,23 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const hasMoreFrames = visibleCount < filteredFrames.length;
   const activeFrame =
     activeIndex === null ? null : filteredFrames[activeIndex] || null;
+  const similarFrames = useMemo(() => {
+    if (!activeFrame) {
+      return [];
+    }
+
+    return filteredFrames
+      .filter((frame) => frame.filename !== activeFrame.filename)
+      .map((frame) => {
+        const sharedTags = frame.tags.filter((tag) => activeFrame.tags.includes(tag)).length;
+        const sharedPalette = frame.palette.filter((color) => activeFrame.palette.includes(color)).length;
+        const moodMatch = frame.mood === activeFrame.mood ? 5 : 0;
+        return { frame, weight: sharedTags * 2 + sharedPalette + moodMatch };
+      })
+      .sort((a, b) => b.weight - a.weight || b.frame.quality.overall - a.frame.quality.overall)
+      .slice(0, 4)
+      .map((item) => item.frame);
+  }, [activeFrame, filteredFrames]);
 
   function closeModal() {
     setActiveIndex(null);
@@ -168,7 +235,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
   useEffect(() => {
     setVisibleCount(INITIAL_RENDER_COUNT);
     setActiveIndex(null);
-  }, [activeCollection, activeTag, search, sortMode]);
+  }, [activeCollection, activeMood, activeTag, search, sortMode]);
 
   useEffect(() => {
     if (!hasMoreFrames) {
@@ -264,6 +331,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
   );
   const activeFilters = [
     activeTag !== "All" ? activeTag : null,
+    activeMood !== "All" ? activeMood : null,
     activeCollection !== "All" ? activeCollection : null,
     search.trim() ? `"${search.trim()}"` : null,
   ].filter(Boolean);
@@ -286,7 +354,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
           <input
             aria-label="Search frames"
             className="gallery-search"
-            placeholder="Title, tag, collection"
+            placeholder="Mood, lighting, lens, framing, color"
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -306,6 +374,19 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
             <option value="title">Title</option>
           </select>
         </label>
+      </section>
+
+      <section className="mood-tabs" aria-label="Mood filters">
+        {MOODS.map((mood) => (
+          <button
+            className={activeMood === mood ? "active" : ""}
+            key={mood}
+            type="button"
+            onClick={() => setActiveMood(mood)}
+          >
+            {mood}
+          </button>
+        ))}
       </section>
 
       <section className="insight-strip" aria-label="Gallery summary">
@@ -395,6 +476,10 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                   onClick={() => {
                     if (filter === activeTag) {
                       setActiveTag("All");
+                    }
+
+                    if (filter === activeMood) {
+                      setActiveMood("All");
                     }
 
                     if (filter === activeCollection) {
@@ -493,8 +578,8 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       />
                       <span className="frame-score">{frame.score}</span>
                       <div className="frame-hover-meta" aria-hidden="true">
-                        <span>{frame.collections[0] || "cinematic"}</span>
-                        <strong>{frame.title}</strong>
+                  <span>{frame.collections[0] || "cinematic"}</span>
+                  <strong>{frame.title}</strong>
                       </div>
                     </article>
                   );
@@ -576,20 +661,32 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                   <span className="score-badge">{activeFrame.score}</span>
                   <h2>{activeFrame.title}</h2>
                 </div>
-                {activeFrame.source?.title ? (
-                  <p>{activeFrame.source.title}</p>
-                ) : null}
+                <p>{activeFrame.director ? `Director ${activeFrame.director}` : activeFrame.source?.title || activeFrame.mood}</p>
               </div>
               <div className="modal-sidecar">
+                <div className="modal-palette" aria-label="Extracted color palette">
+                  {activeFrame.palette.map((color) => (
+                    <span key={color} style={{ background: color }} />
+                  ))}
+                </div>
                 {activeFrame.metrics ? (
                   <div className="modal-metrics">
+                    <span>Mood {activeFrame.mood}</span>
+                    <span>Quality {activeFrame.quality.overall}</span>
                     <span>Contrast {Math.round(activeFrame.metrics.contrast || 0)}</span>
                     <span>Color {Math.round(activeFrame.metrics.colorRichness || 0)}</span>
                     <span>Bright {Math.round(activeFrame.metrics.brightness || 0)}</span>
                     <span>Aspect {activeFrame.aspectRatio.toFixed(2)}</span>
                     <span>{activeFrame.width} x {activeFrame.height}</span>
+                    {activeFrame.lens ? <span>Lens {activeFrame.lens}</span> : null}
                   </div>
                 ) : null}
+                <div className="modal-quality">
+                  <span>Composition {activeFrame.quality.composition}</span>
+                  <span>Depth {activeFrame.quality.cinematicDepth}</span>
+                  <span>Isolation {activeFrame.quality.subjectIsolation}</span>
+                  <span>Atmosphere {activeFrame.quality.mood}</span>
+                </div>
                 {activeFrame.tags.length ? (
                   <div className="modal-tags">
                     {activeFrame.tags.map((tag) => (
@@ -619,6 +716,24 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                         }}
                       >
                         {collection}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+                {similarFrames.length ? (
+                  <div className="similar-shots">
+                    {similarFrames.map((frame) => (
+                      <button
+                        key={frame.filename}
+                        type="button"
+                        onClick={() => {
+                          const nextIndex = filteredFrames.findIndex(
+                            (candidate) => candidate.filename === frame.filename,
+                          );
+                          setActiveIndex(nextIndex >= 0 ? nextIndex : 0);
+                        }}
+                      >
+                        <img src={frame.src} alt="" loading="lazy" />
                       </button>
                     ))}
                   </div>

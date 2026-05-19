@@ -225,6 +225,65 @@ h1 {
   text-transform: uppercase;
 }
 
+.mood-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 0 auto 18px;
+  max-width: 1540px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.mood-tabs button {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid var(--line);
+  color: rgba(246, 242, 236, 0.76);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 900;
+  min-height: 38px;
+  overflow: hidden;
+  padding: 0 15px;
+  position: relative;
+  text-transform: uppercase;
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+.mood-tabs button::after {
+  background: linear-gradient(90deg, var(--hot), var(--red));
+  bottom: 0;
+  content: "";
+  height: 2px;
+  left: 12px;
+  opacity: 0;
+  position: absolute;
+  right: 12px;
+  transform: scaleX(0.35);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}
+
+.mood-tabs button:hover,
+.mood-tabs button.active {
+  background: rgba(232, 180, 92, 0.14);
+  border-color: rgba(232, 180, 92, 0.5);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.mood-tabs button.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
 .gallery-workspace {
   align-items: start;
   display: grid;
@@ -783,7 +842,8 @@ h1 {
 
 .modal-metrics,
 .modal-tags,
-.modal-collections {
+.modal-collections,
+.modal-quality {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -792,6 +852,7 @@ h1 {
 }
 
 .modal-metrics span,
+.modal-quality span,
 .modal-tags button,
 .modal-collections button {
   appearance: none;
@@ -804,6 +865,47 @@ h1 {
   min-height: 28px;
   padding: 0 9px;
   text-transform: uppercase;
+}
+
+.modal-palette {
+  display: flex;
+  gap: 7px;
+  justify-content: end;
+}
+
+.modal-palette span {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: block;
+  height: 30px;
+  width: 42px;
+}
+
+.similar-shots {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  max-width: min(460px, 42vw);
+}
+
+.similar-shots button {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+}
+
+.similar-shots img {
+  aspect-ratio: 16 / 9;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 180ms ease;
+  width: 100%;
+}
+
+.similar-shots button:hover img {
+  transform: scale(1.05);
 }
 
 .modal-tags button,
