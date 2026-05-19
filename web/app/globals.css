@@ -790,7 +790,7 @@ h1 {
   justify-content: stretch;
   margin: 0;
   max-height: 100vh;
-  max-width: min(1360px, 92vw);
+  max-width: min(1440px, 94vw);
   overflow: auto;
   padding: 76px 0 56px;
   position: relative;
@@ -807,7 +807,7 @@ h1 {
 }
 
 .modal-image-stage img {
-  box-shadow: 0 32px 110px rgba(0, 0, 0, 0.62);
+  box-shadow: 0 36px 120px rgba(0, 0, 0, 0.68);
   height: auto;
   max-height: min(76vh, 780px);
   max-width: min(100%, var(--modal-natural-width, 100%));
@@ -829,15 +829,19 @@ h1 {
 .modal-analysis-card,
 .modal-similar-section {
   backdrop-filter: blur(18px);
-  background: rgba(12, 12, 14, 0.58);
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  padding: 16px;
+  background: rgba(12, 12, 14, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: clamp(16px, 1.4vw, 22px);
 }
 
 .modal-shot-header {
+  background: transparent;
+  border: 0;
+  backdrop-filter: none;
   display: grid;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
+  padding: 2px 0 4px;
 }
 
 .modal-kicker,
@@ -867,7 +871,7 @@ h1 {
 
 .modal-frame h2 {
   color: var(--text);
-  font-size: clamp(1.4rem, 2.6vw, 2.3rem);
+  font-size: clamp(1.7rem, 3vw, 3rem);
   font-weight: 900;
   line-height: 1.04;
   margin: 0;
@@ -876,14 +880,19 @@ h1 {
 
 .modal-analysis-grid {
   display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(360px, 1.05fr);
 }
 
 .modal-analysis-card {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   align-content: start;
+}
+
+.modal-right-column {
+  display: grid;
+  gap: 16px;
 }
 
 .modal-section-heading strong {
@@ -900,12 +909,12 @@ h1 {
 
 .metadata-row {
   align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.065);
   display: grid;
   gap: 16px;
   grid-template-columns: minmax(96px, 0.45fr) minmax(0, 1fr);
   min-height: 38px;
-  padding: 9px 0;
+  padding: 8px 0;
 }
 
 .metadata-row:first-child {
@@ -921,11 +930,33 @@ h1 {
 }
 
 .metadata-row strong {
-  color: rgba(246, 242, 236, 0.9);
+  color: rgba(246, 242, 236, 0.84);
   font-size: 0.78rem;
   font-weight: 820;
   line-height: 1.2;
   overflow-wrap: anywhere;
+  text-transform: uppercase;
+}
+
+.metadata-group {
+  display: grid;
+  gap: 9px;
+}
+
+.metadata-group > span {
+  color: rgba(232, 180, 92, 0.72);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.metadata-group p {
+  color: rgba(246, 242, 236, 0.84);
+  font-size: 0.86rem;
+  font-weight: 760;
+  line-height: 1.3;
+  margin: 0;
   text-transform: uppercase;
 }
 
@@ -938,7 +969,7 @@ h1 {
 .modal-palette span {
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: block;
-  height: 30px;
+  height: 24px;
   flex: 1 1 0;
   min-width: 34px;
 }
@@ -956,9 +987,9 @@ h1 {
 
 .modal-tags button {
   appearance: none;
-  background: rgba(255, 255, 255, 0.052);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: rgba(246, 242, 236, 0.68);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  color: rgba(246, 242, 236, 0.62);
   cursor: pointer;
   font: inherit;
   font-size: 0.64rem;
@@ -970,17 +1001,17 @@ h1 {
 
 .similar-shots {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   overflow-x: auto;
   max-width: 100%;
   padding-bottom: 2px;
 }
 
 .similar-shots button {
-  flex: 0 0 150px;
+  flex: 0 0 132px;
   appearance: none;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  border: 0;
   cursor: pointer;
   overflow: hidden;
   padding: 0;
@@ -1006,18 +1037,18 @@ h1 {
 
 .lighting-panel {
   display: grid;
-  gap: 14px;
+  gap: 16px;
   max-width: none;
 }
 
 .lighting-svg {
   background:
     radial-gradient(circle at 50% 45%, rgba(232, 180, 92, 0.12), transparent 42%),
-    rgba(0, 0, 0, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.075);
   display: block;
   height: auto;
-  max-width: 520px;
+  max-width: 620px;
   width: 100%;
 }
 
