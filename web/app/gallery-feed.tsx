@@ -9,7 +9,11 @@ export type Frame = {
   score: number;
   title: string;
   productionHouse?: string;
+  year?: string;
   director?: string;
+  cinematographer?: string;
+  sourceType?: string;
+  originalSource?: string;
   lens?: string;
   mood: string;
   lighting?: LightingAnalysis;
@@ -268,6 +272,26 @@ function compactSourceLabel(frame: Frame) {
     .join(" ") || "archive";
 }
 
+function metadataValue(value?: string) {
+  if (
+    !value ||
+    /^(unknown|not tagged|archive)$/i.test(value) ||
+    /\b(archive still|archive frame|color study|light study|shadow study|dream frame|high contrast frame|neon night frame)\b/i.test(
+      value,
+    )
+  ) {
+    return "Metadata unavailable";
+  }
+
+  return value;
+}
+
+function sourceTypeLabel(value?: string) {
+  return metadataValue(value)
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
 export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const [activeTag, setActiveTag] = useState("All");
   const [activeMood, setActiveMood] = useState("All");
@@ -308,8 +332,12 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
         const searchable = [
           frame.filename,
           frame.title,
+          frame.year || "",
           frame.mood,
           frame.director || "",
+          frame.cinematographer || "",
+          frame.sourceType || "",
+          frame.originalSource || "",
           frame.lens || "",
           frame.palette.join(" "),
           ...frame.tags,
@@ -920,8 +948,32 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       <strong>{activeFrame.quality.overall}</strong>
                     </div>
                     <div className="metadata-group">
+                      <span>Film</span>
+                      <p>{metadataValue(activeFrame.title)}</p>
+                      <div className="metadata-row-list">
+                        <div className="metadata-row">
+                          <span>Year</span>
+                          <strong>{metadataValue(activeFrame.year)}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Type</span>
+                          <strong>{sourceTypeLabel(activeFrame.sourceType)}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="metadata-group cinematographer-group">
+                      <span>Cinematographer</span>
+                      <p>{metadataValue(activeFrame.cinematographer)}</p>
+                    </div>
+                    <div className="metadata-group">
                       <span>Source</span>
-                      <p>{compactSourceLabel(activeFrame)}</p>
+                      <p>{metadataValue(compactSourceLabel(activeFrame))}</p>
+                      <div className="metadata-row-list">
+                        <div className="metadata-row">
+                          <span>Original</span>
+                          <strong>{metadataValue(activeFrame.originalSource || activeFrame.source?.title)}</strong>
+                        </div>
+                      </div>
                     </div>
                     <div className="metadata-group">
                       <span>Color</span>
@@ -963,11 +1015,11 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       <div className="metadata-row-list">
                         <div className="metadata-row">
                           <span>Director</span>
-                          <strong>{activeFrame.director || "unknown"}</strong>
+                          <strong>{metadataValue(activeFrame.director)}</strong>
                         </div>
                         <div className="metadata-row">
                           <span>Lens</span>
-                          <strong>{activeFrame.lens || "not tagged"}</strong>
+                          <strong>{metadataValue(activeFrame.lens)}</strong>
                         </div>
                         <div className="metadata-row">
                           <span>Frame</span>
