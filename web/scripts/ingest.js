@@ -651,6 +651,20 @@ function videoInfo(videoPath) {
   };
 }
 
+function archiveTitleFor(frame) {
+  const tags = new Set(frame.tags || []);
+  const mood = frame.mood || "cinematic";
+  const format = frame.aspectRatio >= 2.2 ? "Scope" : "Widescreen";
+
+  if (mood === "cyberpunk") return "Neon Night Frame";
+  if (mood === "noir") return tags.has("scope") ? "Noir Scope Study" : "Noir Shadow Study";
+  if (mood === "amber") return tags.has("warm") ? "Amber Light Study" : "Amber Archive Frame";
+  if (mood === "monochrome") return "Monochrome Archive Still";
+  if (mood === "dreamcore") return "Soft Dream Frame";
+  if (mood === "teal-orange") return `${format} Color Study`;
+  return "Cinematic Archive Still";
+}
+
 function createRejectStats() {
   return {
     blur: 0,
@@ -749,7 +763,7 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
 
       const frame = {
         filename,
-        title: info.title,
+        title: "",
         score: Math.max(metrics.score, quality.overall),
         cinematicScore: quality.overall,
         mood,
@@ -775,13 +789,15 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats) {
         aspectRatio: Number(metrics.aspectRatio.toFixed(4)),
         source: {
           video: path.relative(cwd, videoPath),
-          title: info.title,
+          title: "",
           url: info.url,
           query: info.query,
         },
       };
 
       frame.collections = collectionsFor(frame);
+      frame.title = archiveTitleFor(frame);
+      frame.source.title = frame.title;
       return frame;
     }));
 
