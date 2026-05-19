@@ -43,7 +43,13 @@ jobs:
           RESULTS_PER_QUERY: "1"
           MAX_FRAMES_PER_VIDEO: "8"
           MIN_FRAME_SCORE: "38"
-        run: npm run refresh
+        run: |
+          if npm run refresh; then
+            echo "Discovery and ingest completed."
+          else
+            echo "::warning::yt-dlp discovery failed, likely because YouTube blocked the GitHub runner. Running ingest on existing videos only."
+            npm run ingest
+          fi
 
       - name: Commit gallery updates
         run: |
