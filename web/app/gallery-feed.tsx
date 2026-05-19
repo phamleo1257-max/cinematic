@@ -159,22 +159,18 @@ function LightingDiagram({ analysis }: { analysis: LightingAnalysis }) {
   return (
     <svg className="lighting-svg" viewBox="0 0 420 320" role="img" aria-label="Top-down lighting diagram">
       <defs>
-        <radialGradient id="keyGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="rgba(232, 180, 92, 0.9)" />
-          <stop offset="100%" stopColor="rgba(232, 180, 92, 0)" />
-        </radialGradient>
-        <marker id="light-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <marker id="light-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" />
         </marker>
       </defs>
       <rect x="1" y="1" width="418" height="318" rx="18" />
-      <text className="diagram-card-title" x="24" y="34">Top-down lighting estimate</text>
+      <text className="diagram-card-title" x="24" y="34">Top-down estimate</text>
       <text className="diagram-card-ratio" x="396" y="34" textAnchor="end">{analysis.contrastRatio}:1</text>
       <line className="diagram-axis" x1="210" y1="58" x2="210" y2="282" />
       <line className="diagram-axis" x1="58" y1="166" x2="362" y2="166" />
-      <circle className="diagram-glow" cx={key.x + 45} cy={key.y + 20} r="74" />
-      <circle className="diagram-subject-zone" cx={subject.x + 40} cy={subject.y + 16} r="48" />
-      <path className="diagram-subject" d={`M ${subject.x + 40} ${subject.y - 8} a18 18 0 1 0 0.1 0 M ${subject.x + 14} ${subject.y + 28} q26 -18 52 0 v20 h-52z`} />
+      <circle className="diagram-subject-zone" cx={subject.x + 40} cy={subject.y + 16} r="44" />
+      <circle className="diagram-subject" cx={subject.x + 40} cy={subject.y + 16} r="18" />
+      <line className="diagram-subject-facing" x1={subject.x + 40} y1={subject.y - 2} x2={subject.x + 40} y2={subject.y + 34} />
       <path className="diagram-camera" d="M184 284h52l-8 18h-36z" />
       <text x="210" y="278" textAnchor="middle">Camera</text>
       <g className="diagram-light diagram-key">
@@ -223,6 +219,7 @@ function lightingNotesFor(frame: Frame, analysis: LightingAnalysis) {
   const key = directionLabel(analysis.keyLight.direction);
   const fill = directionLabel(analysis.fillLight.direction);
   const rim = directionLabel(analysis.rimLight.direction);
+  const sideKey = analysis.keyLight.direction.includes("side") || analysis.contrastRatio >= 4;
   const fillFeel =
     analysis.fillLight.strength < 20
       ? "very low fill"
@@ -235,10 +232,10 @@ function lightingNotesFor(frame: Frame, analysis: LightingAnalysis) {
       : "subtle edge separation";
 
   return {
-    direction: `Key appears to come from ${key}, with ${fillFeel} from ${fill}.`,
-    ratio: `${analysis.contrastRatio}:1 contrast ratio; key at ${analysis.keyLight.strength}% and fill at ${analysis.fillLight.strength}%.`,
-    mood: `${analysis.mood} lighting with ${rimFeel}. ${exposureNote(frame)}`,
-    setup: `Recreate with a large key placed ${key}, dim fill from ${fill}, and a small rim/back light from ${rim}. Estimated from brightness distribution, contrast, and subject position.`,
+    direction: `${sideKey ? "Strong side key creates sculpted contrast" : "Soft frontal key keeps the image open"} from ${key}. ${fillFeel[0].toUpperCase()}${fillFeel.slice(1)} from ${fill}.`,
+    ratio: `${analysis.contrastRatio}:1 lighting ratio. Key reads around ${analysis.keyLight.strength}%, while fill sits near ${analysis.fillLight.strength}%.`,
+    mood: `${analysis.mood} mood. ${rimFeel[0].toUpperCase()}${rimFeel.slice(1)} improves silhouette readability. ${exposureNote(frame)}`,
+    setup: `Place a broad key at ${key}. Keep fill ${analysis.fillLight.strength < 25 ? "minimal" : "soft and controlled"} from ${fill}. Add a small back/rim source from ${rim}; motivate it with a practical or doorway edge. Estimated from brightness distribution, contrast, and subject position.`,
   };
 }
 
