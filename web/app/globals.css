@@ -1037,23 +1037,24 @@ h1 {
 
 .lighting-panel {
   display: grid;
-  gap: 16px;
+  gap: 18px;
   max-width: none;
 }
 
 .lighting-svg {
   background:
-    radial-gradient(circle at 50% 45%, rgba(232, 180, 92, 0.12), transparent 42%),
-    rgba(0, 0, 0, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.075);
+    radial-gradient(circle at 50% 48%, rgba(232, 180, 92, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent),
+    rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   display: block;
   height: auto;
-  max-width: 620px;
+  max-width: 680px;
   width: 100%;
 }
 
 .lighting-svg rect {
-  fill: rgba(4, 4, 5, 0.62);
+  fill: rgba(4, 4, 5, 0.52);
   stroke: rgba(255, 255, 255, 0.08);
 }
 
@@ -1065,8 +1066,19 @@ h1 {
   text-transform: uppercase;
 }
 
+.lighting-svg .diagram-card-title {
+  fill: rgba(246, 242, 236, 0.86);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.lighting-svg .diagram-card-ratio {
+  fill: rgba(232, 180, 92, 0.9);
+  font-size: 13px;
+}
+
 .lighting-svg marker path {
-  fill: rgba(232, 180, 92, 0.78);
+  fill: currentColor;
 }
 
 .diagram-axis {
@@ -1074,15 +1086,20 @@ h1 {
   stroke-dasharray: 4 8;
 }
 
+.diagram-glow {
+  fill: url("#keyGlow");
+  opacity: 0.72;
+}
+
 .diagram-subject-zone {
-  fill: rgba(255, 255, 255, 0.035);
-  stroke: rgba(255, 255, 255, 0.1);
+  fill: rgba(255, 255, 255, 0.045);
+  stroke: rgba(255, 255, 255, 0.12);
 }
 
 .diagram-subject {
   fill: rgba(246, 242, 236, 0.9);
   stroke: rgba(0, 0, 0, 0.72);
-  stroke-width: 4;
+  stroke-width: 3;
 }
 
 .diagram-camera {
@@ -1092,43 +1109,63 @@ h1 {
 
 .diagram-light circle {
   fill: rgba(232, 180, 92, 0.18);
-  stroke-width: 2;
+  stroke-width: 2.2;
 }
 
 .diagram-light line {
-  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-width: 3;
 }
 
 .diagram-key circle,
 .diagram-key line {
+  color: rgba(232, 180, 92, 0.92);
   stroke: rgba(232, 180, 92, 0.92);
 }
 
 .diagram-fill circle,
 .diagram-fill line {
+  color: rgba(118, 168, 205, 0.78);
   stroke: rgba(118, 168, 205, 0.76);
 }
 
 .diagram-rim circle,
 .diagram-rim line {
+  color: rgba(246, 242, 236, 0.74);
   stroke: rgba(246, 242, 236, 0.7);
 }
 
-.lighting-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+.lighting-breakdown {
+  display: grid;
+  gap: 10px;
 }
 
-.lighting-stats span {
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid var(--line);
-  color: rgba(246, 242, 236, 0.76);
-  font-size: 0.56rem;
-  font-weight: 820;
-  min-height: 22px;
-  padding: 4px 6px;
+.lighting-breakdown div {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  display: grid;
+  gap: 5px;
+  padding-top: 10px;
+}
+
+.lighting-breakdown div:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.lighting-breakdown span {
+  color: rgba(232, 180, 92, 0.74);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.lighting-breakdown p {
+  color: rgba(246, 242, 236, 0.76);
+  font-size: 0.86rem;
+  font-weight: 620;
+  line-height: 1.45;
+  margin: 0;
 }
 
 @media (max-width: 1180px) {
