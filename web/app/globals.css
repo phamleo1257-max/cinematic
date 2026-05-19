@@ -999,6 +999,114 @@ h1 {
   color: var(--text);
 }
 
+.lighting-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.lighting-diagram-button {
+  appearance: none;
+  background: rgba(232, 180, 92, 0.14);
+  border: 1px solid rgba(232, 180, 92, 0.48);
+  color: var(--text);
+  cursor: default;
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 900;
+  min-height: 28px;
+  padding: 0 10px;
+  text-transform: uppercase;
+}
+
+.lighting-svg {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(232, 180, 92, 0.12), transparent 42%),
+    rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+.lighting-svg rect {
+  fill: rgba(4, 4, 5, 0.62);
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+.lighting-svg text {
+  fill: rgba(246, 242, 236, 0.72);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.lighting-svg marker path {
+  fill: rgba(232, 180, 92, 0.78);
+}
+
+.diagram-axis {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-dasharray: 4 8;
+}
+
+.diagram-subject-zone {
+  fill: rgba(255, 255, 255, 0.035);
+  stroke: rgba(255, 255, 255, 0.1);
+}
+
+.diagram-subject {
+  fill: rgba(246, 242, 236, 0.9);
+  stroke: rgba(0, 0, 0, 0.72);
+  stroke-width: 4;
+}
+
+.diagram-camera {
+  fill: rgba(246, 242, 236, 0.18);
+  stroke: rgba(246, 242, 236, 0.56);
+}
+
+.diagram-light circle {
+  fill: rgba(232, 180, 92, 0.18);
+  stroke-width: 2;
+}
+
+.diagram-light line {
+  stroke-width: 1.8;
+}
+
+.diagram-key circle,
+.diagram-key line {
+  stroke: rgba(232, 180, 92, 0.92);
+}
+
+.diagram-fill circle,
+.diagram-fill line {
+  stroke: rgba(118, 168, 205, 0.76);
+}
+
+.diagram-rim circle,
+.diagram-rim line {
+  stroke: rgba(246, 242, 236, 0.7);
+}
+
+.lighting-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lighting-stats span {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--line);
+  color: rgba(246, 242, 236, 0.76);
+  font-size: 0.68rem;
+  font-weight: 820;
+  min-height: 26px;
+  padding: 5px 8px;
+  text-transform: uppercase;
+}
+
 @media (max-width: 1180px) {
   .studio-bar {
     grid-template-columns: 1fr;
