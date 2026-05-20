@@ -8,12 +8,17 @@ export type Frame = {
   src: string;
   score: number;
   title: string;
+  filmTitle?: string;
   productionHouse?: string;
   year?: string;
   director?: string;
   cinematographer?: string;
   sourceType?: string;
+  genres?: string[];
+  originalSourceTitle?: string;
   originalSource?: string;
+  metadataConfidence?: string;
+  metadataVerified?: boolean;
   lens?: string;
   mood: string;
   lighting?: LightingAnalysis;
@@ -280,7 +285,7 @@ function metadataValue(value?: string) {
       value,
     )
   ) {
-    return "Metadata unavailable";
+    return "Unverified metadata";
   }
 
   return value;
@@ -290,6 +295,10 @@ function sourceTypeLabel(value?: string) {
   return metadataValue(value)
     .replace(/-/g, " ")
     .replace(/\b\w/g, (character) => character.toUpperCase());
+}
+
+function displayFilmTitle(frame: Frame) {
+  return metadataValue(frame.filmTitle || frame.title);
 }
 
 export default function GalleryFeed({ frames }: GalleryFeedProps) {
@@ -331,13 +340,16 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
           frame.collections.includes(activeCollection);
         const searchable = [
           frame.filename,
+          frame.filmTitle || "",
           frame.title,
           frame.year || "",
           frame.mood,
           frame.director || "",
           frame.cinematographer || "",
           frame.sourceType || "",
+          frame.originalSourceTitle || "",
           frame.originalSource || "",
+          ...(frame.genres || []),
           frame.lens || "",
           frame.palette.join(" "),
           ...frame.tags,
@@ -800,7 +812,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       </div>
                       <div className="frame-card-meta">
                         <div className="frame-title-row">
-                          <strong>{frame.title}</strong>
+                          <strong>{displayFilmTitle(frame)}</strong>
                           <span>{frame.quality.overall}</span>
                         </div>
                         <div className="frame-card-tags" aria-label="Frame tags">
@@ -904,7 +916,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                   <span>{activeFrame.mood}</span>
                   <span>{activeFrame.aspectRatio.toFixed(2)}:1</span>
                 </div>
-                <h2>{activeFrame.title}</h2>
+                <h2>{displayFilmTitle(activeFrame)}</h2>
                 <p>{compactSourceLabel(activeFrame)}</p>
               </section>
 
@@ -949,7 +961,18 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     </div>
                     <div className="metadata-group">
                       <span>Film</span>
-                      <p>{metadataValue(activeFrame.title)}</p>
+                      <button
+                        className="metadata-title-button"
+                        type="button"
+                        onClick={() => {
+                          setSearch(displayFilmTitle(activeFrame));
+                          setActiveTag("All");
+                          setActiveCollection("All");
+                          closeModal();
+                        }}
+                      >
+                        {displayFilmTitle(activeFrame)}
+                      </button>
                       <div className="metadata-row-list">
                         <div className="metadata-row">
                           <span>Year</span>
@@ -958,6 +981,10 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                         <div className="metadata-row">
                           <span>Type</span>
                           <strong>{sourceTypeLabel(activeFrame.sourceType)}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Status</span>
+                          <strong>{activeFrame.metadataVerified ? "Verified" : "Unverified"}</strong>
                         </div>
                       </div>
                     </div>
@@ -971,7 +998,11 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                       <div className="metadata-row-list">
                         <div className="metadata-row">
                           <span>Original</span>
-                          <strong>{metadataValue(activeFrame.originalSource || activeFrame.source?.title)}</strong>
+                          <strong>{metadataValue(activeFrame.originalSourceTitle || activeFrame.originalSource || activeFrame.source?.title)}</strong>
+                        </div>
+                        <div className="metadata-row">
+                          <span>Genres</span>
+                          <strong>{activeFrame.genres?.length ? activeFrame.genres.join(", ") : metadataValue()}</strong>
                         </div>
                       </div>
                     </div>
