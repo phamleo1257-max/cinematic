@@ -24,12 +24,17 @@ type MetadataItem = {
   collections?: unknown;
   collection?: unknown;
   video?: string;
+  filmTitle?: string;
   productionHouse?: string;
   year?: string;
   director?: string;
   cinematographer?: string;
   sourceType?: string;
+  genres?: unknown;
+  originalSourceTitle?: string;
   originalSource?: string;
+  metadataConfidence?: string;
+  metadataVerified?: boolean;
   lens?: string;
   mood?: string;
   lighting?: Frame["lighting"];
@@ -439,8 +444,9 @@ async function getFrames(): Promise<Frame[]> {
     const videoInfo = readVideoInfo(item);
     const productionHouse = cleanMetadataValue(item.productionHouse) || productionHouseFor(item, videoInfo);
     const filmTitle =
+      cleanMetadataValue(item.filmTitle) ||
       cleanMetadataValue(item.title) ||
-      cleanFilmTitle(item.originalSource || videoInfo?.title || item.source?.title) ||
+      cleanFilmTitle(item.originalSourceTitle || item.originalSource || videoInfo?.title || item.source?.title) ||
       titleFor(filename, item);
     const dimensions = await imageDimensions(filename, item);
     const sourceTags = normalizeTags(
@@ -455,11 +461,16 @@ async function getFrames(): Promise<Frame[]> {
       src: `${publicPath}/${filename}`,
       score: scoreFor(filename, item, index),
       title: filmTitle,
+      filmTitle,
       productionHouse,
       year: item.year,
       cinematographer: item.cinematographer,
       sourceType: item.sourceType,
-      originalSource: item.originalSource || item.source?.title || videoInfo?.title,
+      genres: normalizeTags(item.genres),
+      originalSourceTitle: item.originalSourceTitle || item.originalSource || item.source?.title || videoInfo?.title,
+      originalSource: item.originalSourceTitle || item.originalSource || item.source?.title || videoInfo?.title,
+      metadataConfidence: item.metadataConfidence,
+      metadataVerified: item.metadataVerified,
       metrics: item.metrics || null,
       source: item.source
         ? {
