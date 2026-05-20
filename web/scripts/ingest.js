@@ -72,18 +72,39 @@ function titleCase(value) {
     .replace(/\b([a-z])/g, (match) => match.toUpperCase());
 }
 
-function normalizeSourceTitle(rawTitle) {
-  const firstSegment = compactValue(rawTitle)
-    .split(/\s+\|\s+|\s+-\s+|\s+–\s+|\s+—\s+/)[0]
+const titleNoisePattern =
+  /\b(official|final|new|full|extended|trailer|teaser|clip|promo|scene|movie|film|video|hd|uhd|4k|8k|hdr|imax|dolby|surround|flat|youtube|a24|director'?s?\s+cut|shot\s+on|cinematic|commercial|campaign|tvc)\b/gi;
+
+function cleanTitleCandidate(value) {
+  const cleaned = compactValue(value)
     .replace(/\[[^\]]+\]/g, "")
     .replace(/\([^\)]*(official|trailer|teaser|clip|hd|4k|uhd)[^\)]*\)/gi, "")
-    .replace(/\b(official|final|trailer|teaser|clip|promo|scene|movie|film|hd|uhd|4k|8k|a24)\b/gi, "")
-    .replace(/\b(full|new|extended|director'?s?\s+cut)\b/gi, "")
+    .replace(/\([12][0-9]{3}\)/g, "")
+    .replace(/#\S+/g, " ")
+    .replace(titleNoisePattern, " ")
     .replace(/[#:]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
-  return titleCase(firstSegment || rawTitle);
+  return titleCase(cleaned);
+}
+
+function titleCandidatesForSource(rawTitle) {
+  const source = compactValue(rawTitle);
+  const parts = source
+    .split(/\s+\|\s+|\s+-\s+|\s+–\s+|\s+—\s+|\/+/)
+    .map(cleanTitleCandidate)
+    .filter((part) => part.length >= 2 && !/^(trailer|teaser|clip|official)$/i.test(part));
+  const full = cleanTitleCandidate(source);
+
+  return Array.from(new Set([full, ...parts]))
+    .filter(Boolean)
+    .filter((candidate) => candidate.length >= 2)
+    .slice(0, 6);
+}
+
+function normalizeSourceTitle(rawTitle) {
+  return titleCandidatesForSource(rawTitle)[0] || titleCase(rawTitle);
 }
 
 function sourceTypeForText(value) {
@@ -126,6 +147,26 @@ function isMissingMetadataValue(value) {
 
 function metadataCacheKey(title, sourceType) {
   return slugify(`${sourceType}-${title}`);
+}
+
+function mapLegacyMetadata(metadata, originalSource, sourceType) {
+  const filmTitle = metadata.filmTitle || metadata.title || "";
+
+  return {
+    filmTitle,
+    title: filmTitle,
+    year: metadata.year || "",
+    director: metadata.director || "",
+    cinematographer: metadata.cinematographer || "",
+    sourceType: metadata.sourceType || sourceType,
+    genres: Array.isArray(metadata.genres) ? metadata.genres : [],
+    originalSourceTitle: originalSource,
+    originalSource,
+    productionHouse: metadata.productionHouse || "",
+    metadataProvider: metadata.metadataProvider || "local",
+    metadataConfidence: metadata.metadataConfidence || (metadata.metadataProvider && metadata.metadataProvider !== "local" ? "high" : "low"),
+    metadataVerified: Boolean(metadata.metadataVerified || (metadata.metadataProvider && metadata.metadataProvider !== "local")),
+  };
 }
 
 function tmdbRequestUrl(pathname, params = {}) {
@@ -189,24 +230,38 @@ async function fetchTmdbMetadata(title, sourceType) {
     return null;
   }
 
-  const credits = await fetchJsonOrNull(
-    tmdbRequestUrl(`/${searchType}/${match.id}/credits`, { language: "en-US" }),
-    headers,
-  );
+  const [credits, detail] = await Promise.all([
+    fetchJsonOrNull(
+      tmdbRequestUrl(`/${searchType}/${match.id}/credits`, { language: "en-US" }),
+      headers,
+    ),
+    fetchJsonOrNull(
+      tmdbRequestUrl(`/${searchType}/${match.id}`, { language: "en-US" }),
+      headers,
+    ),
+  ]);
   const crew = Array.isArray(credits?.crew) ? credits.crew : [];
   const director = crew.find((person) => person.job === "Director")?.name || "";
   const cinematographer =
     crew.find((person) =>
       /director of photography|cinematographer|cinematography/i.test(person.job || ""),
     )?.name || "";
+  const genres = Array.isArray(detail?.genres)
+    ? detail.genres.map((genre) => genre.name).filter(Boolean).slice(0, 4)
+    : [];
+  const filmTitle = match.title || match.name || title;
 
   return {
-    title: match.title || match.name || title,
+    filmTitle,
+    title: filmTitle,
     year: compactValue(match.release_date || match.first_air_date).slice(0, 4),
     director,
     cinematographer,
     sourceType: searchType === "tv" ? "series" : "film",
+    genres,
     metadataProvider: "tmdb",
+    metadataConfidence: match.vote_count > 3 ? "high" : "medium",
+    metadataVerified: true,
   };
 }
 
@@ -227,43 +282,61 @@ async function fetchOmdbMetadata(title, sourceType) {
   }
 
   return {
+    filmTitle: match.Title || title,
     title: match.Title || title,
     year: match.Year ? String(match.Year).slice(0, 4) : "",
     director: match.Director && match.Director !== "N/A" ? match.Director : "",
     cinematographer: "",
     sourceType: match.Type === "series" ? "series" : sourceType,
+    genres: match.Genre && match.Genre !== "N/A" ? match.Genre.split(",").map((genre) => genre.trim()).slice(0, 4) : [],
     metadataProvider: "omdb",
+    metadataConfidence: "medium",
+    metadataVerified: true,
   };
 }
 
 async function enrichSourceMetadata(info, cache) {
   const originalSource = compactValue(info.title);
-  const normalizedTitle = normalizeSourceTitle(originalSource);
+  const candidates = titleCandidatesForSource(originalSource);
+  const normalizedTitle = candidates[0] || normalizeSourceTitle(originalSource);
   const sourceType = sourceTypeForText(`${originalSource} ${info.query}`);
   const key = metadataCacheKey(normalizedTitle, sourceType);
 
   if (cache[key]) {
-    return {
-      ...cache[key],
-      originalSource,
-    };
+    const mapped = mapLegacyMetadata(cache[key], originalSource, sourceType);
+    cache[key] = mapped;
+    return mapped;
   }
 
-  const remoteMetadata =
-    (await fetchTmdbMetadata(normalizedTitle, sourceType)) ||
-    (await fetchOmdbMetadata(normalizedTitle, sourceType));
+  let remoteMetadata = null;
+
+  for (const candidate of candidates) {
+    remoteMetadata =
+      (await fetchTmdbMetadata(candidate, sourceType)) ||
+      (await fetchOmdbMetadata(candidate, sourceType));
+
+    if (remoteMetadata) {
+      break;
+    }
+  }
+
   const fallback = {
-    title: normalizedTitle || "Metadata unavailable",
+    filmTitle: normalizedTitle || "Unverified metadata",
+    title: normalizedTitle || "Unverified metadata",
     year: releaseYearForInfo(info),
     director: "",
     cinematographer: "",
     sourceType,
+    genres: [],
     metadataProvider: "local",
+    metadataConfidence: "low",
+    metadataVerified: false,
   };
   const metadata = {
     ...fallback,
     ...(remoteMetadata || {}),
     productionHouse: productionHouseForInfo(info),
+    originalSourceTitle: originalSource,
     originalSource,
   };
 
@@ -986,14 +1059,19 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats, meta
 
       const frame = {
         filename,
-        title: sourceMetadata.title || archiveTitleFor({ mood, tags: tagsFor(metrics), aspectRatio: metrics.aspectRatio }),
+        filmTitle: sourceMetadata.filmTitle || sourceMetadata.title || "Unverified metadata",
+        title: sourceMetadata.filmTitle || sourceMetadata.title || archiveTitleFor({ mood, tags: tagsFor(metrics), aspectRatio: metrics.aspectRatio }),
         year: sourceMetadata.year || "",
         director: sourceMetadata.director || "",
         cinematographer: sourceMetadata.cinematographer || "",
         sourceType: sourceMetadata.sourceType || sourceTypeForText(`${info.title} ${info.query}`),
-        originalSource: sourceMetadata.originalSource || info.title,
+        genres: sourceMetadata.genres || [],
+        originalSourceTitle: sourceMetadata.originalSourceTitle || sourceMetadata.originalSource || info.title,
+        originalSource: sourceMetadata.originalSourceTitle || sourceMetadata.originalSource || info.title,
         productionHouse: sourceMetadata.productionHouse || "",
         metadataProvider: sourceMetadata.metadataProvider || "local",
+        metadataConfidence: sourceMetadata.metadataConfidence || "low",
+        metadataVerified: Boolean(sourceMetadata.metadataVerified),
         score: Math.max(metrics.score, quality.overall),
         cinematicScore: quality.overall,
         mood,
@@ -1019,7 +1097,7 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats, meta
         aspectRatio: Number(metrics.aspectRatio.toFixed(4)),
         source: {
           video: path.relative(cwd, videoPath),
-          title: sourceMetadata.originalSource || info.title,
+          title: sourceMetadata.originalSourceTitle || sourceMetadata.originalSource || info.title,
           url: info.url,
           query: info.query,
         },
@@ -1081,29 +1159,36 @@ async function main() {
   const frames = Array.from(byFilename.values())
     .map((frame) => {
       const originalSource =
+        frame.originalSourceTitle ||
         frame.originalSource ||
         frame.source?.title ||
         frame.video ||
         frame.title ||
         "";
       const normalizedTitle = normalizeSourceTitle(
-        originalSource || frame.title || "Metadata unavailable",
+        originalSource || frame.filmTitle || frame.title || "Unverified metadata",
       );
-      const title = isMissingMetadataValue(frame.title)
+      const filmTitle = isMissingMetadataValue(frame.filmTitle || frame.title)
         ? isMissingMetadataValue(normalizedTitle)
-          ? "Metadata unavailable"
+          ? "Unverified metadata"
           : normalizedTitle
-        : frame.title;
+        : frame.filmTitle || frame.title;
       const sourceType = frame.sourceType || sourceTypeForText(`${originalSource} ${frame.source?.query || ""}`);
+      const metadataVerified = Boolean(frame.metadataVerified || (frame.metadataProvider && frame.metadataProvider !== "local"));
 
       return {
         ...frame,
-        title,
+        filmTitle,
+        title: filmTitle,
         year: frame.year || "",
         director: isMissingMetadataValue(frame.director) ? "" : frame.director,
         cinematographer: isMissingMetadataValue(frame.cinematographer) ? "" : frame.cinematographer,
         sourceType,
+        genres: Array.isArray(frame.genres) ? frame.genres : [],
+        originalSourceTitle: isMissingMetadataValue(originalSource) ? "" : originalSource,
         originalSource: isMissingMetadataValue(originalSource) ? "" : originalSource,
+        metadataConfidence: frame.metadataConfidence || (metadataVerified ? "medium" : "low"),
+        metadataVerified,
         productionHouse: isMissingMetadataValue(frame.productionHouse)
           ? productionHouseForInfo({
               title: originalSource,
