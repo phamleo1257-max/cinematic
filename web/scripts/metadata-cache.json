@@ -20,14 +20,23 @@
     "originalSource": "Irene - A Cinematic Fashion Film - SONY A7III | 4K"
   },
   "film-backrooms": {
+    "filmTitle": "Backrooms",
     "title": "Backrooms",
     "year": "2026",
-    "director": "",
-    "cinematographer": "",
+    "director": "Kane Parsons",
+    "cinematographer": "Jeremy Cox",
     "sourceType": "film",
-    "metadataProvider": "local",
+    "genres": [
+      "Horror",
+      "Mystery",
+      "Science Fiction"
+    ],
+    "originalSourceTitle": "Backrooms | Official Promo | A24",
+    "originalSource": "Backrooms | Official Promo | A24",
     "productionHouse": "A24",
-    "originalSource": "Backrooms | Official Trailer HD | A24"
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
   },
   "commercial-sauvage-eau-forte": {
     "title": "Sauvage Eau Forte",
@@ -70,13 +79,18 @@
     "originalSource": "Nightmare Alley (2021) 4K HDR 60fps"
   },
   "commercial-luxury-watch-ad": {
+    "filmTitle": "Luxury Watch Ad",
     "title": "Luxury Watch Ad",
     "year": "2021",
     "director": "",
     "cinematographer": "",
     "sourceType": "commercial",
+    "genres": [],
     "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
     "productionHouse": "AI CineVerse Studios",
+    "originalSourceTitle": "Luxury Watch Ad",
     "originalSource": "Luxury Watch Ad"
   },
   "film-f1-the-2025": {
@@ -130,13 +144,18 @@
     "originalSource": "One Direction - Story of My Life (Official 4K Video)"
   },
   "short-film-open-up-vampire-short-neo-noir-edit": {
+    "filmTitle": "\"Open Up\" Vampire Short Neo Noir Edit.",
     "title": "\"Open Up\" Vampire Short Neo Noir Edit.",
     "year": "2021",
     "director": "",
     "cinematographer": "",
     "sourceType": "short film",
+    "genres": [],
     "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
     "productionHouse": "Rob Gurney",
+    "originalSourceTitle": "(4K) \"Open up\" Vampire Short film : Neo Noir edit.",
     "originalSource": "(4K) \"Open up\" Vampire Short film : Neo Noir edit."
   },
   "short-film-2-am-coffee": {
@@ -210,14 +229,23 @@
     "originalSource": "4K HDR IMAX | Wanda in Mirror Dimension - Doctor Strange in the Multiverse of Madness | Dolby 5.1"
   },
   "film-avatar-fire-and-ash": {
-    "title": "Avatar Fire And Ash",
+    "filmTitle": "Avatar: Fire and Ash",
+    "title": "Avatar: Fire and Ash",
     "year": "2025",
-    "director": "",
-    "cinematographer": "",
+    "director": "James Cameron",
+    "cinematographer": "Russell Carpenter",
     "sourceType": "film",
-    "metadataProvider": "local",
+    "genres": [
+      "Science Fiction",
+      "Adventure",
+      "Fantasy"
+    ],
+    "originalSourceTitle": "Avatar: Fire and Ash | Official Trailer",
+    "originalSource": "Avatar: Fire and Ash | Official Trailer",
     "productionHouse": "Avatar",
-    "originalSource": "Avatar: Fire and Ash | Official Trailer"
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
   },
   "short-film-bittersweet-life-as-we-know-it": {
     "title": "Bittersweet- Life, As We Know It...",
@@ -240,13 +268,18 @@
     "originalSource": "Lewis Hamilton Vs Brad Pitt - Final Race Scene | F1 (2025) Movie CLIP 4K"
   },
   "film-after-dark-neo-noir-cinema-collection-one": {
-    "title": "After Dark Neo Noir Cinema Collection One",
+    "filmTitle": "After Dark Neo Noir Cinema Collection One |",
+    "title": "After Dark Neo Noir Cinema Collection One |",
     "year": "2022",
     "director": "",
     "cinematographer": "",
     "sourceType": "film",
+    "genres": [],
     "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
     "productionHouse": "Imprint Films",
+    "originalSourceTitle": "After Dark: Neo Noir Cinema Collection One | Movie Trailer HD",
     "originalSource": "After Dark: Neo Noir Cinema Collection One | Movie Trailer HD"
   },
   "commercial-luxury-spa-commercial": {
@@ -258,5 +291,442 @@
     "metadataProvider": "local",
     "productionHouse": "VLAD ŠMIGELSKI",
     "originalSource": "Luxury Spa Commercial | Shot on BMPCC 4K | Director’s Cut"
+  },
+  "commercial-a-fashion-blackmagic-pocket-laowa-9mm-ronin-rs2-paris": {
+    "filmTitle": "Barbie: A Fashion Fairytale",
+    "title": "Barbie: A Fashion Fairytale",
+    "year": "2010",
+    "director": "William Lau",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [
+      "Family",
+      "Animation"
+    ],
+    "originalSourceTitle": "A Cinematic fashion film - BLACKMAGIC POCKET 4K + Laowa 9mm + RONIN RS2, Paris.",
+    "originalSource": "A Cinematic fashion film - BLACKMAGIC POCKET 4K + Laowa 9mm + RONIN RS2, Paris.",
+    "productionHouse": "Michał Palikot",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "commercial-irene-a-fashion-sony-a7iii": {
+    "filmTitle": "Me, Myself & Irene",
+    "title": "Me, Myself & Irene",
+    "year": "2000",
+    "director": "Peter Farrelly",
+    "cinematographer": "Mark Irwin",
+    "sourceType": "film",
+    "genres": [
+      "Comedy"
+    ],
+    "originalSourceTitle": "Irene - A Cinematic Fashion Film - SONY A7III | 4K",
+    "originalSource": "Irene - A Cinematic Fashion Film - SONY A7III | 4K",
+    "productionHouse": "Luca Del Vigo",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "commercial-sauvage-eau-forte-complementary": {
+    "filmTitle": "Complementary Cubes",
+    "title": "Complementary Cubes",
+    "year": "1975",
+    "director": "Manfred Mohr",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "originalSourceTitle": "Sauvage Eau Forte - TVC Complementary",
+    "originalSource": "Sauvage Eau Forte - TVC Complementary",
+    "productionHouse": "Christian Dior",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "music-video-skyfall-james-bond-daniel-craig-theme-song-adele": {
+    "filmTitle": "Skyfall",
+    "title": "Skyfall",
+    "year": "2012",
+    "director": "Sam Mendes",
+    "cinematographer": "Roger Deakins",
+    "sourceType": "film",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Thriller"
+    ],
+    "originalSourceTitle": "Skyfall | James Bond | Daniel Craig | 4K | Theme Song | Adele",
+    "originalSource": "Skyfall | James Bond | Daniel Craig | 4K | Theme Song | Adele",
+    "productionHouse": "smarTVirus",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "commercial-the-dior-spring-summer-2024": {
+    "filmTitle": "The Dior Spring-Summer 2024",
+    "title": "The Dior Spring-Summer 2024",
+    "year": "2024",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "commercial",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Christian Dior",
+    "originalSourceTitle": "The Dior Spring-Summer 2024 Campaign Video",
+    "originalSource": "The Dior Spring-Summer 2024 Campaign Video"
+  },
+  "film-nightmare-alley-60fps": {
+    "filmTitle": "Nightmare Alley 60fps",
+    "title": "Nightmare Alley 60fps",
+    "year": "2021",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Motion Picture Reel",
+    "originalSourceTitle": "Nightmare Alley (2021) 4K HDR 60fps",
+    "originalSource": "Nightmare Alley (2021) 4K HDR 60fps"
+  },
+  "film-f1-the-2-enhance-studio-ai-1-7-5": {
+    "filmTitle": "F1: Chasing the Dream",
+    "title": "F1: Chasing the Dream",
+    "year": "2007",
+    "director": "Russell England",
+    "cinematographer": "Oliver Schofield",
+    "sourceType": "film",
+    "genres": [
+      "Documentary"
+    ],
+    "originalSourceTitle": "F1 The Movie (2025) | 4K HDR Trailer 2 🎞 Video Enhance Studio AI 1.7.5",
+    "originalSource": "F1 The Movie (2025) | 4K HDR Trailer 2 🎞 Video Enhance Studio AI 1.7.5",
+    "productionHouse": "HDR-X",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "commercial-the-perfect-porsche": {
+    "filmTitle": "The Perfect Porsche | |",
+    "title": "The Perfect Porsche | |",
+    "year": "2024",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "commercial",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Brennan Wright",
+    "originalSourceTitle": "The Perfect Porsche Cinematic |4K|",
+    "originalSource": "The Perfect Porsche Cinematic |4K|"
+  },
+  "film-iron-man-vs-thanos-5-1hindi": {
+    "filmTitle": "- Iron Man Vs Thanos | 5.1hindi",
+    "title": "- Iron Man Vs Thanos | 5.1hindi",
+    "year": "2022",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "4K Movie Clips",
+    "originalSourceTitle": "4K IMAX - Iron Man VS Thanos | DOLBY 5.1Hindi",
+    "originalSource": "4K IMAX - Iron Man VS Thanos | DOLBY 5.1Hindi"
+  },
+  "short-film-the-fox-and-the-bird-cgi-short-by-fred-and-sam-guillaume": {
+    "filmTitle": "The Fox & the Bird",
+    "title": "The Fox & the Bird",
+    "year": "2019",
+    "director": "Frédéric Guillaume",
+    "cinematographer": "Guionne Leroy",
+    "sourceType": "film",
+    "genres": [
+      "Animation"
+    ],
+    "originalSourceTitle": "The Fox and the Bird - CGI short film by Fred and Sam Guillaume",
+    "originalSource": "The Fox and the Bird - CGI short film by Fred and Sam Guillaume",
+    "productionHouse": "MAGNETFILM",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "music-video-one-direction-story-of-my-life": {
+    "filmTitle": "One Direction: This Is Us",
+    "title": "One Direction: This Is Us",
+    "year": "2013",
+    "director": "Morgan Spurlock",
+    "cinematographer": "Neil Harvey",
+    "sourceType": "film",
+    "genres": [
+      "Documentary",
+      "Music"
+    ],
+    "originalSourceTitle": "One Direction - Story of My Life (Official 4K Video)",
+    "originalSource": "One Direction - Story of My Life (Official 4K Video)",
+    "productionHouse": "One Direction",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "short-film-2-am-coffee-a-short-sony-fx3": {
+    "filmTitle": "2 AM Coffee",
+    "title": "2 AM Coffee",
+    "year": "2023",
+    "director": "Ayush Karki",
+    "cinematographer": "Robidh Basnet",
+    "sourceType": "film",
+    "genres": [],
+    "originalSourceTitle": "2 AM COFFEE - A short film | Sony FX3 | 4K",
+    "originalSource": "2 AM COFFEE - A short film | Sony FX3 | 4K",
+    "productionHouse": "Forrain",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "commercial-bulgari-unexpected-wonders-a-by-paolo-sorrentino": {
+    "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
+    "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
+    "year": "2022",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "commercial",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Bvlgari",
+    "originalSourceTitle": "Bulgari Unexpected Wonders - a movie by Paolo Sorrentino (Director's cut)",
+    "originalSource": "Bulgari Unexpected Wonders - a movie by Paolo Sorrentino (Director's cut)"
+  },
+  "commercial-bmw-m3-competition-short": {
+    "filmTitle": "Sweet 'n Short",
+    "title": "Sweet 'n Short",
+    "year": "1991",
+    "director": "Gray Hofmeyr",
+    "cinematographer": "James Robb",
+    "sourceType": "film",
+    "genres": [
+      "Comedy"
+    ],
+    "originalSourceTitle": "BMW M3 Competition - 4K Cinematic Short Video",
+    "originalSource": "BMW M3 Competition - 4K Cinematic Short Video",
+    "productionHouse": "Damir Who",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-warfare-5-1": {
+    "filmTitle": "Cardboard Warfare 1.5",
+    "title": "Cardboard Warfare 1.5",
+    "year": "2010",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "originalSourceTitle": "Trailer | Warfare (A24) | 4K HDR | Dolby 5.1 #4K #10bit #Surround #Flat",
+    "originalSource": "Trailer | Warfare (A24) | 4K HDR | Dolby 5.1 #4K #10bit #Surround #Flat",
+    "productionHouse": "A24",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "commercial-bmw-428i-xdrive-m-sport-bmpcc-sigma-18-35mm": {
+    "filmTitle": "Bmw 428i Xdrive M-Sport | Bmpcc & Sigma 18-35mm",
+    "title": "Bmw 428i Xdrive M-Sport | Bmpcc & Sigma 18-35mm",
+    "year": "2019",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "commercial",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Brian Durkee",
+    "originalSourceTitle": "BMW 428i xDrive M-Sport Commercial | Shot on BMPCC 4K & Sigma 18-35mm",
+    "originalSource": "BMW 428i xDrive M-Sport Commercial | Shot on BMPCC 4K & Sigma 18-35mm"
+  },
+  "commercial-suv-spec": {
+    "filmTitle": "Suv Spec /",
+    "title": "Suv Spec /",
+    "year": "2026",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "commercial",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Je t'aime Jacx",
+    "originalSourceTitle": "SUV Spec Commercial / film 4k",
+    "originalSource": "SUV Spec Commercial / film 4k"
+  },
+  "film-wanda-in-mirror-dimension-doctor-strange-in-the-multiverse-of-madness-5-1": {
+    "filmTitle": "Doctor Strange in the Multiverse of Madness",
+    "title": "Doctor Strange in the Multiverse of Madness",
+    "year": "2022",
+    "director": "Sam Raimi",
+    "cinematographer": "John Mathieson",
+    "sourceType": "film",
+    "genres": [
+      "Fantasy",
+      "Action",
+      "Adventure"
+    ],
+    "originalSourceTitle": "4K HDR IMAX | Wanda in Mirror Dimension - Doctor Strange in the Multiverse of Madness | Dolby 5.1",
+    "originalSource": "4K HDR IMAX | Wanda in Mirror Dimension - Doctor Strange in the Multiverse of Madness | Dolby 5.1",
+    "productionHouse": "4K Clips And Trailers",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "short-film-bittersweet-life-as-we-know-it-indian-short-english-language": {
+    "filmTitle": "English Language Enthusiast",
+    "title": "English Language Enthusiast",
+    "year": "2023",
+    "director": "Hilary Bowen-Walsh",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [
+      "Comedy"
+    ],
+    "originalSourceTitle": "Bittersweet- Life, as we know it... | Indian Short Film | English Language | 4K",
+    "originalSource": "Bittersweet- Life, as we know it... | Indian Short Film | English Language | 4K",
+    "productionHouse": "ChipNDale productions",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "commercial-lewis-hamilton-vs-brad-pitt-race-f1": {
+    "filmTitle": "Death Race",
+    "title": "Death Race",
+    "year": "2008",
+    "director": "Paul W. S. Anderson",
+    "cinematographer": "Scott Kevan",
+    "sourceType": "film",
+    "genres": [
+      "Action",
+      "Thriller",
+      "Science Fiction"
+    ],
+    "originalSourceTitle": "Lewis Hamilton Vs Brad Pitt - Final Race Scene | F1 (2025) Movie CLIP 4K",
+    "originalSource": "Lewis Hamilton Vs Brad Pitt - Final Race Scene | F1 (2025) Movie CLIP 4K",
+    "productionHouse": "JoBlo Movie Clips",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "commercial-luxury-spa-bmpcc-director-s-cut": {
+    "filmTitle": "Director's Cut",
+    "title": "Director's Cut",
+    "year": "2024",
+    "director": "Don Capria",
+    "cinematographer": "Bliss Bussant",
+    "sourceType": "film",
+    "genres": [
+      "Music",
+      "Horror",
+      "Thriller"
+    ],
+    "originalSourceTitle": "Luxury Spa Commercial | Shot on BMPCC 4K | Director’s Cut",
+    "originalSource": "Luxury Spa Commercial | Shot on BMPCC 4K | Director’s Cut",
+    "productionHouse": "VLAD ŠMIGELSKI",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "film-warm-archive-still": {
+    "filmTitle": "Warm Archive Still",
+    "title": "Warm Archive Still",
+    "year": "",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Internet Archive",
+    "originalSourceTitle": "Warm Archive Still",
+    "originalSource": "Warm Archive Still"
+  },
+  "film-cold-archive-still": {
+    "filmTitle": "Cold Archive Still",
+    "title": "Cold Archive Still",
+    "year": "",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Internet Archive",
+    "originalSourceTitle": "Cold Archive Still",
+    "originalSource": "Cold Archive Still"
+  },
+  "film-avengers-endgame-battle-60fps-avengers-assemble": {
+    "filmTitle": "Avengers Endgame Battle 60fps 'Avengers Assemble'",
+    "title": "Avengers Endgame Battle 60fps 'Avengers Assemble'",
+    "year": "2024",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Fun Extreme",
+    "originalSourceTitle": "Avengers Endgame Final Battle Scene 4K 60fps 'Avengers Assemble'",
+    "originalSource": "Avengers Endgame Final Battle Scene 4K 60fps 'Avengers Assemble'"
+  },
+  "short-film-high-contrast-frame": {
+    "filmTitle": "High Contrast Frame",
+    "title": "High Contrast Frame",
+    "year": "",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "short film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "",
+    "originalSourceTitle": "High Contrast Frame",
+    "originalSource": "High Contrast Frame"
+  },
+  "short-film-warm-archive-still": {
+    "filmTitle": "Warm Archive Still",
+    "title": "Warm Archive Still",
+    "year": "",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "short film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Internet Archive",
+    "originalSourceTitle": "Warm Archive Still",
+    "originalSource": "Warm Archive Still"
+  },
+  "short-film-cold-archive-still": {
+    "filmTitle": "Cold Archive Still",
+    "title": "Cold Archive Still",
+    "year": "",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "short film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Internet Archive",
+    "originalSourceTitle": "Cold Archive Still",
+    "originalSource": "Cold Archive Still"
   }
 }
