@@ -11,28 +11,53 @@ const videosDir = path.join(cwd, "videos");
 const archivePath =
   process.env.DOWNLOAD_ARCHIVE ||
   path.join(cwd, "public", "bestframes", "downloaded.txt");
+const curatedFilms = (
+  process.env.CURATED_FILMS ||
+  [
+    "Blade Runner 2049",
+    "Dune",
+    "Dune Part Two",
+    "The Batman",
+    "Skyfall",
+    "Oppenheimer",
+    "Arrival",
+    "Sicario",
+    "Drive",
+    "Her",
+    "La La Land",
+    "The Revenant",
+    "No Country for Old Men",
+    "Joker",
+    "1917",
+    "Interstellar",
+    "Mission Impossible Fallout",
+    "Mad Max Fury Road",
+    "The Creator",
+    "John Wick 4",
+  ].join("|")
+)
+  .split("|")
+  .map((film) => film.trim())
+  .filter(Boolean);
+const cleanSourceQueries = [
+  "official trailer",
+  "official clip",
+  "scene no commentary",
+  "film trailer",
+];
 const queries = (
   process.env.CINEMATIC_QUERIES ||
-  [
-    "A24 official trailer 4k",
-    "cinematic movie scene 4k",
-    "film trailer 4k official",
-    "music video cinematic 4k official",
-    "commercial film 4k director cut",
-    "luxury commercial cinematic 4k",
-    "car commercial cinematic 4k",
-    "fashion film cinematic 4k",
-    "sci fi movie scene 4k",
-    "neo noir movie scene 4k",
-    "award winning short film 4k",
-    "movie clip official 4k",
-  ].join("|")
+  curatedFilms
+    .flatMap((film) => cleanSourceQueries.map((suffix) => `${film} ${suffix}`))
+    .join("|")
 )
   .split("|")
   .map((query) => query.trim())
   .filter(Boolean);
-const resultsPerQuery = Number(process.env.RESULTS_PER_QUERY || 3);
-const providers = (process.env.DISCOVERY_PROVIDERS || "archive,youtube")
+const resultsPerQuery = Number(process.env.RESULTS_PER_QUERY || 2);
+const targetAcceptedFrames = Number(process.env.TARGET_ACCEPTED_FRAMES || 800);
+const maxDiscoveryAttempts = Number(process.env.MAX_DISCOVERY_ATTEMPTS || queries.length);
+const providers = (process.env.DISCOVERY_PROVIDERS || "youtube")
   .split(",")
   .map((provider) => provider.trim().toLowerCase())
   .filter(Boolean);
@@ -47,6 +72,7 @@ const blockedSourceTerms = [
   "setup",
   "review",
   "camera",
+  "reaction",
   "filmmaking",
   "commercial filmmaking",
   "best scenes",
@@ -62,6 +88,8 @@ const blockedSourceTerms = [
   "filmmaking advice",
   "breakdown",
   "explained",
+  "text overlay",
+  "bts",
   "behind the scenes",
   "lesson",
   "course",
@@ -72,17 +100,9 @@ const blockedSourceTerms = [
 ];
 const preferredSourceTerms = [
   "official trailer",
-  "fashion film",
-  "luxury commercial",
-  "car commercial",
-  "short film",
-  "music video",
-  "a24",
-  "noir",
-  "sci-fi",
-  "sci fi",
-  "director cut",
-  "director's cut",
+  "official clip",
+  "scene no commentary",
+  "film trailer",
 ];
 const blockedTitlePattern = `(?i)(${blockedSourceTerms
   .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"))
@@ -90,7 +110,24 @@ const blockedTitlePattern = `(?i)(${blockedSourceTerms
 const matchFilter = [
   "duration < 1800",
   `title !~= '${blockedTitlePattern}'`,
+  `title ~= '(?i)(official\\s+trailer|official\\s+clip|scene\\s+no\\s+commentary|film\\s+trailer)'`,
 ].join(" & ");
+
+function currentAcceptedFrameCount() {
+  const metadataPath = path.join(cwd, "public", "bestframes", "metadata.json");
+
+  try {
+    if (!fs.existsSync(metadataPath)) {
+      return 0;
+    }
+
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
+    const frames = Array.isArray(metadata.frames) ? metadata.frames : Array.isArray(metadata) ? metadata : [];
+    return frames.filter((frame) => frame.mainFeed !== false && frame.metadataVerified).length;
+  } catch {
+    return 0;
+  }
+}
 
 function hasBlockedSourceText(value) {
   const normalized = String(value || "").toLowerCase();
@@ -168,6 +205,8 @@ async function downloadQuery(query) {
     "-o",
     path.join(videosDir, "%(id)s.%(ext)s"),
   ]);
+
+  console.log(`Downloaded/search completed: ${query}`);
 }
 
 async function fetchJson(url) {
@@ -304,10 +343,11 @@ async function downloadArchiveQuery(query, downloaded) {
 async function main() {
   fs.mkdirSync(videosDir, { recursive: true });
   const downloaded = readArchive();
+  const initialAcceptedFrames = currentAcceptedFrameCount();
 
   if (process.env.DRY_RUN === "1") {
     console.log(
-      `Discovery ready: ${providers.join(", ")} providers, ${queries.length} queries, output ${videosDir}`,
+      `Discovery ready: ${providers.join(", ")} providers, ${queries.length} curated queries, target ${targetAcceptedFrames}, current ${initialAcceptedFrames}, output ${videosDir}`,
     );
     return;
   }
@@ -319,13 +359,25 @@ async function main() {
   }
 
   if (providers.includes("youtube")) {
+    let attempts = 0;
+
     for (const query of queries) {
+      if (attempts >= maxDiscoveryAttempts || currentAcceptedFrameCount() >= targetAcceptedFrames) {
+        break;
+      }
+
+      attempts += 1;
+
       try {
         await downloadQuery(query);
       } catch (error) {
         console.warn(`YouTube query skipped: ${error.message}`);
       }
     }
+
+    console.log(
+      `Discovery attempts: ${attempts}/${maxDiscoveryAttempts}. Accepted frames before ingest: ${currentAcceptedFrameCount()}/${targetAcceptedFrames}.`,
+    );
   }
 
   if (!process.argv.includes("--no-ingest")) {

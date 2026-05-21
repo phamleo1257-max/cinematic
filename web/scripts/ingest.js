@@ -15,14 +15,15 @@ const metadataCachePath = path.join(cwd, "scripts", "metadata-cache.json");
 const videoExtensions = new Set([".mp4", ".mov", ".mkv", ".webm"]);
 const maxFramesPerVideo = Number(process.env.MAX_FRAMES_PER_VIDEO || 12);
 const extractFps = process.env.EXTRACT_FPS || "1/4";
-const minScore = Number(process.env.MIN_FRAME_SCORE || 34);
-const minContrast = Number(process.env.MIN_FRAME_CONTRAST || 20);
-const minColorRichness = Number(process.env.MIN_FRAME_COLOR || 10);
+const minScore = Number(process.env.MIN_FRAME_SCORE || 42);
+const minContrast = Number(process.env.MIN_FRAME_CONTRAST || 24);
+const minColorRichness = Number(process.env.MIN_FRAME_COLOR || 14);
 const minBrightness = Number(process.env.MIN_FRAME_BRIGHTNESS || 24);
 const maxBrightness = Number(process.env.MAX_FRAME_BRIGHTNESS || 232);
 const minFrameWidth = Number(process.env.MIN_FRAME_WIDTH || 1920);
 const minFrameHeight = Number(process.env.MIN_FRAME_HEIGHT || 1080);
-const minSharpness = Number(process.env.MIN_FRAME_SHARPNESS || 18);
+const minSharpness = Number(process.env.MIN_FRAME_SHARPNESS || 22);
+const minMainFeedScore = Number(process.env.MIN_MAIN_FEED_SCORE || 58);
 const nearbyDuplicateDistance = Number(process.env.NEARBY_DUPLICATE_DISTANCE || 0.2);
 const globalDuplicateDistance = Number(process.env.GLOBAL_DUPLICATE_DISTANCE || 0.13);
 const minAspectRatio = Number(process.env.MIN_FRAME_ASPECT_RATIO || 1.55);
@@ -544,6 +545,13 @@ async function imageMetrics(imagePath) {
     (brightness > 170 && saturation > 36 && contrast < 48) ||
     (brightness > 155 && sharpness > 36 && colorRichness < 28);
   const compressionRisk = blockiness > 1.32 && sharpness < 24;
+  const splitScreenRisk = splitScreenRiskFor(luminance, width, height, contrast);
+  const thumbnailStyleRisk =
+    (brightness > 166 && saturation > 48 && edgeEnergy > 20 && contrast > 48) ||
+    (brightPixels / pixels > 0.18 && saturation > 50 && sharpness > 38);
+  const uiGraphicRisk =
+    (brightness > 150 && saturation < 18 && edgeEnergy > 28 && sharpness > 42) ||
+    (brightness > 180 && contrast < 30 && colorRichness < 20);
   const spatial = spatialLightStats(luminance, width, height, brightness);
   const score = Math.round(
     contrast * 0.36 +
@@ -570,10 +578,13 @@ async function imageMetrics(imagePath) {
     blownHighlightRisk,
     compressionRisk,
     diagramRisk,
+    splitScreenRisk,
     saturation,
     sharpness,
     palette,
     textOverlayRisk,
+    thumbnailStyleRisk,
+    uiGraphicRisk,
     warmth: redAvg - blueAvg,
     spatial,
     width: originalWidth,
@@ -775,6 +786,26 @@ function blockinessFor(luminance, width, height) {
   return (boundaryDiff / Math.max(boundaryCount, 1)) / (naturalDiff / Math.max(naturalCount, 1));
 }
 
+function splitScreenRiskFor(luminance, width, height, contrast) {
+  const centerX = Math.floor(width / 2);
+  const centerY = Math.floor(height / 2);
+  let vertical = 0;
+  let horizontal = 0;
+
+  for (let y = 2; y < height - 2; y += 1) {
+    vertical += Math.abs(luminance[y * width + centerX - 1] - luminance[y * width + centerX + 1]);
+  }
+
+  for (let x = 2; x < width - 2; x += 1) {
+    horizontal += Math.abs(luminance[(centerY - 1) * width + x] - luminance[(centerY + 1) * width + x]);
+  }
+
+  vertical /= Math.max(height - 4, 1);
+  horizontal /= Math.max(width - 4, 1);
+
+  return (vertical > contrast * 0.72 && vertical > 30) || (horizontal > contrast * 0.72 && horizontal > 30);
+}
+
 function spatialLightStats(luminance, width, height, brightness) {
   let subjectWeight = 0;
   let subjectX = 0;
@@ -888,6 +919,9 @@ function rejectionReasonFor(metrics) {
   if (
     metrics.textOverlayRisk ||
     metrics.diagramRisk ||
+    metrics.thumbnailStyleRisk ||
+    metrics.uiGraphicRisk ||
+    metrics.splitScreenRisk ||
     (metrics.brightness > 175 && metrics.saturation > 42 && metrics.contrast < 46)
   ) {
     return "textGraphicBoard";
@@ -938,6 +972,8 @@ function collectionsFor(frame) {
     new Set(
       [
         "all frames",
+        frame.mainFeed ? "main feed" : null,
+        frame.metadataVerified ? null : "unverified",
         frame.tags.includes("high-contrast") ? "high contrast" : null,
         frame.tags.includes("dark") ? "noir energy" : null,
         frame.tags.includes("warm") ? "warm palette" : null,
@@ -1142,6 +1178,9 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats, meta
           saturation: Number(metrics.saturation.toFixed(2)),
           sharpness: Number(metrics.sharpness.toFixed(2)),
           blackBars: metrics.blackBars,
+          splitScreenRisk: metrics.splitScreenRisk,
+          thumbnailStyleRisk: metrics.thumbnailStyleRisk,
+          uiGraphicRisk: metrics.uiGraphicRisk,
         },
         signature: metrics.signature,
         colorSignature: metrics.colorSignature,
@@ -1156,11 +1195,25 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats, meta
         },
       };
 
+      frame.mainFeed = Boolean(
+        frame.metadataVerified &&
+          quality.overall >= minMainFeedScore &&
+          metrics.score >= minScore &&
+          !metrics.textOverlayRisk &&
+          !metrics.diagramRisk &&
+          !metrics.thumbnailStyleRisk &&
+          !metrics.uiGraphicRisk &&
+          !metrics.splitScreenRisk,
+      );
       frame.collections = collectionsFor(frame);
       return frame;
     }));
 
-  return selectedFrames.filter(Boolean);
+  const acceptedFrames = selectedFrames.filter(Boolean);
+  console.log(
+    `${info.title} accepted: ${acceptedFrames.length}, main feed: ${acceptedFrames.filter((frame) => frame.mainFeed).length}`,
+  );
+  return acceptedFrames;
 }
 
 function buildCollections(frames) {
@@ -1246,9 +1299,25 @@ async function main() {
           frame.metadataVerified ||
           (frame.metadataProvider && frame.metadataProvider !== "local"),
       );
+      const mainFeed = Boolean(
+        metadataVerified &&
+          (frame.quality?.overall || frame.cinematicScore || frame.score || 0) >= minMainFeedScore &&
+          !frame.metrics?.splitScreenRisk &&
+          !frame.metrics?.thumbnailStyleRisk &&
+          !frame.metrics?.uiGraphicRisk,
+      );
+      const baseCollections = Array.isArray(frame.collections) ? frame.collections : [];
+      const collections = Array.from(
+        new Set([
+          ...baseCollections,
+          mainFeed ? "main feed" : null,
+          metadataVerified ? null : "unverified",
+        ].filter(Boolean).map((collection) => String(collection).toLowerCase())),
+      );
 
       return {
         ...frame,
+        mainFeed,
         filmTitle,
         title: filmTitle,
         year: enriched?.year || frame.year || "",
@@ -1261,6 +1330,7 @@ async function main() {
         metadataProvider: enriched?.metadataProvider || frame.metadataProvider || "local",
         metadataConfidence: enriched?.metadataConfidence || frame.metadataConfidence || (metadataVerified ? "medium" : "low"),
         metadataVerified,
+        collections,
         productionHouse: isMissingMetadataValue(frame.productionHouse)
           ? productionHouseForInfo({
               title: originalSource,
@@ -1280,6 +1350,9 @@ async function main() {
 
   console.log(
     `Ingest complete: ${newFrames.length} new frames, ${frames.length} total frames.`,
+  );
+  console.log(
+    `Accepted frames: ${frames.length}. Main feed count: ${frames.filter((frame) => frame.mainFeed).length}. Unverified collection: ${frames.filter((frame) => !frame.metadataVerified).length}.`,
   );
   logRejectStats("Total frame quality", totalRejectStats);
 }

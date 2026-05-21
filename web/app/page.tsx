@@ -35,6 +35,7 @@ type MetadataItem = {
   originalSource?: string;
   metadataConfidence?: string;
   metadataVerified?: boolean;
+  mainFeed?: boolean;
   lens?: string;
   mood?: string;
   lighting?: Frame["lighting"];
@@ -471,6 +472,9 @@ async function getFrames(): Promise<Frame[]> {
       originalSource: item.originalSourceTitle || item.originalSource || item.source?.title || videoInfo?.title,
       metadataConfidence: item.metadataConfidence,
       metadataVerified: item.metadataVerified,
+      mainFeed:
+        item.mainFeed ??
+        Boolean(item.metadataVerified && (item.quality?.overall || item.cinematicScore || item.score || 0) >= 58),
       metrics: item.metrics || null,
       source: item.source
         ? {
@@ -503,6 +507,8 @@ async function getFrames(): Promise<Frame[]> {
       item.collections,
       item.collection,
       item.video,
+      baseFrame.mainFeed ? "main feed" : null,
+      baseFrame.metadataVerified ? null : "unverified",
       referenceFrame ? "reference boards" : null,
       inferredMood,
       tags.includes("scope") ? "scope format" : "widescreen",

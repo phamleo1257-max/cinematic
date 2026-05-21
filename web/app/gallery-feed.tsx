@@ -19,6 +19,7 @@ export type Frame = {
   originalSource?: string;
   metadataConfidence?: string;
   metadataVerified?: boolean;
+  mainFeed?: boolean;
   lens?: string;
   mood: string;
   lighting?: LightingAnalysis;
@@ -338,6 +339,9 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
         const matchesCollection =
           activeCollection === "All" ||
           frame.collections.includes(activeCollection);
+        const matchesMainFeed =
+          activeCollection !== "All" ||
+          Boolean(frame.mainFeed ?? frame.metadataVerified);
         const searchable = [
           frame.filename,
           frame.filmTitle || "",
@@ -359,7 +363,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
           .toLowerCase();
         const matchesSearch = fuzzyIncludes(searchable, normalizedSearch);
 
-        return matchesTag && matchesMood && matchesCollection && matchesSearch;
+        return matchesMainFeed && matchesTag && matchesMood && matchesCollection && matchesSearch;
       })
       .sort((a, b) => {
         if (sortMode === "title") {
