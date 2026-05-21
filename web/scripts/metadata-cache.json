@@ -728,5 +728,410 @@
     "productionHouse": "Internet Archive",
     "originalSourceTitle": "Cold Archive Still",
     "originalSource": "Cold Archive Still"
+  },
+  "film-la-la-land-2016-dreamers": {
+    "filmTitle": "The Dreamers",
+    "title": "The Dreamers",
+    "year": "2003",
+    "director": "Bernardo Bertolucci",
+    "cinematographer": "Fabio Cianchetti",
+    "sourceType": "film",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "originalSourceTitle": "La La Land (2016 Movie) Official Trailer – 'Dreamers'",
+    "originalSource": "La La Land (2016 Movie) Official Trailer – 'Dreamers'",
+    "productionHouse": "Lionsgate Movies",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-no-country-for-old-men-tommy-lee-jones-javier-bardem": {
+    "filmTitle": "No Country for Old Men",
+    "title": "No Country for Old Men",
+    "year": "2007",
+    "director": "Joel Coen",
+    "cinematographer": "Roger Deakins",
+    "sourceType": "film",
+    "genres": [
+      "Crime",
+      "Thriller",
+      "Western"
+    ],
+    "originalSourceTitle": "No Country For Old Men (2007) Official Trailer - Tommy Lee Jones, Javier Bardem Movie HD",
+    "originalSource": "No Country For Old Men (2007) Official Trailer - Tommy Lee Jones, Javier Bardem Movie HD",
+    "productionHouse": "Rotten Tomatoes Classic Trailers",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-skyfall": {
+    "filmTitle": "Skyfall",
+    "title": "Skyfall",
+    "year": "2012",
+    "director": "Sam Mendes",
+    "cinematographer": "Roger Deakins",
+    "sourceType": "film",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Thriller"
+    ],
+    "originalSourceTitle": "SKYFALL - Official Trailer",
+    "originalSource": "SKYFALL - Official Trailer",
+    "productionHouse": "Sony Pictures Entertainment",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-drive-jacqueline-fernandez-sushant-singh-rajput-pankaj-tripathi-netflix-india": {
+    "filmTitle": "Drive",
+    "title": "Drive",
+    "year": "2011",
+    "director": "Nicolas Winding Refn",
+    "cinematographer": "Newton Thomas Sigel",
+    "sourceType": "film",
+    "genres": [
+      "Drama",
+      "Thriller",
+      "Crime"
+    ],
+    "originalSourceTitle": "Drive Official Trailer | Jacqueline Fernandez, Sushant Singh Rajput, Pankaj Tripathi | Netflix India",
+    "originalSource": "Drive Official Trailer | Jacqueline Fernandez, Sushant Singh Rajput, Pankaj Tripathi | Netflix India",
+    "productionHouse": "Netflix India",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-the-revenant-20th-century-fox": {
+    "filmTitle": "The Revenant",
+    "title": "The Revenant",
+    "year": "2015",
+    "director": "Alejandro G. Iñárritu",
+    "cinematographer": "Emmanuel Lubezki",
+    "sourceType": "film",
+    "genres": [
+      "Western",
+      "Drama",
+      "Adventure"
+    ],
+    "originalSourceTitle": "The Revenant | Official Trailer [HD] | 20th Century FOX",
+    "originalSource": "The Revenant | Official Trailer [HD] | 20th Century FOX",
+    "productionHouse": "20th Century Studios",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-dune-part-two-3": {
+    "filmTitle": "Dune: Part Two",
+    "title": "Dune: Part Two",
+    "year": "2024",
+    "director": "Denis Villeneuve",
+    "cinematographer": "Greig Fraser",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Adventure"
+    ],
+    "originalSourceTitle": "Dune: Part Two | Official Trailer 3",
+    "originalSource": "Dune: Part Two | Official Trailer 3",
+    "productionHouse": "Warner Bros.",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-the-creator-get-in-the-car-20th-century-studios": {
+    "filmTitle": "The Creator",
+    "title": "The Creator",
+    "year": "2023",
+    "director": "Gareth Edwards",
+    "cinematographer": "Oren Soffer",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Action",
+      "Adventure"
+    ],
+    "originalSourceTitle": "The Creator | Official Clip 'Get In The Car' | 20th Century Studios",
+    "originalSource": "The Creator | Official Clip 'Get In The Car' | 20th Century Studios",
+    "productionHouse": "20th Century Studios",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-dune-part-two": {
+    "filmTitle": "Dune: Part Two",
+    "title": "Dune: Part Two",
+    "year": "2024",
+    "director": "Denis Villeneuve",
+    "cinematographer": "Greig Fraser",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Adventure"
+    ],
+    "originalSourceTitle": "Dune: Part Two | Official Trailer",
+    "originalSource": "Dune: Part Two | Official Trailer",
+    "productionHouse": "Warner Bros.",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-mission-impossible-fallout-paramount-pictures": {
+    "filmTitle": "Mission: Impossible",
+    "title": "Mission: Impossible",
+    "year": "1996",
+    "director": "Brian De Palma",
+    "cinematographer": "Stephen H. Burum",
+    "sourceType": "film",
+    "genres": [
+      "Adventure",
+      "Action",
+      "Thriller"
+    ],
+    "originalSourceTitle": "Mission: Impossible - Fallout (2018) - Official Trailer - Paramount Pictures",
+    "originalSource": "Mission: Impossible - Fallout (2018) - Official Trailer - Paramount Pictures",
+    "productionHouse": "Paramount Pictures",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-sicario-2015-emily-blunt-hitman": {
+    "filmTitle": "Sicario",
+    "title": "Sicario",
+    "year": "2015",
+    "director": "Denis Villeneuve",
+    "cinematographer": "Roger Deakins",
+    "sourceType": "film",
+    "genres": [
+      "Action",
+      "Crime",
+      "Thriller"
+    ],
+    "originalSourceTitle": "Sicario (2015 Movie - Emily Blunt) Official Trailer – “Hitman”",
+    "originalSource": "Sicario (2015 Movie - Emily Blunt) Official Trailer – “Hitman”",
+    "productionHouse": "Lionsgate Movies",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-1917": {
+    "filmTitle": "1917",
+    "title": "1917",
+    "year": "2019",
+    "director": "Sam Mendes",
+    "cinematographer": "Roger Deakins",
+    "sourceType": "film",
+    "genres": [
+      "War",
+      "History",
+      "Drama"
+    ],
+    "originalSourceTitle": "1917 - Official Trailer [HD]",
+    "originalSource": "1917 - Official Trailer [HD]",
+    "productionHouse": "Universal Pictures",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-dune-part-two-2": {
+    "filmTitle": "Dune: Part Two",
+    "title": "Dune: Part Two",
+    "year": "2024",
+    "director": "Denis Villeneuve",
+    "cinematographer": "Greig Fraser",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Adventure"
+    ],
+    "originalSourceTitle": "Dune: Part Two | Official Trailer 2",
+    "originalSource": "Dune: Part Two | Official Trailer 2",
+    "productionHouse": "Warner Bros.",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-oppenheimer": {
+    "filmTitle": "Oppenheimer",
+    "title": "Oppenheimer",
+    "year": "2023",
+    "director": "Christopher Nolan",
+    "cinematographer": "Hoyte van Hoytema",
+    "sourceType": "film",
+    "genres": [
+      "Drama",
+      "History"
+    ],
+    "originalSourceTitle": "Oppenheimer | Official Trailer",
+    "originalSource": "Oppenheimer | Official Trailer",
+    "productionHouse": "Universal Pictures",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-la-la-land-2016-city-of-stars": {
+    "filmTitle": "The City of Stars: A Reporters Visit to the Universal Studios",
+    "title": "The City of Stars: A Reporters Visit to the Universal Studios",
+    "year": "1924",
+    "director": "H. Bruce Humberstone",
+    "cinematographer": "William Fildew",
+    "sourceType": "film",
+    "genres": [
+      "History",
+      "Documentary"
+    ],
+    "originalSourceTitle": "La La Land (2016 Movie) Official Clip – “City Of Stars”",
+    "originalSource": "La La Land (2016 Movie) Official Clip – “City Of Stars”",
+    "productionHouse": "Lionsgate Movies",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "film-her-joaquin-phoenix-scarlett-johansson": {
+    "filmTitle": "Her",
+    "title": "Her",
+    "year": "2013",
+    "director": "Spike Jonze",
+    "cinematographer": "Hoyte van Hoytema",
+    "sourceType": "film",
+    "genres": [
+      "Romance",
+      "Science Fiction",
+      "Drama"
+    ],
+    "originalSourceTitle": "Her Official Trailer #1 (2013) - Joaquin Phoenix, Scarlett Johansson Movie HD",
+    "originalSource": "Her Official Trailer #1 (2013) - Joaquin Phoenix, Scarlett Johansson Movie HD",
+    "productionHouse": "Rotten Tomatoes Trailers",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-the-creator": {
+    "filmTitle": "The Creator",
+    "title": "The Creator",
+    "year": "2023",
+    "director": "Gareth Edwards",
+    "cinematographer": "Oren Soffer",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Action",
+      "Adventure"
+    ],
+    "originalSourceTitle": "The Creator | Official Trailer",
+    "originalSource": "The Creator | Official Trailer",
+    "productionHouse": "20th Century Studios",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-blade-runner-2049": {
+    "filmTitle": "Blade Runner 2049",
+    "title": "Blade Runner 2049",
+    "year": "2017",
+    "director": "Denis Villeneuve",
+    "cinematographer": "Roger Deakins",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Drama"
+    ],
+    "originalSourceTitle": "BLADE RUNNER 2049 - Official Trailer",
+    "originalSource": "BLADE RUNNER 2049 - Official Trailer",
+    "productionHouse": "Warner Bros.",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-dune": {
+    "filmTitle": "Dune",
+    "title": "Dune",
+    "year": "2021",
+    "director": "Denis Villeneuve",
+    "cinematographer": "Greig Fraser",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Adventure"
+    ],
+    "originalSourceTitle": "Dune Official Trailer",
+    "originalSource": "Dune Official Trailer",
+    "productionHouse": "Warner Bros.",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-her-2": {
+    "filmTitle": "Her Two Sons",
+    "title": "Her Two Sons",
+    "year": "1911",
+    "director": "Harry Solter",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "originalSourceTitle": "Her - Official Trailer 2 [HD]",
+    "originalSource": "Her - Official Trailer 2 [HD]",
+    "productionHouse": "Warner Bros.",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "medium",
+    "metadataVerified": true
+  },
+  "film-john-wick-chapter-4-2023-keanu-reeves-donnie-yen-bill-skarsg-rd": {
+    "filmTitle": "John Wick Chapter 4 (2023 ) – Keanu Reeves, Donnie Yen, Bill SkarsgåRd",
+    "title": "John Wick Chapter 4 (2023 ) – Keanu Reeves, Donnie Yen, Bill SkarsgåRd",
+    "year": "2023",
+    "director": "",
+    "cinematographer": "",
+    "sourceType": "film",
+    "genres": [],
+    "metadataProvider": "local",
+    "metadataConfidence": "low",
+    "metadataVerified": false,
+    "productionHouse": "Lionsgate Movies",
+    "originalSourceTitle": "John Wick: Chapter 4 (2023 Movie) Official Trailer – Keanu Reeves, Donnie Yen, Bill Skarsgård",
+    "originalSource": "John Wick: Chapter 4 (2023 Movie) Official Trailer – Keanu Reeves, Donnie Yen, Bill Skarsgård"
+  },
+  "film-mission-impossible-fallout-tom-cruise": {
+    "filmTitle": "Mission: Impossible",
+    "title": "Mission: Impossible",
+    "year": "1996",
+    "director": "Brian De Palma",
+    "cinematographer": "Stephen H. Burum",
+    "sourceType": "film",
+    "genres": [
+      "Adventure",
+      "Action",
+      "Thriller"
+    ],
+    "originalSourceTitle": "Mission: Impossible - Fallout (2018) | Official Trailer - Tom Cruise",
+    "originalSource": "Mission: Impossible - Fallout (2018) | Official Trailer - Tom Cruise",
+    "productionHouse": "Paramount Pictures",
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true
+  },
+  "film-the-creator-did-you-locate-the-weapon-20th-century-studios": {
+    "filmTitle": "The Creator",
+    "title": "The Creator",
+    "year": "2023",
+    "director": "Gareth Edwards",
+    "cinematographer": "Greig Fraser",
+    "sourceType": "film",
+    "genres": [
+      "Science Fiction",
+      "Action",
+      "Adventure"
+    ],
+    "metadataProvider": "tmdb",
+    "metadataConfidence": "high",
+    "metadataVerified": true,
+    "productionHouse": "20th Century Studios",
+    "originalSourceTitle": "The Creator | Official Clip 'Did You Locate The Weapon?' | 20th Century Studios",
+    "originalSource": "The Creator | Official Clip 'Did You Locate The Weapon?' | 20th Century Studios"
   }
 }
