@@ -45,23 +45,26 @@ const cleanSourceQueries = [
   "scene no commentary",
   "film trailer",
 ];
-const queries = (
-  process.env.CINEMATIC_QUERIES ||
-  curatedFilms
-    .flatMap((film) => cleanSourceQueries.map((suffix) => `${film} ${suffix}`))
-    .join("|")
-)
-  .split("|")
-  .map((query) => query.trim())
-  .filter(Boolean);
 const resultsPerQuery = Number(process.env.RESULTS_PER_QUERY || 2);
 const targetAcceptedFrames = Number(process.env.TARGET_ACCEPTED_FRAMES || 800);
-const maxDiscoveryAttempts = Number(process.env.MAX_DISCOVERY_ATTEMPTS || queries.length);
 const providers = (process.env.DISCOVERY_PROVIDERS || "youtube")
   .split(",")
   .map((provider) => provider.trim().toLowerCase())
   .filter(Boolean);
 const maxArchiveFileMb = Number(process.env.MAX_ARCHIVE_FILE_MB || 350);
+const phimfoeDiscoveryEnabled = process.env.PHIMFOE_DISCOVERY !== "0";
+const phimfoeUrls = (
+  process.env.PHIMFOE_URLS ||
+  [
+    "https://phimfoe.com/",
+    "https://phimfoe.com/phim-hot",
+    "https://phimfoe.com/phim-moi",
+  ].join("|")
+)
+  .split("|")
+  .map((url) => url.trim())
+  .filter(Boolean);
+const maxPhimfoeTitles = Number(process.env.MAX_PHIMFOE_TITLES || 40);
 const blockedSourceTerms = [
   "tutorial",
   "how to",
@@ -137,6 +140,125 @@ function hasBlockedSourceText(value) {
 function hasPreferredSourceText(value) {
   const normalized = String(value || "").toLowerCase();
   return preferredSourceTerms.some((term) => normalized.includes(term));
+}
+
+function decodeHtml(value) {
+  return String(value || "")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">");
+}
+
+function stripTags(value) {
+  return decodeHtml(String(value || "").replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+}
+
+function cleanDiscoveredFilmTitle(value) {
+  return stripTags(value)
+    .replace(/\b(vietsub|thuyết minh|lồng tiếng|full hd|hd|4k|bluray|phim mới|xem phim)\b/gi, " ")
+    .replace(/\(\s*\d{4}\s*\)/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isUsefulDiscoveredFilmTitle(title) {
+  const normalized = title.toLowerCase();
+
+  return (
+    title.length >= 3 &&
+    title.length <= 90 &&
+    !hasBlockedSourceText(title) &&
+    !/^(phimfoe|tìm kiếm|phim hot|phim lẻ|phim bộ|phim mới|faq|đăng nhập|xem tất cả)$/i.test(title) &&
+    !/(^loại phim|^thể loại|^quốc gia|^năm|^thời lượng|^sắp xếp)/i.test(title) &&
+    !normalized.includes("xemphim")
+  );
+}
+
+function extractPhimfoeTitles(html) {
+  const titles = new Set();
+  const patterns = [
+    /<h[2-4][^>]*>\s*<a[^>]*>(.*?)<\/a>\s*<\/h[2-4]>/gis,
+    /<a[^>]+title=["']([^"']+)["'][^>]*>/gis,
+    /<img[^>]+alt=["']([^"']+)["'][^>]*>/gis,
+  ];
+
+  for (const pattern of patterns) {
+    for (const match of html.matchAll(pattern)) {
+      const title = cleanDiscoveredFilmTitle(match[1]);
+
+      if (isUsefulDiscoveredFilmTitle(title)) {
+        titles.add(title);
+      }
+    }
+  }
+
+  return Array.from(titles);
+}
+
+async function fetchText(url) {
+  const response = await fetch(url, {
+    headers: {
+      "user-agent": "cinematic-feed/1.0",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed ${response.status}: ${url}`);
+  }
+
+  return response.text();
+}
+
+async function discoverPhimfoeFilmTitles() {
+  if (!phimfoeDiscoveryEnabled) {
+    return [];
+  }
+
+  const titles = new Set();
+
+  for (const url of phimfoeUrls) {
+    try {
+      console.log(`Reading PhimFoe titles: ${url}`);
+      const html = await fetchText(url);
+
+      for (const title of extractPhimfoeTitles(html)) {
+        titles.add(title);
+
+        if (titles.size >= maxPhimfoeTitles) {
+          break;
+        }
+      }
+    } catch (error) {
+      console.warn(`PhimFoe discovery skipped: ${error.message}`);
+    }
+
+    if (titles.size >= maxPhimfoeTitles) {
+      break;
+    }
+  }
+
+  return Array.from(titles);
+}
+
+async function resolveQueries() {
+  if (process.env.CINEMATIC_QUERIES) {
+    return process.env.CINEMATIC_QUERIES.split("|")
+      .map((query) => query.trim())
+      .filter(Boolean);
+  }
+
+  const phimfoeFilms = await discoverPhimfoeFilmTitles();
+  const films = Array.from(new Set([...curatedFilms, ...phimfoeFilms]));
+
+  if (phimfoeFilms.length > 0) {
+    console.log(`PhimFoe discovery added ${phimfoeFilms.length} film titles.`);
+  }
+
+  return films.flatMap((film) => cleanSourceQueries.map((suffix) => `${film} ${suffix}`));
 }
 
 function readArchive() {
@@ -344,10 +466,12 @@ async function main() {
   fs.mkdirSync(videosDir, { recursive: true });
   const downloaded = readArchive();
   const initialAcceptedFrames = currentAcceptedFrameCount();
+  const queries = await resolveQueries();
+  const maxDiscoveryAttempts = Number(process.env.MAX_DISCOVERY_ATTEMPTS || queries.length);
 
   if (process.env.DRY_RUN === "1") {
     console.log(
-      `Discovery ready: ${providers.join(", ")} providers, ${queries.length} curated queries, target ${targetAcceptedFrames}, current ${initialAcceptedFrames}, output ${videosDir}`,
+      `Discovery ready: ${providers.join(", ")} providers, ${queries.length} curated/PhimFoe queries, target ${targetAcceptedFrames}, current ${initialAcceptedFrames}, output ${videosDir}`,
     );
     return;
   }
