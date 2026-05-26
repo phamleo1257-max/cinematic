@@ -986,11 +986,37 @@ h1 {
   padding: 14px;
 }
 
-.cinematographer-group p {
+.cinematographer-group p,
+.cinematographer-filter-button {
   color: rgba(246, 242, 236, 0.96);
   font-size: clamp(1rem, 1.35vw, 1.28rem);
   font-weight: 900;
   letter-spacing: 0.02em;
+}
+
+.cinematographer-filter-button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1.1;
+  padding: 0;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.cinematographer-filter-button:hover {
+  color: var(--hot);
+}
+
+.cinematographer-group small {
+  color: rgba(246, 242, 236, 0.45);
+  font-size: 0.66rem;
+  font-weight: 760;
+  letter-spacing: 0.08em;
+  line-height: 1.35;
+  text-transform: uppercase;
 }
 
 .modal-palette {
