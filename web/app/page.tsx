@@ -29,6 +29,17 @@ type MetadataItem = {
   year?: string;
   director?: string;
   cinematographer?: string;
+  productionDesigner?: string;
+  originalTitle?: string;
+  overview?: string;
+  poster?: string;
+  backdrop?: string;
+  runtime?: string | number;
+  voteAverage?: string | number;
+  productionCountries?: unknown;
+  tmdbId?: string | number;
+  sourceConfidence?: number;
+  verifiedMetadata?: boolean;
   sourceType?: string;
   genres?: unknown;
   originalSourceTitle?: string;
@@ -467,6 +478,17 @@ async function getFrames(): Promise<Frame[]> {
       productionHouse,
       year: item.year,
       cinematographer: item.cinematographer,
+      productionDesigner: item.productionDesigner,
+      originalTitle: item.originalTitle,
+      overview: item.overview,
+      poster: item.poster,
+      backdrop: item.backdrop,
+      runtime: item.runtime,
+      voteAverage: item.voteAverage,
+      productionCountries: normalizeTags(item.productionCountries),
+      tmdbId: item.tmdbId,
+      sourceConfidence: item.sourceConfidence,
+      verifiedMetadata: item.verifiedMetadata,
       sourceType: item.sourceType,
       genres: normalizeTags(item.genres),
       originalSourceTitle: item.originalSourceTitle || item.originalSource || item.source?.title || videoInfo?.title,

@@ -11,40 +11,17 @@ const videosDir = path.join(cwd, "videos");
 const archivePath =
   process.env.DOWNLOAD_ARCHIVE ||
   path.join(cwd, "public", "bestframes", "downloaded.txt");
-const curatedFilms = (
-  process.env.CURATED_FILMS ||
-  [
-    "Blade Runner 2049",
-    "Dune",
-    "Dune Part Two",
-    "The Batman",
-    "Skyfall",
-    "Oppenheimer",
-    "Arrival",
-    "Sicario",
-    "Drive",
-    "Her",
-    "La La Land",
-    "The Revenant",
-    "No Country for Old Men",
-    "Joker",
-    "1917",
-    "Interstellar",
-    "Mission Impossible Fallout",
-    "Mad Max Fury Road",
-    "The Creator",
-    "John Wick 4",
-  ].join("|")
-)
-  .split("|")
-  .map((film) => film.trim())
-  .filter(Boolean);
+const seedFilmsPath = process.env.SEED_FILMS_PATH || path.join(cwd, "data", "seed-films.json");
 const cleanSourceQueries = [
   "official trailer",
   "official clip",
   "scene no commentary",
   "film trailer",
+  "movie clip",
+  "blu-ray clip",
 ];
+const musicVideoQueries = ["official music video"];
+const commercialQueries = ["official commercial", "director's cut", "campaign film"];
 const resultsPerQuery = Number(process.env.RESULTS_PER_QUERY || 2);
 const targetAcceptedFrames = Number(process.env.TARGET_ACCEPTED_FRAMES || 800);
 const providers = (process.env.DISCOVERY_PROVIDERS || "youtube")
@@ -52,7 +29,7 @@ const providers = (process.env.DISCOVERY_PROVIDERS || "youtube")
   .map((provider) => provider.trim().toLowerCase())
   .filter(Boolean);
 const maxArchiveFileMb = Number(process.env.MAX_ARCHIVE_FILE_MB || 350);
-const phimfoeDiscoveryEnabled = process.env.PHIMFOE_DISCOVERY !== "0";
+const phimfoeDiscoveryEnabled = process.env.PHIMFOE_DISCOVERY === "1";
 const phimfoeUrls = (
   process.env.PHIMFOE_URLS ||
   [
@@ -100,12 +77,28 @@ const blockedSourceTerms = [
   "gear review",
   "camera settings",
   "lighting setup",
+  "gameplay",
+  "meme",
+  "recap",
+  "fan cam",
+  "fancam",
+  "short edit",
+  "edit",
+  "tiktok",
+  "subtitles compilation",
+  "language learning",
 ];
 const preferredSourceTerms = [
   "official trailer",
   "official clip",
   "scene no commentary",
   "film trailer",
+  "movie clip",
+  "blu-ray clip",
+  "official music video",
+  "official commercial",
+  "director's cut",
+  "campaign film",
 ];
 const blockedTitlePattern = `(?i)(${blockedSourceTerms
   .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+"))
@@ -113,8 +106,46 @@ const blockedTitlePattern = `(?i)(${blockedSourceTerms
 const matchFilter = [
   "duration < 1800",
   `title !~= '${blockedTitlePattern}'`,
-  `title ~= '(?i)(official\\s+trailer|official\\s+clip|scene\\s+no\\s+commentary|film\\s+trailer)'`,
+  `title ~= '(?i)(official\\s+trailer|official\\s+clip|scene\\s+no\\s+commentary|film\\s+trailer|movie\\s+clip|blu-?ray\\s+clip|official\\s+music\\s+video|official\\s+commercial|directors?\\s+cut|campaign\\s+film)'`,
 ].join(" & ");
+
+function readSeedFilms() {
+  if (process.env.CURATED_FILMS) {
+    return process.env.CURATED_FILMS.split("|")
+      .map((title) => ({ title: title.trim(), type: "film" }))
+      .filter((seed) => seed.title);
+  }
+
+  try {
+    const seeds = JSON.parse(fs.readFileSync(seedFilmsPath, "utf8"));
+
+    if (!Array.isArray(seeds)) {
+      return [];
+    }
+
+    return seeds
+      .map((seed) => ({
+        title: String(seed?.title || "").trim(),
+        type: String(seed?.type || "film").trim().toLowerCase(),
+      }))
+      .filter((seed) => seed.title && !hasBlockedSourceText(seed.title));
+  } catch (error) {
+    console.warn(`Seed film list unavailable: ${error.message}`);
+    return [];
+  }
+}
+
+function sourceQueriesForSeed(seed) {
+  if (seed.type === "music video") {
+    return musicVideoQueries;
+  }
+
+  if (seed.type === "commercial") {
+    return commercialQueries;
+  }
+
+  return cleanSourceQueries;
+}
 
 function currentAcceptedFrameCount() {
   const metadataPath = path.join(cwd, "public", "bestframes", "metadata.json");
@@ -251,14 +282,28 @@ async function resolveQueries() {
       .filter(Boolean);
   }
 
-  const phimfoeFilms = await discoverPhimfoeFilmTitles();
-  const films = Array.from(new Set([...curatedFilms, ...phimfoeFilms]));
+  const seedFilms = readSeedFilms();
+  const phimfoeFilms = (await discoverPhimfoeFilmTitles()).map((title) => ({
+    title,
+    type: "film",
+  }));
+  const uniqueSeeds = new Map();
+
+  for (const seed of [...seedFilms, ...phimfoeFilms]) {
+    const key = seed.title.toLowerCase();
+
+    if (!uniqueSeeds.has(key)) {
+      uniqueSeeds.set(key, seed);
+    }
+  }
 
   if (phimfoeFilms.length > 0) {
     console.log(`PhimFoe discovery added ${phimfoeFilms.length} film titles.`);
   }
 
-  return films.flatMap((film) => cleanSourceQueries.map((suffix) => `${film} ${suffix}`));
+  return Array.from(uniqueSeeds.values()).flatMap((seed) =>
+    sourceQueriesForSeed(seed).map((suffix) => `${seed.title} ${suffix}`),
+  );
 }
 
 function readArchive() {

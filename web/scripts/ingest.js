@@ -13,7 +13,7 @@ const bestframesDir = path.join(cwd, "public", "bestframes");
 const metadataPath = path.join(bestframesDir, "metadata.json");
 const metadataCachePath = path.join(cwd, "scripts", "metadata-cache.json");
 const videoExtensions = new Set([".mp4", ".mov", ".mkv", ".webm"]);
-const maxFramesPerVideo = Number(process.env.MAX_FRAMES_PER_VIDEO || 12);
+const maxFramesPerVideo = Number(process.env.MAX_FRAMES_PER_VIDEO || 5);
 const extractFps = process.env.EXTRACT_FPS || "1/4";
 const minScore = Number(process.env.MIN_FRAME_SCORE || 42);
 const minContrast = Number(process.env.MIN_FRAME_CONTRAST || 24);
@@ -128,6 +128,64 @@ function titleCandidatesForSource(rawTitle) {
     .slice(0, 6);
 }
 
+function normalizedMatchText(value) {
+  return compactValue(value)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\b(the|a|an|official|trailer|clip|scene|movie|film|hd|4k|uhd|hdr|imax)\b/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function editDistance(a, b) {
+  const source = normalizedMatchText(a);
+  const target = normalizedMatchText(b);
+
+  if (!source || !target) {
+    return Math.max(source.length, target.length);
+  }
+
+  const previous = Array.from({ length: target.length + 1 }, (_, index) => index);
+  const current = Array(target.length + 1).fill(0);
+
+  for (let i = 1; i <= source.length; i += 1) {
+    current[0] = i;
+
+    for (let j = 1; j <= target.length; j += 1) {
+      const cost = source[i - 1] === target[j - 1] ? 0 : 1;
+      current[j] = Math.min(
+        current[j - 1] + 1,
+        previous[j] + 1,
+        previous[j - 1] + cost,
+      );
+    }
+
+    for (let j = 0; j <= target.length; j += 1) {
+      previous[j] = current[j];
+    }
+  }
+
+  return previous[target.length];
+}
+
+function titleSimilarity(a, b) {
+  const source = normalizedMatchText(a);
+  const target = normalizedMatchText(b);
+
+  if (!source || !target) {
+    return 0;
+  }
+
+  if (source === target || source.includes(target) || target.includes(source)) {
+    return 1;
+  }
+
+  return 1 - editDistance(source, target) / Math.max(source.length, target.length, 1);
+}
+
 function normalizeSourceTitle(rawTitle) {
   return titleCandidatesForSource(rawTitle)[0] || titleCase(rawTitle);
 }
@@ -180,17 +238,28 @@ function mapLegacyMetadata(metadata, originalSource, sourceType) {
   return {
     filmTitle,
     title: filmTitle,
+    originalTitle: metadata.originalTitle || metadata.original_name || "",
     year: metadata.year || "",
     director: metadata.director || "",
     cinematographer: metadata.cinematographer || "",
+    productionDesigner: metadata.productionDesigner || "",
     sourceType: metadata.sourceType || sourceType,
     genres: Array.isArray(metadata.genres) ? metadata.genres : [],
+    overview: metadata.overview || "",
+    poster: metadata.poster || "",
+    backdrop: metadata.backdrop || "",
+    runtime: metadata.runtime || "",
+    voteAverage: metadata.voteAverage || "",
+    productionCountries: Array.isArray(metadata.productionCountries) ? metadata.productionCountries : [],
+    tmdbId: metadata.tmdbId || "",
+    sourceConfidence: metadata.sourceConfidence || 0,
     originalSourceTitle: originalSource,
     originalSource,
     productionHouse: metadata.productionHouse || "",
     metadataProvider: metadata.metadataProvider || "local",
     metadataConfidence: metadata.metadataConfidence || (metadata.metadataProvider && metadata.metadataProvider !== "local" ? "high" : "low"),
-    metadataVerified: Boolean(metadata.metadataVerified || (metadata.metadataProvider && metadata.metadataProvider !== "local")),
+    metadataVerified: Boolean(metadata.metadataVerified || metadata.verifiedMetadata),
+    verifiedMetadata: Boolean(metadata.metadataVerified || metadata.verifiedMetadata),
   };
 }
 
@@ -271,22 +340,40 @@ async function fetchTmdbMetadata(title, sourceType) {
     crew.find((person) =>
       /director of photography|cinematographer|cinematography/i.test(person.job || ""),
     )?.name || "";
+  const productionDesigner =
+    crew.find((person) => /production design|production designer/i.test(person.job || ""))?.name || "";
   const genres = Array.isArray(detail?.genres)
     ? detail.genres.map((genre) => genre.name).filter(Boolean).slice(0, 4)
     : [];
   const filmTitle = match.title || match.name || title;
+  const originalTitle = match.original_title || match.original_name || filmTitle;
+  const confidence = Math.max(titleSimilarity(title, filmTitle), titleSimilarity(title, originalTitle));
+  const verifiedMetadata = confidence > 0.9 && !blockedFramePattern.test(title);
 
   return {
     filmTitle,
     title: filmTitle,
+    originalTitle,
     year: compactValue(match.release_date || match.first_air_date).slice(0, 4),
     director,
     cinematographer,
+    productionDesigner,
     sourceType: searchType === "tv" ? "series" : "film",
     genres,
+    overview: compactValue(detail?.overview || match.overview || ""),
+    poster: detail?.poster_path ? `https://image.tmdb.org/t/p/w500${detail.poster_path}` : "",
+    backdrop: detail?.backdrop_path ? `https://image.tmdb.org/t/p/w1280${detail.backdrop_path}` : "",
+    runtime: detail?.runtime || detail?.episode_run_time?.[0] || "",
+    voteAverage: typeof detail?.vote_average === "number" ? Number(detail.vote_average.toFixed(1)) : "",
+    productionCountries: Array.isArray(detail?.production_countries)
+      ? detail.production_countries.map((country) => country.name).filter(Boolean).slice(0, 4)
+      : [],
+    tmdbId: match.id,
+    sourceConfidence: Number(confidence.toFixed(3)),
     metadataProvider: "tmdb",
-    metadataConfidence: match.vote_count > 3 ? "high" : "medium",
-    metadataVerified: true,
+    metadataConfidence: verifiedMetadata ? "high" : "low",
+    metadataVerified: verifiedMetadata,
+    verifiedMetadata,
   };
 }
 
@@ -309,14 +396,25 @@ async function fetchOmdbMetadata(title, sourceType) {
   return {
     filmTitle: match.Title || title,
     title: match.Title || title,
+    originalTitle: match.Title || title,
     year: match.Year ? String(match.Year).slice(0, 4) : "",
     director: match.Director && match.Director !== "N/A" ? match.Director : "",
     cinematographer: "",
+    productionDesigner: "",
     sourceType: match.Type === "series" ? "series" : sourceType,
     genres: match.Genre && match.Genre !== "N/A" ? match.Genre.split(",").map((genre) => genre.trim()).slice(0, 4) : [],
+    overview: match.Plot && match.Plot !== "N/A" ? match.Plot : "",
+    poster: match.Poster && match.Poster !== "N/A" ? match.Poster : "",
+    backdrop: "",
+    runtime: match.Runtime && match.Runtime !== "N/A" ? match.Runtime : "",
+    voteAverage: match.imdbRating && match.imdbRating !== "N/A" ? Number(match.imdbRating) : "",
+    productionCountries: match.Country && match.Country !== "N/A" ? match.Country.split(",").map((country) => country.trim()).slice(0, 4) : [],
+    tmdbId: "",
+    sourceConfidence: Number(titleSimilarity(title, match.Title || title).toFixed(3)),
     metadataProvider: "omdb",
-    metadataConfidence: "medium",
-    metadataVerified: true,
+    metadataConfidence: titleSimilarity(title, match.Title || title) > 0.9 ? "medium" : "low",
+    metadataVerified: titleSimilarity(title, match.Title || title) > 0.9,
+    verifiedMetadata: titleSimilarity(title, match.Title || title) > 0.9,
   };
 }
 
@@ -350,14 +448,25 @@ async function enrichSourceMetadata(info, cache) {
   const fallback = {
     filmTitle: normalizedTitle || "Unverified metadata",
     title: normalizedTitle || "Unverified metadata",
+    originalTitle: "",
     year: releaseYearForInfo(info),
     director: "",
     cinematographer: "",
+    productionDesigner: "",
     sourceType,
     genres: [],
+    overview: "",
+    poster: "",
+    backdrop: "",
+    runtime: "",
+    voteAverage: "",
+    productionCountries: [],
+    tmdbId: "",
+    sourceConfidence: 0,
     metadataProvider: "local",
     metadataConfidence: "low",
     metadataVerified: false,
+    verifiedMetadata: false,
   };
   const metadata = {
     ...fallback,
@@ -1195,17 +1304,28 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats, meta
         filename,
         filmTitle: sourceMetadata.filmTitle || sourceMetadata.title || "Unverified metadata",
         title: sourceMetadata.filmTitle || sourceMetadata.title || archiveTitleFor({ mood, tags: tagsFor(metrics), aspectRatio: metrics.aspectRatio }),
+        originalTitle: sourceMetadata.originalTitle || "",
         year: sourceMetadata.year || "",
         director: sourceMetadata.director || "",
         cinematographer: sourceMetadata.cinematographer || "",
+        productionDesigner: sourceMetadata.productionDesigner || "",
         sourceType: sourceMetadata.sourceType || sourceTypeForText(`${info.title} ${info.query}`),
         genres: sourceMetadata.genres || [],
+        overview: sourceMetadata.overview || "",
+        poster: sourceMetadata.poster || "",
+        backdrop: sourceMetadata.backdrop || "",
+        runtime: sourceMetadata.runtime || "",
+        voteAverage: sourceMetadata.voteAverage || "",
+        productionCountries: sourceMetadata.productionCountries || [],
+        tmdbId: sourceMetadata.tmdbId || "",
+        sourceConfidence: sourceMetadata.sourceConfidence || 0,
         originalSourceTitle: sourceMetadata.originalSourceTitle || sourceMetadata.originalSource || info.title,
         originalSource: sourceMetadata.originalSourceTitle || sourceMetadata.originalSource || info.title,
         productionHouse: sourceMetadata.productionHouse || "",
         metadataProvider: sourceMetadata.metadataProvider || "local",
         metadataConfidence: sourceMetadata.metadataConfidence || "low",
         metadataVerified: Boolean(sourceMetadata.metadataVerified),
+        verifiedMetadata: Boolean(sourceMetadata.verifiedMetadata || sourceMetadata.metadataVerified),
         score: Math.max(metrics.score, quality.overall),
         cinematicScore: quality.overall,
         mood,
@@ -1352,16 +1472,27 @@ async function main() {
         mainFeed,
         filmTitle,
         title: filmTitle,
+        originalTitle: enriched?.originalTitle || frame.originalTitle || "",
         year: enriched?.year || frame.year || "",
         director: enriched?.director || (isMissingMetadataValue(frame.director) ? "" : frame.director),
         cinematographer: enriched?.cinematographer || (isMissingMetadataValue(frame.cinematographer) ? "" : frame.cinematographer),
+        productionDesigner: enriched?.productionDesigner || frame.productionDesigner || "",
         sourceType,
         genres: enriched?.genres || (Array.isArray(frame.genres) ? frame.genres : []),
+        overview: enriched?.overview || frame.overview || "",
+        poster: enriched?.poster || frame.poster || "",
+        backdrop: enriched?.backdrop || frame.backdrop || "",
+        runtime: enriched?.runtime || frame.runtime || "",
+        voteAverage: enriched?.voteAverage || frame.voteAverage || "",
+        productionCountries: enriched?.productionCountries || frame.productionCountries || [],
+        tmdbId: enriched?.tmdbId || frame.tmdbId || "",
+        sourceConfidence: enriched?.sourceConfidence || frame.sourceConfidence || 0,
         originalSourceTitle: isMissingMetadataValue(originalSource) ? "" : originalSource,
         originalSource: isMissingMetadataValue(originalSource) ? "" : originalSource,
         metadataProvider: enriched?.metadataProvider || frame.metadataProvider || "local",
         metadataConfidence: enriched?.metadataConfidence || frame.metadataConfidence || (metadataVerified ? "medium" : "low"),
         metadataVerified,
+        verifiedMetadata: metadataVerified,
         collections,
         productionHouse: isMissingMetadataValue(frame.productionHouse)
           ? productionHouseForInfo({

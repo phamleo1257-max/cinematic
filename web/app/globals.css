@@ -960,6 +960,15 @@ h1 {
   text-transform: uppercase;
 }
 
+.metadata-group .metadata-overview {
+  color: rgba(246, 242, 236, 0.62);
+  font-size: 0.78rem;
+  font-weight: 560;
+  line-height: 1.5;
+  max-width: 58ch;
+  text-transform: none;
+}
+
 .metadata-title-button {
   appearance: none;
   background: transparent;
