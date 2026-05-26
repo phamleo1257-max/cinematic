@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T23:31:46.804Z",
+  "generatedAt": "2026-05-26T13:48:16.850Z",
   "frames": [
     {
       "filename": "oihhs2errwk_02.jpg",
@@ -581,116 +581,6 @@
       ]
     },
     {
-      "filename": "youtube-ob65quh4obk_01.jpg",
-      "filmTitle": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "title": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "music video",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "originalSource": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 90,
-      "cinematicScore": 90,
-      "mood": "monochrome",
-      "lighting": {
-        "subject": {
-          "x": 0.448,
-          "y": 0.578
-        },
-        "keyLight": {
-          "direction": "side-right",
-          "strength": 96
-        },
-        "fillLight": {
-          "direction": "front-left",
-          "strength": 14
-        },
-        "rimLight": {
-          "direction": "back-left",
-          "strength": 50
-        },
-        "contrastRatio": 6.9,
-        "mood": "monochrome"
-      },
-      "palette": [
-        "#797a77",
-        "#050505",
-        "#585856",
-        "#fbfcfa",
-        "#282626"
-      ],
-      "quality": {
-        "composition": 82,
-        "lightingContrast": 100,
-        "colorHarmony": 98,
-        "cinematicDepth": 93,
-        "subjectIsolation": 82,
-        "mood": 84,
-        "overall": 90
-      },
-      "tags": [
-        "monochrome",
-        "high-contrast",
-        "muted",
-        "color-rich",
-        "detailed",
-        "editorial-pick",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 107.11,
-        "blockiness": 0.976,
-        "colorRichness": 82.38,
-        "contrast": 82.73,
-        "diversity": 0.453,
-        "edgeEnergy": 22.14,
-        "saturation": 5.49,
-        "sharpness": 114.8,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0001110010001100100011100000101100000111000011110000111100101111",
-      "colorSignature": "211-222-444-333-322-222-444-444-111-111-444-888-111-222-777-776",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/youtube-ob65quh4obk_ob65quh4obk-mp4.mp4",
-        "title": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-        "url": "https://archive.org/details/youtube-OB65qUh4OBk",
-        "query": "HUMBLE Kendrick Lamar official music video"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "high contrast",
-        "widescreen",
-        "monochrome",
-        "humble kendrick lamar official music video",
-        "unverified"
-      ]
-    },
-    {
       "filename": "0m3cpebwwhg_04.jpg",
       "filmTitle": "Annihilation",
       "title": "Annihilation",
@@ -1142,117 +1032,6 @@
         "widescreen",
         "teal-orange",
         "amelie official trailer",
-        "unverified"
-      ]
-    },
-    {
-      "filename": "youtube-ob65quh4obk_03.jpg",
-      "filmTitle": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "title": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "music video",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "originalSource": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 89,
-      "cinematicScore": 89,
-      "mood": "noir",
-      "lighting": {
-        "subject": {
-          "x": 0.486,
-          "y": 0.522
-        },
-        "keyLight": {
-          "direction": "front-right",
-          "strength": 95
-        },
-        "fillLight": {
-          "direction": "front-left",
-          "strength": 17
-        },
-        "rimLight": {
-          "direction": "back-left",
-          "strength": 53
-        },
-        "contrastRatio": 5.5,
-        "mood": "noir"
-      },
-      "palette": [
-        "#d4d1f9",
-        "#79abfc",
-        "#acaece",
-        "#827a81",
-        "#574d55"
-      ],
-      "quality": {
-        "composition": 81,
-        "lightingContrast": 96,
-        "colorHarmony": 100,
-        "cinematicDepth": 86,
-        "subjectIsolation": 77,
-        "mood": 92,
-        "overall": 89
-      },
-      "tags": [
-        "noir",
-        "cold",
-        "high-contrast",
-        "color-rich",
-        "detailed",
-        "editorial-pick",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 124.01,
-        "blockiness": 1.08,
-        "colorRichness": 71.87,
-        "contrast": 66.15,
-        "diversity": 0.516,
-        "edgeEnergy": 23.47,
-        "saturation": 33.95,
-        "sharpness": 83.5,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "1111111110111111001111110001100110011000100000010001100100000001",
-      "colorSignature": "556-557-557-567-334-555-555-555-444-433-323-323-222-433-433-444",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/youtube-ob65quh4obk_ob65quh4obk-mp4.mp4",
-        "title": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-        "url": "https://archive.org/details/youtube-OB65qUh4OBk",
-        "query": "HUMBLE Kendrick Lamar official music video"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "high contrast",
-        "cold palette",
-        "widescreen",
-        "noir",
-        "humble kendrick lamar official music video",
         "unverified"
       ]
     },
@@ -2621,117 +2400,6 @@
         "noir",
         "the tree of life official clip",
         "main feed"
-      ]
-    },
-    {
-      "filename": "youtube-ob65quh4obk_05.jpg",
-      "filmTitle": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "title": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "music video",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "originalSource": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 87,
-      "cinematicScore": 87,
-      "mood": "noir",
-      "lighting": {
-        "subject": {
-          "x": 0.519,
-          "y": 0.533
-        },
-        "keyLight": {
-          "direction": "side-right",
-          "strength": 96
-        },
-        "fillLight": {
-          "direction": "front-left",
-          "strength": 15
-        },
-        "rimLight": {
-          "direction": "back-left",
-          "strength": 45
-        },
-        "contrastRatio": 6.2,
-        "mood": "noir"
-      },
-      "palette": [
-        "#212830",
-        "#a3a4a8",
-        "#050505",
-        "#f4f4f4",
-        "#7b7e82"
-      ],
-      "quality": {
-        "composition": 76,
-        "lightingContrast": 100,
-        "colorHarmony": 94,
-        "cinematicDepth": 79,
-        "subjectIsolation": 77,
-        "mood": 94,
-        "overall": 87
-      },
-      "tags": [
-        "noir",
-        "cold",
-        "high-contrast",
-        "muted",
-        "color-rich",
-        "detailed",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 87.32,
-        "blockiness": 1.126,
-        "colorRichness": 73.9,
-        "contrast": 74.04,
-        "diversity": 0.5,
-        "edgeEnergy": 19.41,
-        "saturation": 16.79,
-        "sharpness": 87.05,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0111111001111110011110100111100000101010000011100001011000000110",
-      "colorSignature": "233-455-445-222-333-555-333-222-112-222-444-223-111-111-333-333",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/youtube-ob65quh4obk_ob65quh4obk-mp4.mp4",
-        "title": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-        "url": "https://archive.org/details/youtube-OB65qUh4OBk",
-        "query": "HUMBLE Kendrick Lamar official music video"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "high contrast",
-        "cold palette",
-        "widescreen",
-        "noir",
-        "humble kendrick lamar official music video",
-        "unverified"
       ]
     },
     {
@@ -22897,115 +22565,6 @@
       ]
     },
     {
-      "filename": "youtube-ob65quh4obk_04.jpg",
-      "filmTitle": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "title": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "music video",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "originalSource": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 79,
-      "cinematicScore": 79,
-      "mood": "noir",
-      "lighting": {
-        "subject": {
-          "x": 0.459,
-          "y": 0.546
-        },
-        "keyLight": {
-          "direction": "side-left",
-          "strength": 96
-        },
-        "fillLight": {
-          "direction": "front-right",
-          "strength": 17
-        },
-        "rimLight": {
-          "direction": "back-right",
-          "strength": 32
-        },
-        "contrastRatio": 5.8,
-        "mood": "noir"
-      },
-      "palette": [
-        "#27252a",
-        "#7a8178",
-        "#a6a9a5",
-        "#d3d4d4",
-        "#ececea"
-      ],
-      "quality": {
-        "composition": 66,
-        "lightingContrast": 100,
-        "colorHarmony": 89,
-        "cinematicDepth": 52,
-        "subjectIsolation": 69,
-        "mood": 93,
-        "overall": 79
-      },
-      "tags": [
-        "noir",
-        "high-contrast",
-        "muted",
-        "color-rich",
-        "editorial-pick",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 119.79,
-        "blockiness": 0.958,
-        "colorRichness": 68.81,
-        "contrast": 69.89,
-        "diversity": 0.578,
-        "edgeEnergy": 13.46,
-        "saturation": 17.6,
-        "sharpness": 44.16,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0000011100000111100001001110001111100111111001111110011111100111",
-      "colorSignature": "222-111-333-444-444-222-333-454-777-434-333-554-666-333-333-666",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/youtube-ob65quh4obk_ob65quh4obk-mp4.mp4",
-        "title": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-        "url": "https://archive.org/details/youtube-OB65qUh4OBk",
-        "query": "HUMBLE Kendrick Lamar official music video"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "high contrast",
-        "widescreen",
-        "noir",
-        "humble kendrick lamar official music video",
-        "unverified"
-      ]
-    },
-    {
       "filename": "08pndojikrc_05.jpg",
       "filmTitle": "Me, Myself & Irene",
       "title": "Me, Myself & Irene",
@@ -23578,8 +23137,8 @@
     },
     {
       "filename": "w5przuaq3vm_02.jpg",
-      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
-      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
+      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
+      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
       "year": "2022",
       "director": "",
       "cinematographer": "",
@@ -30294,230 +29853,6 @@
         "noir",
         "the wailing movie clip",
         "main feed"
-      ]
-    },
-    {
-      "filename": "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
-      "filmTitle": "Martian Manhunter, Bruce Wayne From \"Lego Batman The - Dc Superheroes\"",
-      "title": "Martian Manhunter, Bruce Wayne From \"Lego Batman The - Dc Superheroes\"",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "film",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Martian Manhunter, Bruce Wayne Clip from \"LEGO Batman: The Movie - DC Superheroes\"",
-      "originalSource": "Martian Manhunter, Bruce Wayne Clip from \"LEGO Batman: The Movie - DC Superheroes\"",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 77,
-      "cinematicScore": 77,
-      "mood": "teal-orange",
-      "lighting": {
-        "subject": {
-          "x": 0.492,
-          "y": 0.496
-        },
-        "keyLight": {
-          "direction": "side-right",
-          "strength": 91
-        },
-        "fillLight": {
-          "direction": "front-left",
-          "strength": 18
-        },
-        "rimLight": {
-          "direction": "back-left",
-          "strength": 32
-        },
-        "contrastRatio": 5,
-        "mood": "teal-orange"
-      },
-      "palette": [
-        "#010506",
-        "#858489",
-        "#9d8735",
-        "#082025",
-        "#262d28"
-      ],
-      "quality": {
-        "composition": 62,
-        "lightingContrast": 87,
-        "colorHarmony": 100,
-        "cinematicDepth": 55,
-        "subjectIsolation": 77,
-        "mood": 78,
-        "overall": 77
-      },
-      "tags": [
-        "teal-orange",
-        "warm",
-        "dark",
-        "high-contrast",
-        "saturated",
-        "color-rich",
-        "shadow-heavy",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 66.5,
-        "blockiness": 0.892,
-        "colorRichness": 59.28,
-        "contrast": 60.29,
-        "diversity": 0.484,
-        "edgeEnergy": 13.3,
-        "saturation": 58.9,
-        "sharpness": 56.61,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "1000000000011100000111100101111001111110000111100001111000011110",
-      "colorSignature": "111-111-222-010-122-332-444-221-111-332-444-111-000-331-442-221",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821-mp4.mp4",
-        "title": "Martian Manhunter, Bruce Wayne Clip from \"LEGO Batman: The Movie - DC Superheroes\"",
-        "url": "https://archive.org/details/bliptv-20131014-064959-Cbr-MartianManhunterBruceWayneClipFromLEGOBatmanTheMovieD821",
-        "query": "The Martian blu-ray clip"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "high contrast",
-        "noir energy",
-        "warm palette",
-        "widescreen",
-        "teal-orange",
-        "the martian blu-ray clip",
-        "unverified"
-      ]
-    },
-    {
-      "filename": "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg",
-      "filmTitle": "Martian Manhunter, Bruce Wayne From \"Lego Batman The - Dc Superheroes\"",
-      "title": "Martian Manhunter, Bruce Wayne From \"Lego Batman The - Dc Superheroes\"",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "film",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Martian Manhunter, Bruce Wayne Clip from \"LEGO Batman: The Movie - DC Superheroes\"",
-      "originalSource": "Martian Manhunter, Bruce Wayne Clip from \"LEGO Batman: The Movie - DC Superheroes\"",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 77,
-      "cinematicScore": 77,
-      "mood": "cyberpunk",
-      "lighting": {
-        "subject": {
-          "x": 0.479,
-          "y": 0.549
-        },
-        "keyLight": {
-          "direction": "side-left",
-          "strength": 90
-        },
-        "fillLight": {
-          "direction": "front-right",
-          "strength": 19
-        },
-        "rimLight": {
-          "direction": "back-right",
-          "strength": 34
-        },
-        "contrastRatio": 4.8,
-        "mood": "cyberpunk"
-      },
-      "palette": [
-        "#000404",
-        "#01232b",
-        "#02d34f",
-        "#044856",
-        "#04344b"
-      ],
-      "quality": {
-        "composition": 55,
-        "lightingContrast": 84,
-        "colorHarmony": 100,
-        "cinematicDepth": 59,
-        "subjectIsolation": 77,
-        "mood": 90,
-        "overall": 77
-      },
-      "tags": [
-        "cyberpunk",
-        "cold",
-        "dark",
-        "saturated",
-        "color-rich",
-        "shadow-heavy",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 49.55,
-        "blockiness": 1.252,
-        "colorRichness": 54.36,
-        "contrast": 57.59,
-        "diversity": 0.359,
-        "edgeEnergy": 14.31,
-        "saturation": 83.82,
-        "sharpness": 59.98,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0110000000100100000110000001100000011000001110000111101001111100",
-      "colorSignature": "011-122-011-000-001-032-021-011-000-133-032-011-021-253-142-112",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821-mp4.mp4",
-        "title": "Martian Manhunter, Bruce Wayne Clip from \"LEGO Batman: The Movie - DC Superheroes\"",
-        "url": "https://archive.org/details/bliptv-20131014-064959-Cbr-MartianManhunterBruceWayneClipFromLEGOBatmanTheMovieD821",
-        "query": "The Martian blu-ray clip"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "noir energy",
-        "cold palette",
-        "widescreen",
-        "cyberpunk",
-        "the martian blu-ray clip",
-        "unverified"
       ]
     },
     {
@@ -46861,114 +46196,6 @@
       ]
     },
     {
-      "filename": "youtube-ob65quh4obk_07.jpg",
-      "filmTitle": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "title": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "music video",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "originalSource": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 72,
-      "cinematicScore": 72,
-      "mood": "teal-orange",
-      "lighting": {
-        "subject": {
-          "x": 0.498,
-          "y": 0.496
-        },
-        "keyLight": {
-          "direction": "side-left",
-          "strength": 89
-        },
-        "fillLight": {
-          "direction": "front-right",
-          "strength": 19
-        },
-        "rimLight": {
-          "direction": "back-right",
-          "strength": 33
-        },
-        "contrastRatio": 4.7,
-        "mood": "teal-orange"
-      },
-      "palette": [
-        "#512c25",
-        "#ce7efe",
-        "#dfa0fe",
-        "#cb7953",
-        "#eab0fb"
-      ],
-      "quality": {
-        "composition": 57,
-        "lightingContrast": 82,
-        "colorHarmony": 100,
-        "cinematicDepth": 53,
-        "subjectIsolation": 60,
-        "mood": 78,
-        "overall": 72
-      },
-      "tags": [
-        "teal-orange",
-        "warm",
-        "saturated",
-        "color-rich",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 113.83,
-        "blockiness": 1.027,
-        "colorRichness": 70.27,
-        "contrast": 56.85,
-        "diversity": 0.453,
-        "edgeEnergy": 13.81,
-        "saturation": 50.73,
-        "sharpness": 45.79,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0011110000111000000100000101110001111100111111101000111010000000",
-      "colorSignature": "426-757-644-322-425-646-532-322-647-757-754-422-536-426-533-432",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/youtube-ob65quh4obk_ob65quh4obk-mp4.mp4",
-        "title": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-        "url": "https://archive.org/details/youtube-OB65qUh4OBk",
-        "query": "HUMBLE Kendrick Lamar official music video"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "warm palette",
-        "widescreen",
-        "teal-orange",
-        "humble kendrick lamar official music video",
-        "unverified"
-      ]
-    },
-    {
       "filename": "2z6a6nuflsu_04.jpg",
       "filmTitle": "Backrooms",
       "title": "Backrooms",
@@ -49103,8 +48330,8 @@
     },
     {
       "filename": "w5przuaq3vm_03.jpg",
-      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
-      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
+      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
+      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
       "year": "2022",
       "director": "",
       "cinematographer": "",
@@ -56406,115 +55633,6 @@
       ]
     },
     {
-      "filename": "youtube-ob65quh4obk_08.jpg",
-      "filmTitle": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "title": "Kendrick Lamar'S 'Good Kid M.A.A.D City' Album, 5th Anniversary | Mtv News",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "music video",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "originalSource": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 67,
-      "cinematicScore": 67,
-      "mood": "amber",
-      "lighting": {
-        "subject": {
-          "x": 0.504,
-          "y": 0.4
-        },
-        "keyLight": {
-          "direction": "front-left",
-          "strength": 92
-        },
-        "fillLight": {
-          "direction": "front-right",
-          "strength": 18
-        },
-        "rimLight": {
-          "direction": "back-right",
-          "strength": 22
-        },
-        "contrastRatio": 5.2,
-        "mood": "amber"
-      },
-      "palette": [
-        "#77745b",
-        "#f7fded",
-        "#626048",
-        "#554b34",
-        "#84866f"
-      ],
-      "quality": {
-        "composition": 39,
-        "lightingContrast": 90,
-        "colorHarmony": 84,
-        "cinematicDepth": 37,
-        "subjectIsolation": 59,
-        "mood": 91,
-        "overall": 67
-      },
-      "tags": [
-        "amber",
-        "warm",
-        "high-contrast",
-        "color-rich",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 127.14,
-        "blockiness": 1.002,
-        "colorRichness": 60.64,
-        "contrast": 62.02,
-        "diversity": 0.313,
-        "edgeEnergy": 8.51,
-        "saturation": 26.69,
-        "sharpness": 32.79,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0011110000111100001110000011000000010000000000100000011100000110",
-      "colorSignature": "332-887-554-322-332-787-433-332-332-443-443-443-332-443-543-444",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/youtube-ob65quh4obk_ob65quh4obk-mp4.mp4",
-        "title": "Kendrick Lamar's 'Good Kid M.A.A.D City' Album, 5th Anniversary | MTV News",
-        "url": "https://archive.org/details/youtube-OB65qUh4OBk",
-        "query": "HUMBLE Kendrick Lamar official music video"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "high contrast",
-        "warm palette",
-        "widescreen",
-        "amber",
-        "humble kendrick lamar official music video",
-        "unverified"
-      ]
-    },
-    {
       "filename": "0hjdiohvoik_11.jpg",
       "filmTitle": "Backrooms",
       "title": "Backrooms",
@@ -58304,8 +57422,8 @@
     },
     {
       "filename": "w5przuaq3vm_04.jpg",
-      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
-      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
+      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
+      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
       "year": "2022",
       "director": "",
       "cinematographer": "",
@@ -62264,8 +61382,8 @@
     },
     {
       "filename": "w5przuaq3vm_05.jpg",
-      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
-      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
+      "filmTitle": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
+      "title": "Bulgari Unexpected Wonders - A By Paolo Sorrentino",
       "year": "2022",
       "director": "",
       "cinematographer": "",
@@ -63026,114 +62144,6 @@
         "noir",
         "spencer official trailer",
         "main feed"
-      ]
-    },
-    {
-      "filename": "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
-      "filmTitle": "\"Batman The Dark Knight Returns, Part 2\"",
-      "title": "\"Batman The Dark Knight Returns, Part 2\"",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "film",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "originalSource": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 63,
-      "cinematicScore": 63,
-      "mood": "noir",
-      "lighting": {
-        "subject": {
-          "x": 0.488,
-          "y": 0.529
-        },
-        "keyLight": {
-          "direction": "side-left",
-          "strength": 86
-        },
-        "fillLight": {
-          "direction": "front-right",
-          "strength": 20
-        },
-        "rimLight": {
-          "direction": "back-right",
-          "strength": 23
-        },
-        "contrastRatio": 4.3,
-        "mood": "noir"
-      },
-      "palette": [
-        "#20232b",
-        "#868e99",
-        "#757b85",
-        "#0a0a0c",
-        "#4e5257"
-      ],
-      "quality": {
-        "composition": 53,
-        "lightingContrast": 75,
-        "colorHarmony": 70,
-        "cinematicDepth": 40,
-        "subjectIsolation": 52,
-        "mood": 88,
-        "overall": 63
-      },
-      "tags": [
-        "noir",
-        "cold",
-        "dark",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 79.49,
-        "blockiness": 1.055,
-        "colorRichness": 51.64,
-        "contrast": 51.39,
-        "diversity": 0.484,
-        "edgeEnergy": 9.03,
-        "saturation": 19.36,
-        "sharpness": 37.07,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0000000000000000100000001100000011100011111110111111111111111111",
-      "colorSignature": "111-111-111-111-333-111-111-111-444-333-233-344-444-445-445-445",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927-mp4.mp4",
-        "title": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-        "url": "https://archive.org/details/bliptv-20131031-042202-Cbr-BatmanTheDarkKnightReturnsPart2Clip927",
-        "query": "The Batman blu-ray clip"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "noir energy",
-        "cold palette",
-        "widescreen",
-        "noir",
-        "the batman blu-ray clip",
-        "unverified"
       ]
     },
     {
@@ -64366,113 +63376,6 @@
       ]
     },
     {
-      "filename": "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_04.jpg",
-      "filmTitle": "\"Batman The Dark Knight Returns, Part 2\"",
-      "title": "\"Batman The Dark Knight Returns, Part 2\"",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "film",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "originalSource": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 62,
-      "cinematicScore": 62,
-      "mood": "noir",
-      "lighting": {
-        "subject": {
-          "x": 0.468,
-          "y": 0.558
-        },
-        "keyLight": {
-          "direction": "side-left",
-          "strength": 83
-        },
-        "fillLight": {
-          "direction": "front-right",
-          "strength": 21
-        },
-        "rimLight": {
-          "direction": "back-right",
-          "strength": 26
-        },
-        "contrastRatio": 3.9,
-        "mood": "noir"
-      },
-      "palette": [
-        "#050506",
-        "#222325",
-        "#868e99",
-        "#767c84",
-        "#4f5051"
-      ],
-      "quality": {
-        "composition": 48,
-        "lightingContrast": 68,
-        "colorHarmony": 65,
-        "cinematicDepth": 46,
-        "subjectIsolation": 64,
-        "mood": 87,
-        "overall": 62
-      },
-      "tags": [
-        "noir",
-        "dark",
-        "shadow-heavy",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 44.93,
-        "blockiness": 1.054,
-        "colorRichness": 47.55,
-        "contrast": 46.96,
-        "diversity": 0.359,
-        "edgeEnergy": 10.62,
-        "saturation": 18.62,
-        "sharpness": 46.86,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0000000000000000000001000100011001000110111001101110010011111110",
-      "colorSignature": "111-000-000-000-111-000-111-112-332-111-222-111-444-333-222-111",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927-mp4.mp4",
-        "title": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-        "url": "https://archive.org/details/bliptv-20131031-042202-Cbr-BatmanTheDarkKnightReturnsPart2Clip927",
-        "query": "The Batman blu-ray clip"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "noir energy",
-        "widescreen",
-        "noir",
-        "the batman blu-ray clip",
-        "unverified"
-      ]
-    },
-    {
       "filename": "loebzz8k5n0_07.jpg",
       "filmTitle": "The Revenant",
       "title": "The Revenant",
@@ -65025,116 +63928,6 @@
         "noir",
         "the brutalist movie clip",
         "main feed"
-      ]
-    },
-    {
-      "filename": "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
-      "filmTitle": "\"Batman The Dark Knight Returns, Part 2\"",
-      "title": "\"Batman The Dark Knight Returns, Part 2\"",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "film",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "originalSource": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 61,
-      "cinematicScore": 61,
-      "mood": "noir",
-      "lighting": {
-        "subject": {
-          "x": 0.505,
-          "y": 0.47
-        },
-        "keyLight": {
-          "direction": "side-left",
-          "strength": 84
-        },
-        "fillLight": {
-          "direction": "front-right",
-          "strength": 21
-        },
-        "rimLight": {
-          "direction": "back-right",
-          "strength": 18
-        },
-        "contrastRatio": 4,
-        "mood": "noir"
-      },
-      "palette": [
-        "#6d747f",
-        "#1e2024",
-        "#030304",
-        "#4d515a",
-        "#0d0f19"
-      ],
-      "quality": {
-        "composition": 49,
-        "lightingContrast": 70,
-        "colorHarmony": 67,
-        "cinematicDepth": 33,
-        "subjectIsolation": 61,
-        "mood": 88,
-        "overall": 61
-      },
-      "tags": [
-        "noir",
-        "cold",
-        "dark",
-        "minimal",
-        "shadow-heavy",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 64.32,
-        "blockiness": 1.051,
-        "colorRichness": 48.99,
-        "contrast": 48.22,
-        "diversity": 0.484,
-        "edgeEnergy": 6.58,
-        "saturation": 20.02,
-        "sharpness": 33.07,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0000110010000100110001111110011111100111111000011100000111000001",
-      "colorSignature": "111-000-233-001-334-111-223-334-334-223-111-333-344-111-111-223",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927-mp4.mp4",
-        "title": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-        "url": "https://archive.org/details/bliptv-20131031-042202-Cbr-BatmanTheDarkKnightReturnsPart2Clip927",
-        "query": "The Batman blu-ray clip"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "noir energy",
-        "cold palette",
-        "widescreen",
-        "noir",
-        "the batman blu-ray clip",
-        "unverified"
       ]
     },
     {
@@ -68114,111 +66907,6 @@
       ]
     },
     {
-      "filename": "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_02.jpg",
-      "filmTitle": "\"Batman The Dark Knight Returns, Part 2\"",
-      "title": "\"Batman The Dark Knight Returns, Part 2\"",
-      "originalTitle": "",
-      "year": "",
-      "director": "",
-      "cinematographer": "",
-      "productionDesigner": "",
-      "sourceType": "film",
-      "genres": [],
-      "overview": "",
-      "poster": "",
-      "backdrop": "",
-      "runtime": "",
-      "voteAverage": "",
-      "productionCountries": [],
-      "tmdbId": "",
-      "sourceConfidence": 0,
-      "originalSourceTitle": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "originalSource": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-      "productionHouse": "",
-      "metadataProvider": "local",
-      "metadataConfidence": "low",
-      "metadataVerified": false,
-      "verifiedMetadata": false,
-      "score": 54,
-      "cinematicScore": 54,
-      "mood": "monochrome",
-      "lighting": {
-        "subject": {
-          "x": 0.515,
-          "y": 0.396
-        },
-        "keyLight": {
-          "direction": "front-right",
-          "strength": 77
-        },
-        "fillLight": {
-          "direction": "front-left",
-          "strength": 25
-        },
-        "rimLight": {
-          "direction": "back-left",
-          "strength": 27
-        },
-        "contrastRatio": 3.1,
-        "mood": "monochrome"
-      },
-      "palette": [
-        "#a1a4a5",
-        "#7f8287",
-        "#ccd1d4",
-        "#8a8e97",
-        "#90959a"
-      ],
-      "quality": {
-        "composition": 61,
-        "lightingContrast": 54,
-        "colorHarmony": 47,
-        "cinematicDepth": 47,
-        "subjectIsolation": 43,
-        "mood": 73,
-        "overall": 54
-      },
-      "tags": [
-        "monochrome",
-        "muted",
-        "widescreen",
-        "cinematic"
-      ],
-      "metrics": {
-        "brightness": 153.37,
-        "blockiness": 1.056,
-        "colorRichness": 37.72,
-        "contrast": 37.4,
-        "diversity": 0.547,
-        "edgeEnergy": 10.81,
-        "saturation": 6.57,
-        "sharpness": 46.23,
-        "blackBars": false,
-        "splitScreenRisk": false,
-        "thumbnailStyleRisk": false,
-        "uiGraphicRisk": false
-      },
-      "signature": "0001111100001111000000110000011100011111010111111100110111101001",
-      "colorSignature": "444-444-666-566-444-444-444-666-555-555-556-555-555-555-555-555",
-      "width": 1920,
-      "height": 1080,
-      "aspectRatio": 1.7778,
-      "source": {
-        "video": "videos/bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927-mp4.mp4",
-        "title": "\"Batman: The Dark Knight Returns, Part 2\" Clip",
-        "url": "https://archive.org/details/bliptv-20131031-042202-Cbr-BatmanTheDarkKnightReturnsPart2Clip927",
-        "query": "The Batman blu-ray clip"
-      },
-      "mainFeed": false,
-      "collections": [
-        "all frames",
-        "widescreen",
-        "monochrome",
-        "the batman blu-ray clip",
-        "unverified"
-      ]
-    },
-    {
       "filename": "06wzsa-55ue_04.jpg",
       "filmTitle": "Barbie: A Fashion Fairytale",
       "title": "Barbie: A Fashion Fairytale",
@@ -68560,19 +67248,17 @@
   "collections": [
     {
       "name": "all frames",
-      "count": 605,
+      "count": 593,
       "frames": [
         "oihhs2errwk_02.jpg",
         "7zu6x0wyzgc_01.jpg",
         "dalvncbgckg_03.jpg",
         "sfrzxpg63cw_01.jpg",
         "akkdbkmugei_01.jpg",
-        "youtube-ob65quh4obk_01.jpg",
         "0m3cpebwwhg_04.jpg",
         "5fyfij16yc0_01.jpg",
         "dalvncbgckg_05.jpg",
         "huecwi5px7o_01.jpg",
-        "youtube-ob65quh4obk_03.jpg",
         "2z6a6nuflsu_03.jpg",
         "nb-ffj-0rq8_03.jpg",
         "qevutrk8-b4_04.jpg",
@@ -68585,7 +67271,6 @@
         "0gshiu-i7o0_01.jpg",
         "3amglitbfku_02.jpg",
         "c4wls5pzlxq_03.jpg",
-        "youtube-ob65quh4obk_05.jpg",
         "xihiw4n7-bo_06.jpg",
         "1poaz1wnbdm_01.jpg",
         "4k4pmtsa1kw_03.jpg",
@@ -68761,7 +67446,6 @@
         "woxytmlqucq_01.jpg",
         "yp990vdrr8q_04.jpg",
         "zbukbgtn0ce_02.jpg",
-        "youtube-ob65quh4obk_04.jpg",
         "08pndojikrc_05.jpg",
         "3ybglxgws1u_01.jpg",
         "3ybglxgws1u_05.jpg",
@@ -68826,8 +67510,6 @@
         "yp990vdrr8q_05.jpg",
         "yug7yb53xu0_04.jpg",
         "yug7yb53xu0_05.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg",
         "0hjdiohvoik_08.jpg",
         "5hppywo7uka_01.jpg",
         "ft6ubhvhkoo_02.jpg",
@@ -68972,7 +67654,6 @@
         "rpl5vpwfmvq_02.jpg",
         "vxkcwru8k-u_03.jpg",
         "vxkcwru8k-u_04.jpg",
-        "youtube-ob65quh4obk_07.jpg",
         "2z6a6nuflsu_04.jpg",
         "5hppywo7uka_03.jpg",
         "pjypz4hkxje_05.jpg",
@@ -69057,7 +67738,6 @@
         "twvi0ipizj8_05.jpg",
         "g9pw3b8ycc4_05.jpg",
         "hps2exul-bc_01.jpg",
-        "youtube-ob65quh4obk_08.jpg",
         "0hjdiohvoik_11.jpg",
         "du481sohopu_02.jpg",
         "jm0mlle4x0u_12.jpg",
@@ -69117,7 +67797,6 @@
         "4k4pmtsa1kw_05.jpg",
         "edbmpfbnlgk_05.jpg",
         "wllzh9aekdg_05.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
         "2z6a6nuflsu_05.jpg",
         "tzmy4wwodmo_02.jpg",
         "vx0thk6v4oc_01.jpg",
@@ -69129,13 +67808,11 @@
         "wllzh9aekdg_03.jpg",
         "dcuoo4itgmw_04.jpg",
         "ss6ksy8xwcy_02.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_04.jpg",
         "loebzz8k5n0_07.jpg",
         "0vb0f-cn83e_05.jpg",
         "gfntvaauvyy_01.jpg",
         "sffked1dt4i_05.jpg",
         "zn9nroqzk-c_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
         "0hjdiohvoik_09.jpg",
         "5hppywo7uka_04.jpg",
         "gccx85zbxz4_06.jpg",
@@ -69163,7 +67840,6 @@
         "sfrzxpg63cw_04.jpg",
         "wllzh9aekdg_04.jpg",
         "rpl5vpwfmvq_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_02.jpg",
         "06wzsa-55ue_04.jpg",
         "7s1yhsp5jai_03.jpg",
         "ss6ksy8xwcy_03.jpg"
@@ -69171,19 +67847,17 @@
     },
     {
       "name": "widescreen",
-      "count": 605,
+      "count": 593,
       "frames": [
         "oihhs2errwk_02.jpg",
         "7zu6x0wyzgc_01.jpg",
         "dalvncbgckg_03.jpg",
         "sfrzxpg63cw_01.jpg",
         "akkdbkmugei_01.jpg",
-        "youtube-ob65quh4obk_01.jpg",
         "0m3cpebwwhg_04.jpg",
         "5fyfij16yc0_01.jpg",
         "dalvncbgckg_05.jpg",
         "huecwi5px7o_01.jpg",
-        "youtube-ob65quh4obk_03.jpg",
         "2z6a6nuflsu_03.jpg",
         "nb-ffj-0rq8_03.jpg",
         "qevutrk8-b4_04.jpg",
@@ -69196,7 +67870,6 @@
         "0gshiu-i7o0_01.jpg",
         "3amglitbfku_02.jpg",
         "c4wls5pzlxq_03.jpg",
-        "youtube-ob65quh4obk_05.jpg",
         "xihiw4n7-bo_06.jpg",
         "1poaz1wnbdm_01.jpg",
         "4k4pmtsa1kw_03.jpg",
@@ -69372,7 +68045,6 @@
         "woxytmlqucq_01.jpg",
         "yp990vdrr8q_04.jpg",
         "zbukbgtn0ce_02.jpg",
-        "youtube-ob65quh4obk_04.jpg",
         "08pndojikrc_05.jpg",
         "3ybglxgws1u_01.jpg",
         "3ybglxgws1u_05.jpg",
@@ -69437,8 +68109,6 @@
         "yp990vdrr8q_05.jpg",
         "yug7yb53xu0_04.jpg",
         "yug7yb53xu0_05.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg",
         "0hjdiohvoik_08.jpg",
         "5hppywo7uka_01.jpg",
         "ft6ubhvhkoo_02.jpg",
@@ -69583,7 +68253,6 @@
         "rpl5vpwfmvq_02.jpg",
         "vxkcwru8k-u_03.jpg",
         "vxkcwru8k-u_04.jpg",
-        "youtube-ob65quh4obk_07.jpg",
         "2z6a6nuflsu_04.jpg",
         "5hppywo7uka_03.jpg",
         "pjypz4hkxje_05.jpg",
@@ -69668,7 +68337,6 @@
         "twvi0ipizj8_05.jpg",
         "g9pw3b8ycc4_05.jpg",
         "hps2exul-bc_01.jpg",
-        "youtube-ob65quh4obk_08.jpg",
         "0hjdiohvoik_11.jpg",
         "du481sohopu_02.jpg",
         "jm0mlle4x0u_12.jpg",
@@ -69728,7 +68396,6 @@
         "4k4pmtsa1kw_05.jpg",
         "edbmpfbnlgk_05.jpg",
         "wllzh9aekdg_05.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
         "2z6a6nuflsu_05.jpg",
         "tzmy4wwodmo_02.jpg",
         "vx0thk6v4oc_01.jpg",
@@ -69740,13 +68407,11 @@
         "wllzh9aekdg_03.jpg",
         "dcuoo4itgmw_04.jpg",
         "ss6ksy8xwcy_02.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_04.jpg",
         "loebzz8k5n0_07.jpg",
         "0vb0f-cn83e_05.jpg",
         "gfntvaauvyy_01.jpg",
         "sffked1dt4i_05.jpg",
         "zn9nroqzk-c_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
         "0hjdiohvoik_09.jpg",
         "5hppywo7uka_04.jpg",
         "gccx85zbxz4_06.jpg",
@@ -69774,7 +68439,6 @@
         "sfrzxpg63cw_04.jpg",
         "wllzh9aekdg_04.jpg",
         "rpl5vpwfmvq_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_02.jpg",
         "06wzsa-55ue_04.jpg",
         "7s1yhsp5jai_03.jpg",
         "ss6ksy8xwcy_03.jpg"
@@ -70282,19 +68946,17 @@
     },
     {
       "name": "high contrast",
-      "count": 357,
+      "count": 351,
       "frames": [
         "oihhs2errwk_02.jpg",
         "7zu6x0wyzgc_01.jpg",
         "dalvncbgckg_03.jpg",
         "sfrzxpg63cw_01.jpg",
         "akkdbkmugei_01.jpg",
-        "youtube-ob65quh4obk_01.jpg",
         "0m3cpebwwhg_04.jpg",
         "5fyfij16yc0_01.jpg",
         "dalvncbgckg_05.jpg",
         "huecwi5px7o_01.jpg",
-        "youtube-ob65quh4obk_03.jpg",
         "2z6a6nuflsu_03.jpg",
         "nb-ffj-0rq8_03.jpg",
         "qevutrk8-b4_04.jpg",
@@ -70307,7 +68969,6 @@
         "0gshiu-i7o0_01.jpg",
         "3amglitbfku_02.jpg",
         "c4wls5pzlxq_03.jpg",
-        "youtube-ob65quh4obk_05.jpg",
         "xihiw4n7-bo_06.jpg",
         "1poaz1wnbdm_01.jpg",
         "4k4pmtsa1kw_03.jpg",
@@ -70477,7 +69138,6 @@
         "woxytmlqucq_01.jpg",
         "yp990vdrr8q_04.jpg",
         "zbukbgtn0ce_02.jpg",
-        "youtube-ob65quh4obk_04.jpg",
         "08pndojikrc_05.jpg",
         "3ybglxgws1u_01.jpg",
         "3ybglxgws1u_05.jpg",
@@ -70535,7 +69195,6 @@
         "yp990vdrr8q_03.jpg",
         "yp990vdrr8q_05.jpg",
         "yug7yb53xu0_05.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
         "0hjdiohvoik_08.jpg",
         "5hppywo7uka_01.jpg",
         "ft6ubhvhkoo_02.jpg",
@@ -70638,14 +69297,13 @@
         "sffked1dt4i_02.jpg",
         "c-3nmtxeyfk_02.jpg",
         "zbukbgtn0ce_04.jpg",
-        "youtube-ob65quh4obk_08.jpg",
         "0vb0f-cn83e_03.jpg",
         "iqxmlf3sefg_02.jpg"
       ]
     },
     {
       "name": "noir energy",
-      "count": 301,
+      "count": 296,
       "frames": [
         "akkdbkmugei_01.jpg",
         "0m3cpebwwhg_04.jpg",
@@ -70755,8 +69413,6 @@
         "moup4npvea8_04.jpg",
         "yug7yb53xu0_04.jpg",
         "yug7yb53xu0_05.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg",
         "0hjdiohvoik_08.jpg",
         "ft6ubhvhkoo_02.jpg",
         "ft6ubhvhkoo_04.jpg",
@@ -70931,17 +69587,14 @@
         "bk6ldnje3y0_06.jpg",
         "4vaodlrwzfu_02.jpg",
         "edbmpfbnlgk_05.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
         "2z6a6nuflsu_05.jpg",
         "tzmy4wwodmo_02.jpg",
         "e7wnr9shq2g_04.jpg",
         "tcpk2p0zaw4_05.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_04.jpg",
         "loebzz8k5n0_07.jpg",
         "0vb0f-cn83e_05.jpg",
         "sffked1dt4i_05.jpg",
         "zn9nroqzk-c_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
         "gccx85zbxz4_06.jpg",
         "eiwcbusyeuu_02.jpg",
         "way9dexny3w_09.jpg",
@@ -70952,14 +69605,13 @@
     },
     {
       "name": "noir",
-      "count": 279,
+      "count": 273,
       "frames": [
         "dalvncbgckg_03.jpg",
         "sfrzxpg63cw_01.jpg",
         "0m3cpebwwhg_04.jpg",
         "5fyfij16yc0_01.jpg",
         "dalvncbgckg_05.jpg",
-        "youtube-ob65quh4obk_03.jpg",
         "2z6a6nuflsu_03.jpg",
         "nb-ffj-0rq8_03.jpg",
         "bihhdnoo8bo_02.jpg",
@@ -70967,7 +69619,6 @@
         "ocznfqy7v8a_03.jpg",
         "0gshiu-i7o0_01.jpg",
         "c4wls5pzlxq_03.jpg",
-        "youtube-ob65quh4obk_05.jpg",
         "4k4pmtsa1kw_03.jpg",
         "dalvncbgckg_04.jpg",
         "wbliusfensw_03.jpg",
@@ -71067,7 +69718,6 @@
         "woxytmlqucq_01.jpg",
         "yp990vdrr8q_04.jpg",
         "zbukbgtn0ce_02.jpg",
-        "youtube-ob65quh4obk_04.jpg",
         "08pndojikrc_05.jpg",
         "jm0mlle4x0u_08.jpg",
         "w5przuaq3vm_02.jpg",
@@ -71220,15 +69870,12 @@
         "pjypz4hkxje_09.jpg",
         "bk6ldnje3y0_06.jpg",
         "wllzh9aekdg_05.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
         "2z6a6nuflsu_05.jpg",
         "2-1njf8vg_04.jpg",
         "e7wnr9shq2g_04.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_04.jpg",
         "loebzz8k5n0_07.jpg",
         "gfntvaauvyy_01.jpg",
         "zn9nroqzk-c_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
         "eiwcbusyeuu_02.jpg",
         "way9dexny3w_09.jpg",
         "gx8hg6kwqyi_01.jpg",
@@ -71237,7 +69884,7 @@
     },
     {
       "name": "warm palette",
-      "count": 254,
+      "count": 251,
       "frames": [
         "oihhs2errwk_02.jpg",
         "7zu6x0wyzgc_01.jpg",
@@ -71345,7 +69992,6 @@
         "isogd-7hniy_04.jpg",
         "moup4npvea8_04.jpg",
         "yp990vdrr8q_05.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
         "5hppywo7uka_01.jpg",
         "ft6ubhvhkoo_02.jpg",
         "ft6ubhvhkoo_03.jpg",
@@ -71404,7 +70050,6 @@
         "moup4npvea8_03.jpg",
         "oihhs2errwk_05.jpg",
         "vxkcwru8k-u_04.jpg",
-        "youtube-ob65quh4obk_07.jpg",
         "2z6a6nuflsu_04.jpg",
         "pjypz4hkxje_05.jpg",
         "w9-08pxtrkm_03.jpg",
@@ -71441,7 +70086,6 @@
         "5vpvfaawx9u_04.jpg",
         "dqqe3orsmki_02.jpg",
         "hps2exul-bc_01.jpg",
-        "youtube-ob65quh4obk_08.jpg",
         "pjypz4hkxje_06.jpg",
         "xihiw4n7-bo_12.jpg",
         "gccx85zbxz4_05.jpg",
@@ -71497,15 +70141,13 @@
     },
     {
       "name": "cold palette",
-      "count": 120,
+      "count": 115,
       "frames": [
         "dalvncbgckg_03.jpg",
-        "youtube-ob65quh4obk_03.jpg",
         "nb-ffj-0rq8_03.jpg",
         "ocznfqy7v8a_03.jpg",
         "qevutrk8-b4_07.jpg",
         "0gshiu-i7o0_01.jpg",
-        "youtube-ob65quh4obk_05.jpg",
         "xihiw4n7-bo_06.jpg",
         "1poaz1wnbdm_01.jpg",
         "jm0mlle4x0u_02.jpg",
@@ -71552,7 +70194,6 @@
         "h7orxqgmyuy_03.jpg",
         "djz0x-uzypk_01.jpg",
         "h7orxqgmyuy_05.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg",
         "0hjdiohvoik_08.jpg",
         "loebzz8k5n0_03.jpg",
         "sr-amdl1c8_01.jpg",
@@ -71606,12 +70247,10 @@
         "myq9lcfstkw_04.jpg",
         "ne6p6mflbxc_04.jpg",
         "tzmy4wwodmo_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
         "9382rwomirc_04.jpg",
         "e7wnr9shq2g_04.jpg",
         "ss6ksy8xwcy_02.jpg",
         "loebzz8k5n0_07.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
         "eiwcbusyeuu_02.jpg",
         "dkumycuy2f8_02.jpg",
         "gx8hg6kwqyi_01.jpg",
@@ -71623,7 +70262,7 @@
     },
     {
       "name": "teal-orange",
-      "count": 108,
+      "count": 106,
       "frames": [
         "huecwi5px7o_01.jpg",
         "qevutrk8-b4_04.jpg",
@@ -71652,7 +70291,6 @@
         "vxkcwru8k-u_02.jpg",
         "ocznfqy7v8a_08.jpg",
         "5vpvfaawx9u_02.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
         "u2qp5pl3ova_03.jpg",
         "2-1njf8vg_03.jpg",
         "3amglitbfku_04.jpg",
@@ -71676,7 +70314,6 @@
         "oihhs2errwk_05.jpg",
         "vxkcwru8k-u_03.jpg",
         "vxkcwru8k-u_04.jpg",
-        "youtube-ob65quh4obk_07.jpg",
         "pjypz4hkxje_05.jpg",
         "nvtjw389bxm_05.jpg",
         "ur-dihs92nm_05.jpg",
@@ -71736,114 +70373,8 @@
       ]
     },
     {
-      "name": "unverified",
-      "count": 100,
-      "frames": [
-        "sfrzxpg63cw_01.jpg",
-        "youtube-ob65quh4obk_01.jpg",
-        "5fyfij16yc0_01.jpg",
-        "huecwi5px7o_01.jpg",
-        "youtube-ob65quh4obk_03.jpg",
-        "qevutrk8-b4_04.jpg",
-        "bihhdnoo8bo_02.jpg",
-        "qevutrk8-b4_07.jpg",
-        "3amglitbfku_02.jpg",
-        "youtube-ob65quh4obk_05.jpg",
-        "qevutrk8-b4_01.jpg",
-        "qevutrk8-b4_02.jpg",
-        "4oepyzlbxfq_01.jpg",
-        "bihhdnoo8bo_01.jpg",
-        "ilf9w9mfvai_01.jpg",
-        "qevutrk8-b4_08.jpg",
-        "3amglitbfku_03.jpg",
-        "5fyfij16yc0_05.jpg",
-        "uruk2hsxkha_01.jpg",
-        "uruk2hsxkha_04.jpg",
-        "qevutrk8-b4_05.jpg",
-        "o0ko8my-90g_01.jpg",
-        "skvyrte-kxi_02.jpg",
-        "uruk2hsxkha_03.jpg",
-        "tlfqnjl-ojw_01.jpg",
-        "tlfqnjl-ojw_03.jpg",
-        "nvtjw389bxm_02.jpg",
-        "youtube-ob65quh4obk_04.jpg",
-        "w5przuaq3vm_02.jpg",
-        "tlfqnjl-ojw_02.jpg",
-        "tlfqnjl-ojw_04.jpg",
-        "bihhdnoo8bo_03.jpg",
-        "bihhdnoo8bo_04.jpg",
-        "tlfqnjl-ojw_09.jpg",
-        "uruk2hsxkha_02.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg",
-        "5hppywo7uka_01.jpg",
-        "ft6ubhvhkoo_02.jpg",
-        "ft6ubhvhkoo_03.jpg",
-        "ft6ubhvhkoo_04.jpg",
-        "3amglitbfku_04.jpg",
-        "ft6ubhvhkoo_05.jpg",
-        "qevutrk8-b4_09.jpg",
-        "tlfqnjl-ojw_06.jpg",
-        "4oepyzlbxfq_02.jpg",
-        "o0ko8my-90g_04.jpg",
-        "sfrzxpg63cw_02.jpg",
-        "5hppywo7uka_02.jpg",
-        "ft6ubhvhkoo_01.jpg",
-        "huecwi5px7o_02.jpg",
-        "rpl5vpwfmvq_04.jpg",
-        "uruk2hsxkha_05.jpg",
-        "0vb0f-cn83e_01.jpg",
-        "tlfqnjl-ojw_10.jpg",
-        "tzmy4wwodmo_01.jpg",
-        "0vb0f-cn83e_02.jpg",
-        "huecwi5px7o_03.jpg",
-        "rpl5vpwfmvq_02.jpg",
-        "youtube-ob65quh4obk_07.jpg",
-        "5hppywo7uka_03.jpg",
-        "nvtjw389bxm_05.jpg",
-        "skvyrte-kxi_04.jpg",
-        "w5przuaq3vm_03.jpg",
-        "tlfqnjl-ojw_07.jpg",
-        "o0ko8my-90g_03.jpg",
-        "sfrzxpg63cw_03.jpg",
-        "bihhdnoo8bo_05.jpg",
-        "myq9lcfstkw_02.jpg",
-        "myq9lcfstkw_03.jpg",
-        "tlfqnjl-ojw_08.jpg",
-        "4oepyzlbxfq_03.jpg",
-        "rpl5vpwfmvq_01.jpg",
-        "youtube-ob65quh4obk_08.jpg",
-        "skvyrte-kxi_05.jpg",
-        "ft6ubhvhkoo_06.jpg",
-        "w5przuaq3vm_04.jpg",
-        "tlfqnjl-ojw_11.jpg",
-        "0vb0f-cn83e_03.jpg",
-        "0vb0f-cn83e_04.jpg",
-        "myq9lcfstkw_01.jpg",
-        "myq9lcfstkw_04.jpg",
-        "sfrzxpg63cw_05.jpg",
-        "5hppywo7uka_05.jpg",
-        "ft6ubhvhkoo_07.jpg",
-        "ft6ubhvhkoo_08.jpg",
-        "w5przuaq3vm_05.jpg",
-        "tzmy4wwodmo_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
-        "tzmy4wwodmo_02.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_04.jpg",
-        "0vb0f-cn83e_05.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
-        "5hppywo7uka_04.jpg",
-        "tlfqnjl-ojw_12.jpg",
-        "myq9lcfstkw_05.jpg",
-        "o0ko8my-90g_05.jpg",
-        "sfrzxpg63cw_04.jpg",
-        "rpl5vpwfmvq_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_02.jpg"
-      ]
-    },
-    {
       "name": "amber",
-      "count": 94,
+      "count": 93,
       "frames": [
         "oihhs2errwk_02.jpg",
         "7zu6x0wyzgc_01.jpg",
@@ -71914,7 +70445,6 @@
         "0hjdiohvoik_07.jpg",
         "u2qp5pl3ova_10.jpg",
         "4vaodlrwzfu_01.jpg",
-        "youtube-ob65quh4obk_08.jpg",
         "gccx85zbxz4_05.jpg",
         "moup4npvea8_05.jpg",
         "ft6ubhvhkoo_06.jpg",
@@ -71942,11 +70472,104 @@
       ]
     },
     {
+      "name": "unverified",
+      "count": 88,
+      "frames": [
+        "sfrzxpg63cw_01.jpg",
+        "5fyfij16yc0_01.jpg",
+        "huecwi5px7o_01.jpg",
+        "qevutrk8-b4_04.jpg",
+        "bihhdnoo8bo_02.jpg",
+        "qevutrk8-b4_07.jpg",
+        "3amglitbfku_02.jpg",
+        "qevutrk8-b4_01.jpg",
+        "qevutrk8-b4_02.jpg",
+        "4oepyzlbxfq_01.jpg",
+        "bihhdnoo8bo_01.jpg",
+        "ilf9w9mfvai_01.jpg",
+        "qevutrk8-b4_08.jpg",
+        "3amglitbfku_03.jpg",
+        "5fyfij16yc0_05.jpg",
+        "uruk2hsxkha_01.jpg",
+        "uruk2hsxkha_04.jpg",
+        "qevutrk8-b4_05.jpg",
+        "o0ko8my-90g_01.jpg",
+        "skvyrte-kxi_02.jpg",
+        "uruk2hsxkha_03.jpg",
+        "tlfqnjl-ojw_01.jpg",
+        "tlfqnjl-ojw_03.jpg",
+        "nvtjw389bxm_02.jpg",
+        "w5przuaq3vm_02.jpg",
+        "tlfqnjl-ojw_02.jpg",
+        "tlfqnjl-ojw_04.jpg",
+        "bihhdnoo8bo_03.jpg",
+        "bihhdnoo8bo_04.jpg",
+        "tlfqnjl-ojw_09.jpg",
+        "uruk2hsxkha_02.jpg",
+        "5hppywo7uka_01.jpg",
+        "ft6ubhvhkoo_02.jpg",
+        "ft6ubhvhkoo_03.jpg",
+        "ft6ubhvhkoo_04.jpg",
+        "3amglitbfku_04.jpg",
+        "ft6ubhvhkoo_05.jpg",
+        "qevutrk8-b4_09.jpg",
+        "tlfqnjl-ojw_06.jpg",
+        "4oepyzlbxfq_02.jpg",
+        "o0ko8my-90g_04.jpg",
+        "sfrzxpg63cw_02.jpg",
+        "5hppywo7uka_02.jpg",
+        "ft6ubhvhkoo_01.jpg",
+        "huecwi5px7o_02.jpg",
+        "rpl5vpwfmvq_04.jpg",
+        "uruk2hsxkha_05.jpg",
+        "0vb0f-cn83e_01.jpg",
+        "tlfqnjl-ojw_10.jpg",
+        "tzmy4wwodmo_01.jpg",
+        "0vb0f-cn83e_02.jpg",
+        "huecwi5px7o_03.jpg",
+        "rpl5vpwfmvq_02.jpg",
+        "5hppywo7uka_03.jpg",
+        "nvtjw389bxm_05.jpg",
+        "skvyrte-kxi_04.jpg",
+        "w5przuaq3vm_03.jpg",
+        "tlfqnjl-ojw_07.jpg",
+        "o0ko8my-90g_03.jpg",
+        "sfrzxpg63cw_03.jpg",
+        "bihhdnoo8bo_05.jpg",
+        "myq9lcfstkw_02.jpg",
+        "myq9lcfstkw_03.jpg",
+        "tlfqnjl-ojw_08.jpg",
+        "4oepyzlbxfq_03.jpg",
+        "rpl5vpwfmvq_01.jpg",
+        "skvyrte-kxi_05.jpg",
+        "ft6ubhvhkoo_06.jpg",
+        "w5przuaq3vm_04.jpg",
+        "tlfqnjl-ojw_11.jpg",
+        "0vb0f-cn83e_03.jpg",
+        "0vb0f-cn83e_04.jpg",
+        "myq9lcfstkw_01.jpg",
+        "myq9lcfstkw_04.jpg",
+        "sfrzxpg63cw_05.jpg",
+        "5hppywo7uka_05.jpg",
+        "ft6ubhvhkoo_07.jpg",
+        "ft6ubhvhkoo_08.jpg",
+        "w5przuaq3vm_05.jpg",
+        "tzmy4wwodmo_03.jpg",
+        "tzmy4wwodmo_02.jpg",
+        "0vb0f-cn83e_05.jpg",
+        "5hppywo7uka_04.jpg",
+        "tlfqnjl-ojw_12.jpg",
+        "myq9lcfstkw_05.jpg",
+        "o0ko8my-90g_05.jpg",
+        "sfrzxpg63cw_04.jpg",
+        "rpl5vpwfmvq_03.jpg"
+      ]
+    },
+    {
       "name": "monochrome",
-      "count": 83,
+      "count": 81,
       "frames": [
         "akkdbkmugei_01.jpg",
-        "youtube-ob65quh4obk_01.jpg",
         "nb-ffj-0rq8_07.jpg",
         "26bgypjoqcw_01.jpg",
         "nvs5f6umiie_01.jpg",
@@ -72026,13 +70649,12 @@
         "tcpk2p0zaw4_05.jpg",
         "sffked1dt4i_05.jpg",
         "7s1yhsp5jai_02.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_02.jpg",
         "7s1yhsp5jai_03.jpg"
       ]
     },
     {
       "name": "cyberpunk",
-      "count": 40,
+      "count": 39,
       "frames": [
         "qevutrk8-b4_07.jpg",
         "xihiw4n7-bo_06.jpg",
@@ -72051,7 +70673,6 @@
         "3jozdjxh-va_04.jpg",
         "bihhdnoo8bo_04.jpg",
         "h7orxqgmyuy_05.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg",
         "0hjdiohvoik_08.jpg",
         "opcug9jyg9k_02.jpg",
         "r-fqptwma9o_03.jpg",
@@ -72425,18 +71046,6 @@
         "ne6p6mflbxc_04.jpg",
         "ne6p6mflbxc_05.jpg",
         "ne6p6mflbxc_07.jpg"
-      ]
-    },
-    {
-      "name": "humble kendrick lamar official music video",
-      "count": 6,
-      "frames": [
-        "youtube-ob65quh4obk_01.jpg",
-        "youtube-ob65quh4obk_03.jpg",
-        "youtube-ob65quh4obk_05.jpg",
-        "youtube-ob65quh4obk_04.jpg",
-        "youtube-ob65quh4obk_07.jpg",
-        "youtube-ob65quh4obk_08.jpg"
       ]
     },
     {
@@ -73040,16 +71649,6 @@
       ]
     },
     {
-      "name": "the batman blu-ray clip",
-      "count": 4,
-      "frames": [
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_01.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_04.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_03.jpg",
-        "bliptv-20131031-042202-cbr-batmanthedarkknightreturnspart2clip927_02.jpg"
-      ]
-    },
-    {
       "name": "burning official trailer",
       "count": 3,
       "frames": [
@@ -73296,14 +71895,6 @@
       "frames": [
         "lxxrcck4s3i_04.jpg",
         "lxxrcck4s3i_02.jpg"
-      ]
-    },
-    {
-      "name": "the martian blu-ray clip",
-      "count": 2,
-      "frames": [
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_01.jpg",
-        "bliptv-20131014-064959-cbr-martianmanhunterbrucewayneclipfromlegobatmanthemovied821_02.jpg"
       ]
     },
     {
