@@ -376,6 +376,20 @@ function writeJson(file, data) {
   fs.writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
 }
 
+function backupJson(file) {
+  if (!fs.existsSync(file)) {
+    return;
+  }
+
+  const backupDir = path.join(path.dirname(file), ".metadata-backups");
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const backupPath = path.join(backupDir, `${path.basename(file)}.${timestamp}.bak`);
+
+  fs.mkdirSync(backupDir, { recursive: true });
+  fs.copyFileSync(file, backupPath);
+  console.log(`Backed up ${path.basename(file)} -> ${path.relative(cwd, backupPath)}`);
+}
+
 function slugify(value) {
   return String(value)
     .toLowerCase()
@@ -989,6 +1003,37 @@ function collectionsFor(frame) {
   );
 }
 
+function mainFeedForFrame(frame, metadataVerified = frame.metadataVerified) {
+  const qualityScore = frame.quality?.overall || frame.cinematicScore || frame.score || 0;
+  const metrics = frame.metrics || {};
+
+  return Boolean(
+    metadataVerified &&
+      qualityScore >= minMainFeedScore &&
+      (frame.score || qualityScore) >= minScore &&
+      !metrics.textOverlayRisk &&
+      !metrics.diagramRisk &&
+      !metrics.splitScreenRisk &&
+      !metrics.thumbnailStyleRisk &&
+      !metrics.uiGraphicRisk &&
+      !blockedFramePattern.test(
+        [
+          frame.filename,
+          frame.title,
+          frame.filmTitle,
+          frame.originalSourceTitle,
+          frame.originalSource,
+          frame.source?.title,
+          frame.source?.query,
+          ...(frame.tags || []),
+          ...(frame.collections || []),
+        ]
+          .filter(Boolean)
+          .join(" "),
+      ),
+  );
+}
+
 function videoInfo(videoPath) {
   const info = readJson(videoPath.replace(/\.[^.]+$/, ".info.json"), {});
   const fallbackTitle = path.basename(videoPath, path.extname(videoPath));
@@ -1195,16 +1240,7 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats, meta
         },
       };
 
-      frame.mainFeed = Boolean(
-        frame.metadataVerified &&
-          quality.overall >= minMainFeedScore &&
-          metrics.score >= minScore &&
-          !metrics.textOverlayRisk &&
-          !metrics.diagramRisk &&
-          !metrics.thumbnailStyleRisk &&
-          !metrics.uiGraphicRisk &&
-          !metrics.splitScreenRisk,
-      );
+      frame.mainFeed = mainFeedForFrame(frame);
       frame.collections = collectionsFor(frame);
       return frame;
     }));
@@ -1299,14 +1335,10 @@ async function main() {
           frame.metadataVerified ||
           (frame.metadataProvider && frame.metadataProvider !== "local"),
       );
-      const mainFeed = Boolean(
-        metadataVerified &&
-          (frame.quality?.overall || frame.cinematicScore || frame.score || 0) >= minMainFeedScore &&
-          !frame.metrics?.splitScreenRisk &&
-          !frame.metrics?.thumbnailStyleRisk &&
-          !frame.metrics?.uiGraphicRisk,
-      );
-      const baseCollections = Array.isArray(frame.collections) ? frame.collections : [];
+      const mainFeed = mainFeedForFrame(frame, metadataVerified);
+      const baseCollections = Array.isArray(frame.collections)
+        ? frame.collections.filter((collection) => !/^main feed$|^unverified$/i.test(String(collection)))
+        : [];
       const collections = Array.from(
         new Set([
           ...baseCollections,
@@ -1341,6 +1373,7 @@ async function main() {
     })))
     .sort((a, b) => (b.score || 0) - (a.score || 0));
 
+  backupJson(metadataPath);
   writeJson(metadataPath, {
     generatedAt: new Date().toISOString(),
     frames,
