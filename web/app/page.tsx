@@ -435,6 +435,7 @@ function isReferenceFrame(frame: Partial<Frame> & { filename: string; title: str
 async function getFrames(): Promise<Frame[]> {
   const files = readFrameFiles();
   const metadata = files.length ? readMetadata() : {};
+  const hasReadableMetadata = Object.keys(metadata).length > 0;
   const frames = await Promise.all(
     files.map(async (filename, index) => {
     const item =
@@ -474,7 +475,8 @@ async function getFrames(): Promise<Frame[]> {
       metadataVerified: item.metadataVerified,
       mainFeed:
         item.mainFeed ??
-        Boolean(item.metadataVerified && (item.quality?.overall || item.cinematicScore || item.score || 0) >= 58),
+        (!hasReadableMetadata ||
+          Boolean(item.metadataVerified && (item.quality?.overall || item.cinematicScore || item.score || 0) >= 58)),
       metrics: item.metrics || null,
       source: item.source
         ? {
