@@ -302,10 +302,16 @@ function displayFilmTitle(frame: Frame) {
   return metadataValue(frame.filmTitle || frame.title);
 }
 
+function cleanFilterValue(value?: string) {
+  const cleaned = metadataValue(value);
+  return cleaned === "Unverified metadata" ? "" : cleaned;
+}
+
 export default function GalleryFeed({ frames }: GalleryFeedProps) {
   const [activeTag, setActiveTag] = useState("All");
   const [activeMood, setActiveMood] = useState("All");
   const [activeCollection, setActiveCollection] = useState("All");
+  const [activeCinematographer, setActiveCinematographer] = useState("");
   const [search, setSearch] = useState("");
   const [sortMode, setSortMode] = useState("score");
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -339,6 +345,10 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
         const matchesCollection =
           activeCollection === "All" ||
           frame.collections.includes(activeCollection);
+        const matchesCinematographer =
+          !activeCinematographer ||
+          cleanFilterValue(frame.cinematographer).toLowerCase() ===
+            activeCinematographer.toLowerCase();
         const matchesMainFeed =
           activeCollection !== "All" ||
           Boolean(frame.mainFeed ?? frame.metadataVerified);
@@ -363,7 +373,14 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
           .toLowerCase();
         const matchesSearch = fuzzyIncludes(searchable, normalizedSearch);
 
-        return matchesMainFeed && matchesTag && matchesMood && matchesCollection && matchesSearch;
+        return (
+          matchesMainFeed &&
+          matchesTag &&
+          matchesMood &&
+          matchesCollection &&
+          matchesCinematographer &&
+          matchesSearch
+        );
       })
       .sort((a, b) => {
         if (sortMode === "title") {
@@ -380,7 +397,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
 
         return b.quality.overall - a.quality.overall;
       });
-  }, [activeCollection, activeMood, activeTag, frames, search, sortMode]);
+  }, [activeCinematographer, activeCollection, activeMood, activeTag, frames, search, sortMode]);
 
   const visibleFrames = useMemo(
     () => filteredFrames.slice(0, visibleCount),
@@ -569,6 +586,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
     activeTag !== "All" ? activeTag : null,
     activeMood !== "All" ? activeMood : null,
     activeCollection !== "All" ? activeCollection : null,
+    activeCinematographer ? `DOP: ${activeCinematographer}` : null,
     search.trim() ? `"${search.trim()}"` : null,
   ].filter(Boolean);
 
@@ -720,6 +738,10 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
 
                     if (filter === activeCollection) {
                       setActiveCollection("All");
+                    }
+
+                    if (filter === `DOP: ${activeCinematographer}`) {
+                      setActiveCinematographer("");
                     }
 
                     if (filter === `"${search.trim()}"`) {
@@ -994,7 +1016,27 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     </div>
                     <div className="metadata-group cinematographer-group">
                       <span>Cinematographer</span>
-                      <p>{metadataValue(activeFrame.cinematographer)}</p>
+                      {cleanFilterValue(activeFrame.cinematographer) ? (
+                        <button
+                          className="cinematographer-filter-button"
+                          type="button"
+                          onClick={() => {
+                            setActiveCinematographer(cleanFilterValue(activeFrame.cinematographer));
+                            setActiveTag("All");
+                            setActiveMood("All");
+                            setActiveCollection("All");
+                            setSearch("");
+                            closeModal();
+                          }}
+                        >
+                          {metadataValue(activeFrame.cinematographer)}
+                        </button>
+                      ) : (
+                        <p>{metadataValue(activeFrame.cinematographer)}</p>
+                      )}
+                      {cleanFilterValue(activeFrame.cinematographer) ? (
+                        <small>View all films photographed by this cinematographer</small>
+                      ) : null}
                     </div>
                     <div className="metadata-group">
                       <span>Source</span>
