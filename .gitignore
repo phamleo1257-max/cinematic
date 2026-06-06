@@ -3,4 +3,8 @@ web/node_modules/
 web/frames/
 web/videos/
 web/.env*
+web/public/bestframes/.metadata-backups/
+web/public/bestframes/rejected/
+web/curation-report*.json
+web/*.log
 .DS_Store
