@@ -22,8 +22,7 @@ export default async function PremiumFeedPage() {
           <p className="eyebrow">Verified · Curated · Premium Sources</p>
           <h1>PREMIUM FEED</h1>
           <p className="subtitle">
-            A stricter cinematic feed: verified metadata, curated status, premium source quality,
-            clean frames, and quality score above 80.
+            Premium Feed surfaces only verified, curated, high-quality cinematic references from trusted sources.
           </p>
         </div>
         <div className="hero-stat">

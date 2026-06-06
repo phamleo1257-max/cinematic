@@ -218,26 +218,41 @@ h1 {
 
 .quality-comparison {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: 0 auto 18px;
+  margin: 0 auto 20px;
   max-width: 1540px;
 }
 
 .quality-comparison div {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+    rgba(7, 7, 8, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.105);
   display: grid;
-  gap: 7px;
-  min-height: 92px;
-  padding: 14px;
+  gap: 9px;
+  min-height: 132px;
+  padding: 16px;
+  position: relative;
+}
+
+.quality-comparison div::before {
+  background: linear-gradient(90deg, rgba(232, 180, 92, 0.62), transparent);
+  content: "";
+  height: 1px;
+  left: 16px;
+  opacity: 0.54;
+  position: absolute;
+  right: 16px;
+  top: 0;
 }
 
 .quality-comparison .quality-comparison-featured {
   background:
-    linear-gradient(135deg, rgba(232, 180, 92, 0.14), rgba(255, 255, 255, 0.035)),
+    radial-gradient(circle at 85% 0%, rgba(232, 180, 92, 0.2), transparent 12rem),
+    linear-gradient(135deg, rgba(232, 180, 92, 0.15), rgba(255, 255, 255, 0.035)),
     rgba(255, 255, 255, 0.04);
-  border-color: rgba(232, 180, 92, 0.28);
+  border-color: rgba(232, 180, 92, 0.38);
 }
 
 .quality-comparison strong {
@@ -254,6 +269,13 @@ h1 {
   line-height: 1.35;
   margin: 0;
   text-transform: uppercase;
+}
+
+.quality-comparison small {
+  color: rgba(246, 242, 236, 0.48);
+  font-size: 0.76rem;
+  font-weight: 520;
+  line-height: 1.45;
 }
 
 .studio-brand {
@@ -819,6 +841,26 @@ h1 {
   color: rgba(190, 222, 246, 0.78);
 }
 
+.frame-card-tags .trust-badge {
+  border-radius: 999px;
+  font-size: 0.56rem;
+  font-weight: 850;
+  padding: 5px 7px;
+}
+
+.frame-card-tags .verified-badge,
+.frame-card-tags .curated-badge {
+  background: rgba(75, 170, 112, 0.13);
+  border-color: rgba(75, 170, 112, 0.32);
+  color: rgba(185, 238, 204, 0.8);
+}
+
+.frame-card-tags .quality-badge {
+  background: rgba(232, 180, 92, 0.12);
+  border-color: rgba(232, 180, 92, 0.32);
+  color: rgba(247, 215, 158, 0.82);
+}
+
 .status-curated {
   background: rgba(75, 170, 112, 0.16);
   border-color: rgba(75, 170, 112, 0.42) !important;
@@ -848,15 +890,54 @@ h1 {
 }
 
 .empty-state {
+  background:
+    radial-gradient(circle at 70% 0%, rgba(232, 180, 92, 0.13), transparent 22rem),
+    rgba(255, 255, 255, 0.03);
   border: 1px solid var(--line);
   color: var(--muted);
   margin: 0 auto;
   max-width: 1540px;
-  padding: 36px;
+  padding: clamp(28px, 5vw, 58px);
+}
+
+.empty-state span {
+  color: rgba(232, 180, 92, 0.78);
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.empty-state h2 {
+  color: var(--text);
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 0.95;
+  margin: 0 0 16px;
+  max-width: 10ch;
+  text-transform: uppercase;
 }
 
 .empty-state p {
+  line-height: 1.5;
   margin: 0;
+  max-width: 620px;
+}
+
+.empty-state-link {
+  align-items: center;
+  background: rgba(232, 180, 92, 0.16);
+  border: 1px solid rgba(232, 180, 92, 0.44);
+  color: var(--text);
+  display: inline-flex;
+  font-size: 0.72rem;
+  font-weight: 880;
+  margin-top: 22px;
+  min-height: 36px;
+  padding: 0 13px;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 .infinite-loader {

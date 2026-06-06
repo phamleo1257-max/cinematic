@@ -337,6 +337,22 @@ function feedModeLabel(mode: "standard" | "premium") {
   return mode === "premium" ? "Premium Feed" : "Current Feed";
 }
 
+function feedEmptyCopy(mode: "standard" | "premium") {
+  if (mode === "premium") {
+    return {
+      eyebrow: "No premium shots yet",
+      title: "Premium queue is empty",
+      body: "No shots currently meet every premium gate: verified metadata, curated status, trusted source, score above 80, and clean frame signals.",
+    };
+  }
+
+  return {
+    eyebrow: "No frames",
+    title: "Gallery is empty",
+    body: "Add JPG images to public/bestframes or run npm run discover.",
+  };
+}
+
 function displayFilmTitle(frame: Frame) {
   return metadataValue(frame.filmTitle || frame.title);
 }
@@ -652,9 +668,18 @@ export default function GalleryFeed({
   }, [activeIndex, filteredFrames.length]);
 
   if (!frames.length) {
+    const emptyCopy = feedEmptyCopy(feedMode);
+
     return (
-      <section className="empty-state">
-        <p>Add JPG images to public/bestframes or run npm run discover.</p>
+      <section className={`empty-state ${feedMode === "premium" ? "premium-empty-state" : ""}`}>
+        <span>{emptyCopy.eyebrow}</span>
+        <h2>{emptyCopy.title}</h2>
+        <p>{emptyCopy.body}</p>
+        {feedMode === "premium" ? (
+          <Link href="/" className="empty-state-link">
+            View Current Feed
+          </Link>
+        ) : null}
       </section>
     );
   }
@@ -734,6 +759,7 @@ export default function GalleryFeed({
             <p>
               Avg {comparison.current.averageScore} · {comparison.current.premiumSourcePercent}% premium source
             </p>
+            <small>Broad curated archive with mixed trusted and trailer-based sources.</small>
           </div>
           <div className="quality-comparison-featured">
             <span>Premium Feed</span>
@@ -741,6 +767,7 @@ export default function GalleryFeed({
             <p>
               Avg {comparison.premium.averageScore} · verified curated clips only
             </p>
+            <small>Strict cinematography references from trusted source types.</small>
           </div>
           <div>
             <span>Quality Lift</span>
@@ -751,6 +778,7 @@ export default function GalleryFeed({
             <p>
               {activeStats?.verifiedPercent || 0}% verified · {activeStats?.curatedPercent || 0}% curated
             </p>
+            <small>Premium mode trades volume for source confidence and cleaner frames.</small>
           </div>
         </section>
       ) : null}
@@ -984,20 +1012,35 @@ export default function GalleryFeed({
                           <span>{frame.quality.overall}</span>
                         </div>
                         <div className="frame-card-tags" aria-label="Frame tags">
-                          {frame.sourceQualityType ? (
-                            <span className="source-quality-badge">{frame.sourceQualityType}</span>
-                          ) : null}
-                          {frame.curationStatus ? (
-                            <span className={`status-badge status-${frame.curationStatus}`}>
-                              {frame.curationStatus}
-                            </span>
-                          ) : null}
-                          {[frame.mood, ...frame.tags]
-                            .filter((tag, tagIndex, allTags) => allTags.indexOf(tag) === tagIndex)
-                            .slice(0, 4)
-                            .map((tag) => (
-                              <span key={tag}>{tag}</span>
-                            ))}
+                          {feedMode === "premium" ? (
+                            <>
+                              <span className="trust-badge verified-badge">Verified metadata</span>
+                              <span className="trust-badge curated-badge">Curated</span>
+                              <span className="trust-badge source-quality-badge">
+                                {frame.sourceQualityType || "Trusted source"}
+                              </span>
+                              <span className="trust-badge quality-badge">
+                                Quality {frame.quality.overall}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              {frame.sourceQualityType ? (
+                                <span className="source-quality-badge">{frame.sourceQualityType}</span>
+                              ) : null}
+                              {frame.curationStatus ? (
+                                <span className={`status-badge status-${frame.curationStatus}`}>
+                                  {frame.curationStatus}
+                                </span>
+                              ) : null}
+                              {[frame.mood, ...frame.tags]
+                                .filter((tag, tagIndex, allTags) => allTags.indexOf(tag) === tagIndex)
+                                .slice(0, 4)
+                                .map((tag) => (
+                                  <span key={tag}>{tag}</span>
+                                ))}
+                            </>
+                          )}
                         </div>
                       </div>
                     </article>
