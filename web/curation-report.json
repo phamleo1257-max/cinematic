@@ -1,0 +1,140 @@
+{
+  "generatedAt": "2026-06-06T08:48:18.338Z",
+  "totalFrames": 593,
+  "byStatus": {
+    "curated": 494,
+    "raw": 99,
+    "rejected": 0
+  },
+  "verified": 505,
+  "withDirector": 474,
+  "withCinematographer": 425,
+  "topFilms": [
+    {
+      "name": "Dune: Part Two",
+      "count": 30
+    },
+    {
+      "name": "Backrooms",
+      "count": 17
+    },
+    {
+      "name": "Mission: Impossible",
+      "count": 17
+    },
+    {
+      "name": "English Language Enthusiast",
+      "count": 12
+    },
+    {
+      "name": "One Direction: This Is Us",
+      "count": 12
+    },
+    {
+      "name": "Bulgari Unexpected Wonders - A By Paolo Sorrentino ( )",
+      "count": 11
+    },
+    {
+      "name": "Moonlight",
+      "count": 11
+    },
+    {
+      "name": "The Fox & the Bird",
+      "count": 11
+    },
+    {
+      "name": "Civil War",
+      "count": 10
+    },
+    {
+      "name": "Dune",
+      "count": 10
+    },
+    {
+      "name": "The Master",
+      "count": 10
+    },
+    {
+      "name": "Past Lives",
+      "count": 9
+    }
+  ],
+  "topCinematographers": [
+    {
+      "name": "Greig Fraser",
+      "count": 41
+    },
+    {
+      "name": "Roger Deakins",
+      "count": 20
+    },
+    {
+      "name": "Jeremy Cox",
+      "count": 17
+    },
+    {
+      "name": "Stephen H. Burum",
+      "count": 17
+    },
+    {
+      "name": "Rob Hardy",
+      "count": 14
+    },
+    {
+      "name": "Jarin Blaschke",
+      "count": 12
+    },
+    {
+      "name": "Neil Harvey",
+      "count": 12
+    },
+    {
+      "name": "Christopher Doyle",
+      "count": 11
+    },
+    {
+      "name": "Emmanuel Lubezki",
+      "count": 11
+    },
+    {
+      "name": "Guionne Leroy",
+      "count": 11
+    },
+    {
+      "name": "James Laxton",
+      "count": 11
+    },
+    {
+      "name": "Claire Mathon",
+      "count": 10
+    }
+  ],
+  "topMoods": [
+    {
+      "name": "noir",
+      "count": 273
+    },
+    {
+      "name": "teal-orange",
+      "count": 106
+    },
+    {
+      "name": "amber",
+      "count": 93
+    },
+    {
+      "name": "monochrome",
+      "count": 81
+    },
+    {
+      "name": "cyberpunk",
+      "count": 39
+    },
+    {
+      "name": "dreamcore",
+      "count": 1
+    }
+  ],
+  "rejectionReasons": [],
+  "rejectedFrames": []
+}

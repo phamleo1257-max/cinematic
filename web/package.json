@@ -9,7 +9,10 @@
     "lint": "eslint",
     "discover": "node scripts/discover.js",
     "ingest": "node scripts/ingest.js",
-    "refresh": "node scripts/discover.js"
+    "refresh": "node scripts/discover.js",
+    "curation:apply": "node scripts/apply-curation-status.js",
+    "curation:report": "node scripts/curation-report.js",
+    "curation:quarantine": "node scripts/quarantine-rejected.js"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

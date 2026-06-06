@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
@@ -31,6 +32,7 @@ export type Frame = {
   metadataConfidence?: string;
   metadataVerified?: boolean;
   mainFeed?: boolean;
+  curationStatus?: "curated" | "raw" | "rejected" | string;
   lens?: string;
   mood: string;
   lighting?: LightingAnalysis;
@@ -88,6 +90,7 @@ export type LightingAnalysis = {
 
 type GalleryFeedProps = {
   frames: Frame[];
+  showAllStatuses?: boolean;
 };
 
 const INITIAL_RENDER_COUNT = 72;
@@ -313,12 +316,22 @@ function displayFilmTitle(frame: Frame) {
   return metadataValue(frame.filmTitle || frame.title);
 }
 
+function filmSlug(value?: string) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 90);
+}
+
 function cleanFilterValue(value?: string) {
   const cleaned = metadataValue(value);
   return cleaned === "Unverified metadata" ? "" : cleaned;
 }
 
-export default function GalleryFeed({ frames }: GalleryFeedProps) {
+export default function GalleryFeed({ frames, showAllStatuses = false }: GalleryFeedProps) {
   const [activeTag, setActiveTag] = useState("All");
   const [activeMood, setActiveMood] = useState("All");
   const [activeCollection, setActiveCollection] = useState("All");
@@ -361,8 +374,13 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
           cleanFilterValue(frame.cinematographer).toLowerCase() ===
             activeCinematographer.toLowerCase();
         const matchesMainFeed =
+          showAllStatuses ||
           activeCollection !== "All" ||
-          Boolean(frame.mainFeed ?? frame.metadataVerified);
+          Boolean(
+            (frame.curationStatus
+              ? frame.curationStatus === "curated" && (frame.metadataVerified || frame.verifiedMetadata)
+              : frame.mainFeed ?? frame.metadataVerified),
+          );
         const searchable = [
           frame.filename,
           frame.filmTitle || "",
@@ -374,6 +392,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
           frame.cinematographer || "",
           frame.productionDesigner || "",
           frame.sourceType || "",
+          frame.curationStatus || "",
           frame.overview || "",
           frame.originalSourceTitle || "",
           frame.originalSource || "",
@@ -412,7 +431,7 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
 
         return b.quality.overall - a.quality.overall;
       });
-  }, [activeCinematographer, activeCollection, activeMood, activeTag, frames, search, sortMode]);
+  }, [activeCinematographer, activeCollection, activeMood, activeTag, frames, search, showAllStatuses, sortMode]);
 
   const visibleFrames = useMemo(
     () => filteredFrames.slice(0, visibleCount),
@@ -857,6 +876,11 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                           <span>{frame.quality.overall}</span>
                         </div>
                         <div className="frame-card-tags" aria-label="Frame tags">
+                          {frame.curationStatus ? (
+                            <span className={`status-badge status-${frame.curationStatus}`}>
+                              {frame.curationStatus}
+                            </span>
+                          ) : null}
                           {[frame.mood, ...frame.tags]
                             .filter((tag, tagIndex, allTags) => allTags.indexOf(tag) === tagIndex)
                             .slice(0, 4)
@@ -1006,18 +1030,13 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     </div>
                     <div className="metadata-group">
                       <span>Film</span>
-                      <button
+                      <Link
                         className="metadata-title-button"
-                        type="button"
-                        onClick={() => {
-                          setSearch(displayFilmTitle(activeFrame));
-                          setActiveTag("All");
-                          setActiveCollection("All");
-                          closeModal();
-                        }}
+                        href={`/film/${filmSlug(displayFilmTitle(activeFrame))}`}
+                        onClick={closeModal}
                       >
                         {displayFilmTitle(activeFrame)}
-                      </button>
+                      </Link>
                       {activeFrame.overview ? (
                         <p className="metadata-overview">{activeFrame.overview}</p>
                       ) : null}
@@ -1057,20 +1076,13 @@ export default function GalleryFeed({ frames }: GalleryFeedProps) {
                     <div className="metadata-group cinematographer-group">
                       <span>Cinematographer</span>
                       {cleanFilterValue(activeFrame.cinematographer) ? (
-                        <button
+                        <Link
                           className="cinematographer-filter-button"
-                          type="button"
-                          onClick={() => {
-                            setActiveCinematographer(cleanFilterValue(activeFrame.cinematographer));
-                            setActiveTag("All");
-                            setActiveMood("All");
-                            setActiveCollection("All");
-                            setSearch("");
-                            closeModal();
-                          }}
+                          href={`/cinematographer/${filmSlug(activeFrame.cinematographer)}`}
+                          onClick={closeModal}
                         >
                           {metadataValue(activeFrame.cinematographer)}
-                        </button>
+                        </Link>
                       ) : (
                         <p>{metadataValue(activeFrame.cinematographer)}</p>
                       )}

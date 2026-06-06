@@ -47,6 +47,7 @@ type MetadataItem = {
   metadataConfidence?: string;
   metadataVerified?: boolean;
   mainFeed?: boolean;
+  curationStatus?: string;
   lens?: string;
   mood?: string;
   lighting?: Frame["lighting"];
@@ -81,6 +82,7 @@ type VideoInfo = {
 };
 
 const framesDir = path.join(process.cwd(), "public", "bestframes");
+const videosDir = path.join(process.cwd(), "videos");
 const publicPath = "/bestframes";
 
 function isMetadataItem(value: unknown): value is MetadataItem {
@@ -200,8 +202,8 @@ function readVideoInfo(item: MetadataItem): VideoInfo | null {
   }
 
   const infoPath = path.join(
-    process.cwd(),
-    videoPath.replace(/\.[a-z0-9]+$/i, ".info.json"),
+    videosDir,
+    path.basename(videoPath).replace(/\.[a-z0-9]+$/i, ".info.json"),
   );
 
   try {
@@ -495,6 +497,7 @@ async function getFrames(): Promise<Frame[]> {
       originalSource: item.originalSourceTitle || item.originalSource || item.source?.title || videoInfo?.title,
       metadataConfidence: item.metadataConfidence,
       metadataVerified: item.metadataVerified,
+      curationStatus: item.curationStatus,
       mainFeed:
         item.mainFeed ??
         (!hasReadableMetadata ||

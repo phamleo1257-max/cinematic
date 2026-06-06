@@ -1095,7 +1095,9 @@ function collectionsFor(frame) {
     new Set(
       [
         "all frames",
-        frame.mainFeed ? "main feed" : null,
+        frame.curationStatus || "raw",
+        frame.curationStatus === "curated" ? "main feed" : null,
+        frame.curationStatus === "rejected" ? "rejected" : null,
         frame.metadataVerified ? null : "unverified",
         frame.tags.includes("high-contrast") ? "high contrast" : null,
         frame.tags.includes("dark") ? "noir energy" : null,
@@ -1112,35 +1114,50 @@ function collectionsFor(frame) {
   );
 }
 
-function mainFeedForFrame(frame, metadataVerified = frame.metadataVerified) {
+function curationStatusForFrame(frame, metadataVerified = frame.metadataVerified) {
   const qualityScore = frame.quality?.overall || frame.cinematicScore || frame.score || 0;
   const metrics = frame.metrics || {};
-
-  return Boolean(
-    metadataVerified &&
-      qualityScore >= minMainFeedScore &&
-      (frame.score || qualityScore) >= minScore &&
-      !metrics.textOverlayRisk &&
-      !metrics.diagramRisk &&
-      !metrics.splitScreenRisk &&
-      !metrics.thumbnailStyleRisk &&
-      !metrics.uiGraphicRisk &&
-      !blockedFramePattern.test(
-        [
-          frame.filename,
-          frame.title,
-          frame.filmTitle,
-          frame.originalSourceTitle,
-          frame.originalSource,
-          frame.source?.title,
-          frame.source?.query,
-          ...(frame.tags || []),
-          ...(frame.collections || []),
-        ]
-          .filter(Boolean)
-          .join(" "),
-      ),
+  const searchable = [
+    frame.filename,
+    frame.title,
+    frame.filmTitle,
+    frame.originalSourceTitle,
+    frame.originalSource,
+    frame.source?.title,
+    frame.source?.query,
+    ...(frame.tags || []),
+    ...(frame.collections || []),
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const rejected = Boolean(
+    metrics.textOverlayRisk ||
+      metrics.diagramRisk ||
+      metrics.splitScreenRisk ||
+      metrics.thumbnailStyleRisk ||
+      metrics.uiGraphicRisk ||
+      metrics.blurRisk ||
+      metrics.compressionRisk ||
+      blockedFramePattern.test(searchable),
   );
+
+  if (rejected) {
+    return "rejected";
+  }
+
+  if (
+    metadataVerified &&
+    qualityScore >= minMainFeedScore &&
+    (frame.score || qualityScore) >= minScore
+  ) {
+    return "curated";
+  }
+
+  return "raw";
+}
+
+function mainFeedForFrame(frame, metadataVerified = frame.metadataVerified) {
+  return curationStatusForFrame(frame, metadataVerified) === "curated";
 }
 
 function videoInfo(videoPath) {
@@ -1360,6 +1377,7 @@ async function ingestVideo(videoPath, existingSignatures, totalRejectStats, meta
         },
       };
 
+      frame.curationStatus = curationStatusForFrame(frame);
       frame.mainFeed = mainFeedForFrame(frame);
       frame.collections = collectionsFor(frame);
       return frame;
@@ -1455,14 +1473,17 @@ async function main() {
           frame.metadataVerified ||
           (frame.metadataProvider && frame.metadataProvider !== "local"),
       );
-      const mainFeed = mainFeedForFrame(frame, metadataVerified);
+      const curationStatus = curationStatusForFrame(frame, metadataVerified);
+      const mainFeed = curationStatus === "curated";
       const baseCollections = Array.isArray(frame.collections)
-        ? frame.collections.filter((collection) => !/^main feed$|^unverified$/i.test(String(collection)))
+        ? frame.collections.filter((collection) => !/^main feed$|^unverified$|^curated$|^raw$|^rejected$/i.test(String(collection)))
         : [];
       const collections = Array.from(
         new Set([
           ...baseCollections,
+          curationStatus,
           mainFeed ? "main feed" : null,
+          curationStatus === "rejected" ? "rejected" : null,
           metadataVerified ? null : "unverified",
         ].filter(Boolean).map((collection) => String(collection).toLowerCase())),
       );
@@ -1493,6 +1514,7 @@ async function main() {
         metadataConfidence: enriched?.metadataConfidence || frame.metadataConfidence || (metadataVerified ? "medium" : "low"),
         metadataVerified,
         verifiedMetadata: metadataVerified,
+        curationStatus,
         collections,
         productionHouse: isMissingMetadataValue(frame.productionHouse)
           ? productionHouseForInfo({
