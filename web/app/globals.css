@@ -349,6 +349,46 @@ h1 {
   min-height: 24px;
 }
 
+.filter-rail > .film-picker-section > button {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.filter-rail > .film-picker-section > button span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-rail > .film-picker-section > button b,
+.film-search-bar button span {
+  color: rgba(232, 180, 92, 0.78);
+  flex: 0 0 auto;
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.film-picker-search {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 760;
+  min-height: 32px;
+  outline: none;
+  padding: 0 9px;
+  width: 100%;
+}
+
+.film-picker-search:focus {
+  border-color: rgba(232, 180, 92, 0.58);
+}
+
 .filter-rail > .rail-section > button.active,
 .active-filter-row button,
 .modal-collections button:hover {
@@ -378,19 +418,19 @@ h1 {
 }
 
 .tag-filter-bar,
-.collection-filter-bar {
+.film-search-bar {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin: 0 0 14px;
 }
 
-.collection-filter-bar {
+.film-search-bar {
   margin-bottom: 22px;
 }
 
 .tag-filter-bar button,
-.collection-filter-bar button,
+.film-search-bar button,
 .frame-tags button {
   appearance: none;
   background: rgba(255, 255, 255, 0.08);
@@ -410,10 +450,31 @@ h1 {
 }
 
 .tag-filter-bar button,
-.collection-filter-bar button {
+.film-search-bar button {
   backdrop-filter: blur(16px);
   min-height: 34px;
   padding: 0 13px;
+}
+
+.film-search-bar input {
+  appearance: none;
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--line);
+  color: var(--text);
+  flex: 1 1 190px;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 760;
+  min-height: 34px;
+  outline: none;
+  padding: 0 12px;
+}
+
+.film-search-bar button {
+  align-items: center;
+  display: inline-flex;
+  gap: 8px;
 }
 
 .gallery-search {
@@ -443,8 +504,8 @@ h1 {
 
 .tag-filter-bar button:hover,
 .tag-filter-bar button.active,
-.collection-filter-bar button:hover,
-.collection-filter-bar button.active,
+.film-search-bar button:hover,
+.film-search-bar button.active,
 .frame-tags button:hover {
   background: rgba(232, 180, 92, 0.18);
   border-color: rgba(232, 180, 92, 0.58);
@@ -452,7 +513,7 @@ h1 {
 }
 
 .tag-filter-bar button.active,
-.collection-filter-bar button.active {
+.film-search-bar button.active {
   box-shadow: inset 0 0 0 1px rgba(232, 180, 92, 0.18);
 }
 
@@ -1651,7 +1712,7 @@ h1 {
   }
 
   .tag-filter-bar,
-  .collection-filter-bar {
+  .film-search-bar {
     gap: 8px;
     margin-bottom: 14px;
     overflow-x: auto;
@@ -1659,7 +1720,7 @@ h1 {
   }
 
   .tag-filter-bar button,
-  .collection-filter-bar button {
+  .film-search-bar button {
     flex: 0 0 auto;
   }
 
