@@ -334,7 +334,8 @@ function cleanFilterValue(value?: string) {
 export default function GalleryFeed({ frames, showAllStatuses = false }: GalleryFeedProps) {
   const [activeTag, setActiveTag] = useState("All");
   const [activeMood, setActiveMood] = useState("All");
-  const [activeCollection, setActiveCollection] = useState("All");
+  const [activeFilm, setActiveFilm] = useState("All");
+  const [filmSearch, setFilmSearch] = useState("");
   const [activeCinematographer, setActiveCinematographer] = useState("");
   const [search, setSearch] = useState("");
   const [sortMode, setSortMode] = useState("score");
@@ -351,13 +352,28 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
     [frames],
   );
 
-  const collections = useMemo(
+  const films = useMemo(
     () =>
-      Array.from(new Set(frames.flatMap((frame) => frame.collections))).sort(
-        (a, b) => a.localeCompare(b),
-      ),
+      Array.from(
+        frames.reduce((map, frame) => {
+          const title = displayFilmTitle(frame);
+
+          if (title !== "Unverified metadata") {
+            map.set(title, (map.get(title) || 0) + 1);
+          }
+
+          return map;
+        }, new Map<string, number>()),
+      )
+        .map(([title, count]) => ({ title, count }))
+        .sort((a, b) => a.title.localeCompare(b.title)),
     [frames],
   );
+  const visibleFilms = useMemo(() => {
+    const query = filmSearch.trim().toLowerCase();
+
+    return films.filter((film) => !query || film.title.toLowerCase().includes(query));
+  }, [filmSearch, films]);
 
   const filteredFrames = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -366,16 +382,16 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
       .filter((frame) => {
         const matchesTag = activeTag === "All" || frame.tags.includes(activeTag);
         const matchesMood = activeMood === "All" || frame.mood === activeMood;
-        const matchesCollection =
-          activeCollection === "All" ||
-          frame.collections.includes(activeCollection);
+        const matchesFilm =
+          activeFilm === "All" ||
+          displayFilmTitle(frame).toLowerCase() === activeFilm.toLowerCase();
         const matchesCinematographer =
           !activeCinematographer ||
           cleanFilterValue(frame.cinematographer).toLowerCase() ===
             activeCinematographer.toLowerCase();
         const matchesMainFeed =
           showAllStatuses ||
-          activeCollection !== "All" ||
+          activeFilm !== "All" ||
           Boolean(
             (frame.curationStatus
               ? frame.curationStatus === "curated" && (frame.metadataVerified || frame.verifiedMetadata)
@@ -411,7 +427,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
           matchesMainFeed &&
           matchesTag &&
           matchesMood &&
-          matchesCollection &&
+          matchesFilm &&
           matchesCinematographer &&
           matchesSearch
         );
@@ -431,7 +447,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
 
         return b.quality.overall - a.quality.overall;
       });
-  }, [activeCinematographer, activeCollection, activeMood, activeTag, frames, search, showAllStatuses, sortMode]);
+  }, [activeCinematographer, activeFilm, activeMood, activeTag, frames, search, showAllStatuses, sortMode]);
 
   const visibleFrames = useMemo(
     () => filteredFrames.slice(0, visibleCount),
@@ -522,7 +538,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
   useEffect(() => {
     setVisibleCount(INITIAL_RENDER_COUNT);
     setActiveIndex(null);
-  }, [activeCollection, activeMood, activeTag, search, sortMode]);
+  }, [activeFilm, activeMood, activeTag, search, sortMode]);
 
   useEffect(() => {
     if (!hasMoreFrames) {
@@ -619,7 +635,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
   const activeFilters = [
     activeTag !== "All" ? activeTag : null,
     activeMood !== "All" ? activeMood : null,
-    activeCollection !== "All" ? activeCollection : null,
+    activeFilm !== "All" ? `Film: ${activeFilm}` : null,
     activeCinematographer ? `DOP: ${activeCinematographer}` : null,
     search.trim() ? `"${search.trim()}"` : null,
   ].filter(Boolean);
@@ -691,8 +707,8 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
           <p>Tags</p>
         </div>
         <div>
-          <span>{collections.length}</span>
-          <p>Collections</p>
+          <span>{films.length}</span>
+          <p>Films</p>
         </div>
       </section>
 
@@ -724,29 +740,39 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
             ))}
           </div>
 
-          {collections.length ? (
-            <div className="rail-section">
+          {films.length ? (
+            <div className="rail-section film-picker-section">
               <div className="rail-heading">
-                <span>Collections</span>
-                <button type="button" onClick={() => setActiveCollection("All")}>
+                <span>Films</span>
+                <button type="button" onClick={() => setActiveFilm("All")}>
                   Reset
                 </button>
               </div>
+              <input
+                aria-label="Search films"
+                className="film-picker-search"
+                placeholder="Search film title"
+                type="search"
+                value={filmSearch}
+                onChange={(event) => setFilmSearch(event.target.value)}
+              />
               <button
-                className={activeCollection === "All" ? "active" : ""}
+                className={activeFilm === "All" ? "active" : ""}
                 type="button"
-                onClick={() => setActiveCollection("All")}
+                onClick={() => setActiveFilm("All")}
               >
-                All Collections
+                <span>All Films</span>
+                <b>{frames.length}</b>
               </button>
-              {collections.map((collection) => (
+              {visibleFilms.map((film) => (
                 <button
-                  className={activeCollection === collection ? "active" : ""}
-                  key={collection}
+                  className={activeFilm === film.title ? "active" : ""}
+                  key={film.title}
                   type="button"
-                  onClick={() => setActiveCollection(collection)}
+                  onClick={() => setActiveFilm(film.title)}
                 >
-                  {collection}
+                  <span>{film.title}</span>
+                  <b>{film.count}</b>
                 </button>
               ))}
             </div>
@@ -770,8 +796,8 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
                       setActiveMood("All");
                     }
 
-                    if (filter === activeCollection) {
-                      setActiveCollection("All");
+                    if (filter === `Film: ${activeFilm}`) {
+                      setActiveFilm("All");
                     }
 
                     if (filter === `DOP: ${activeCinematographer}`) {
@@ -809,23 +835,30 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
             ))}
           </section>
 
-          {collections.length ? (
-            <section className="collection-filter-bar" aria-label="Collections">
+          {films.length ? (
+            <section className="film-search-bar" aria-label="Film search">
+              <input
+                aria-label="Search films"
+                placeholder="Search films"
+                type="search"
+                value={filmSearch}
+                onChange={(event) => setFilmSearch(event.target.value)}
+              />
               <button
-                className={activeCollection === "All" ? "active" : ""}
+                className={activeFilm === "All" ? "active" : ""}
                 type="button"
-                onClick={() => setActiveCollection("All")}
+                onClick={() => setActiveFilm("All")}
               >
-                All Collections
+                All Films <span>{frames.length}</span>
               </button>
-              {collections.map((collection) => (
+              {visibleFilms.slice(0, 18).map((film) => (
                 <button
-                  className={activeCollection === collection ? "active" : ""}
-                  key={collection}
+                  className={activeFilm === film.title ? "active" : ""}
+                  key={film.title}
                   type="button"
-                  onClick={() => setActiveCollection(collection)}
+                  onClick={() => setActiveFilm(film.title)}
                 >
-                  {collection}
+                  {film.title} <span>{film.count}</span>
                 </button>
               ))}
             </section>
@@ -1184,7 +1217,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
                               type="button"
                               onClick={() => {
                                 setActiveTag(tag);
-                                setActiveCollection("All");
+                                setActiveFilm("All");
                                 closeModal();
                               }}
                             >
