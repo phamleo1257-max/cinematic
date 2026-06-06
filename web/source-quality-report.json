@@ -1,0 +1,254 @@
+{
+  "generatedAt": "2026-06-06T09:37:52.345Z",
+  "totalCuratedShots": 494,
+  "distribution": [
+    {
+      "sourceType": "Blu-ray",
+      "shots": 11,
+      "percentage": 2.23,
+      "averageScore": 75.82,
+      "averageSourceConfidence": 1,
+      "dopCoverage": 63.64,
+      "directorCoverage": 100,
+      "qualityRankScore": 83.06,
+      "exampleTitles": [
+        "Moonlight",
+        "Little Amélie or the Character of Rain",
+        "Only God Forgives",
+        "Spencer",
+        "The Neon Demon"
+      ]
+    },
+    {
+      "sourceType": "UHD Blu-ray",
+      "shots": 4,
+      "percentage": 0.81,
+      "averageScore": 71.75,
+      "averageSourceConfidence": 1,
+      "dopCoverage": 0,
+      "directorCoverage": 50,
+      "qualityRankScore": 69.46,
+      "exampleTitles": [
+        "Atmos",
+        "The Bear Man"
+      ]
+    },
+    {
+      "sourceType": "Official Trailer",
+      "shots": 290,
+      "percentage": 58.7,
+      "averageScore": 74.81,
+      "averageSourceConfidence": 0.57,
+      "dopCoverage": 92.41,
+      "directorCoverage": 95.17,
+      "qualityRankScore": 74.16,
+      "exampleTitles": [
+        "Burning",
+        "Drive",
+        "Uncut Gems",
+        "Annihilation",
+        "Backrooms",
+        "Avatar: Fire and Ash",
+        "Blade Runner 2049",
+        "Mission: Impossible"
+      ]
+    },
+    {
+      "sourceType": "Official Clip",
+      "shots": 100,
+      "percentage": 20.24,
+      "averageScore": 75.98,
+      "averageSourceConfidence": 0.837,
+      "dopCoverage": 84,
+      "directorCoverage": 93,
+      "qualityRankScore": 80.41,
+      "exampleTitles": [
+        "The Master",
+        "Toy Story 5",
+        "EP/2",
+        "Uncut Gems",
+        "Opening Night",
+        "Dune",
+        "Past Lives",
+        "Moonlight"
+      ]
+    },
+    {
+      "sourceType": "Music Video",
+      "shots": 45,
+      "percentage": 9.11,
+      "averageScore": 73.38,
+      "averageSourceConfidence": 0.622,
+      "dopCoverage": 66.67,
+      "directorCoverage": 82.22,
+      "qualityRankScore": 70.8,
+      "exampleTitles": [
+        "Birdman or (The Unexpected Virtue of Ignorance)",
+        "Skyfall",
+        "Ed Sheeran: Azizam",
+        "Kali Uchis: Live at Lollapalooza Brasil 2023",
+        "Greta Van Fleet: Lollapalooza Brazil 2019",
+        "Free Finga: Pasikeist",
+        "The Cars: Unlocked",
+        "One Direction: This Is Us"
+      ]
+    },
+    {
+      "sourceType": "Commercial",
+      "shots": 9,
+      "percentage": 1.82,
+      "averageScore": 71.56,
+      "averageSourceConfidence": 0,
+      "dopCoverage": 77.78,
+      "directorCoverage": 100,
+      "qualityRankScore": 57.13,
+      "exampleTitles": [
+        "Complementary Cubes",
+        "Sweet 'n Short",
+        "Director's Cut"
+      ]
+    },
+    {
+      "sourceType": "Unknown",
+      "shots": 35,
+      "percentage": 7.09,
+      "averageScore": 76.63,
+      "averageSourceConfidence": 0,
+      "dopCoverage": 57.14,
+      "directorCoverage": 100,
+      "qualityRankScore": 57.86,
+      "exampleTitles": [
+        "English Language Enthusiast",
+        "The Fox & the Bird",
+        "Me, Myself & Irene",
+        "2 AM Coffee",
+        "Barbie: A Fashion Fairytale"
+      ]
+    }
+  ],
+  "rankedSourceQuality": [
+    {
+      "sourceType": "Blu-ray",
+      "shots": 11,
+      "percentage": 2.23,
+      "averageScore": 75.82,
+      "averageSourceConfidence": 1,
+      "dopCoverage": 63.64,
+      "directorCoverage": 100,
+      "qualityRankScore": 83.06,
+      "exampleTitles": [
+        "Moonlight",
+        "Little Amélie or the Character of Rain",
+        "Only God Forgives",
+        "Spencer",
+        "The Neon Demon"
+      ]
+    },
+    {
+      "sourceType": "Official Clip",
+      "shots": 100,
+      "percentage": 20.24,
+      "averageScore": 75.98,
+      "averageSourceConfidence": 0.837,
+      "dopCoverage": 84,
+      "directorCoverage": 93,
+      "qualityRankScore": 80.41,
+      "exampleTitles": [
+        "The Master",
+        "Toy Story 5",
+        "EP/2",
+        "Uncut Gems",
+        "Opening Night",
+        "Dune",
+        "Past Lives",
+        "Moonlight"
+      ]
+    },
+    {
+      "sourceType": "Official Trailer",
+      "shots": 290,
+      "percentage": 58.7,
+      "averageScore": 74.81,
+      "averageSourceConfidence": 0.57,
+      "dopCoverage": 92.41,
+      "directorCoverage": 95.17,
+      "qualityRankScore": 74.16,
+      "exampleTitles": [
+        "Burning",
+        "Drive",
+        "Uncut Gems",
+        "Annihilation",
+        "Backrooms",
+        "Avatar: Fire and Ash",
+        "Blade Runner 2049",
+        "Mission: Impossible"
+      ]
+    },
+    {
+      "sourceType": "Music Video",
+      "shots": 45,
+      "percentage": 9.11,
+      "averageScore": 73.38,
+      "averageSourceConfidence": 0.622,
+      "dopCoverage": 66.67,
+      "directorCoverage": 82.22,
+      "qualityRankScore": 70.8,
+      "exampleTitles": [
+        "Birdman or (The Unexpected Virtue of Ignorance)",
+        "Skyfall",
+        "Ed Sheeran: Azizam",
+        "Kali Uchis: Live at Lollapalooza Brasil 2023",
+        "Greta Van Fleet: Lollapalooza Brazil 2019",
+        "Free Finga: Pasikeist",
+        "The Cars: Unlocked",
+        "One Direction: This Is Us"
+      ]
+    },
+    {
+      "sourceType": "UHD Blu-ray",
+      "shots": 4,
+      "percentage": 0.81,
+      "averageScore": 71.75,
+      "averageSourceConfidence": 1,
+      "dopCoverage": 0,
+      "directorCoverage": 50,
+      "qualityRankScore": 69.46,
+      "exampleTitles": [
+        "Atmos",
+        "The Bear Man"
+      ]
+    },
+    {
+      "sourceType": "Unknown",
+      "shots": 35,
+      "percentage": 7.09,
+      "averageScore": 76.63,
+      "averageSourceConfidence": 0,
+      "dopCoverage": 57.14,
+      "directorCoverage": 100,
+      "qualityRankScore": 57.86,
+      "exampleTitles": [
+        "English Language Enthusiast",
+        "The Fox & the Bird",
+        "Me, Myself & Irene",
+        "2 AM Coffee",
+        "Barbie: A Fashion Fairytale"
+      ]
+    },
+    {
+      "sourceType": "Commercial",
+      "shots": 9,
+      "percentage": 1.82,
+      "averageScore": 71.56,
+      "averageSourceConfidence": 0,
+      "dopCoverage": 77.78,
+      "directorCoverage": 100,
+      "qualityRankScore": 57.13,
+      "exampleTitles": [
+        "Complementary Cubes",
+        "Sweet 'n Short",
+        "Director's Cut"
+      ]
+    }
+  ]
+}

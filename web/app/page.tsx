@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
-import GalleryFeed, { type Frame } from "./gallery-feed";
+import GalleryFeed, { type FeedQualityComparison, type FeedQualityStats, type Frame } from "./gallery-feed";
 
 type MetadataItem = {
   filename?: string;
@@ -41,6 +41,7 @@ type MetadataItem = {
   sourceConfidence?: number;
   verifiedMetadata?: boolean;
   sourceType?: string;
+  sourceQualityType?: string;
   genres?: unknown;
   originalSourceTitle?: string;
   originalSource?: string;
@@ -61,6 +62,11 @@ type MetadataItem = {
     diversity?: number;
     edgeEnergy?: number;
     saturation?: number;
+    blockiness?: number;
+    blackBars?: boolean;
+    splitScreenRisk?: boolean;
+    thumbnailStyleRisk?: boolean;
+    uiGraphicRisk?: boolean;
   };
   width?: number;
   height?: number;
@@ -412,6 +418,150 @@ function qualityFor(item: MetadataItem, tags: string[], mood: string) {
   return { ...inferred, ...item.quality };
 }
 
+function sourceSearchText(item: MetadataItem, frame?: Partial<Frame>) {
+  return [
+    item.sourceQualityType,
+    item.sourceType,
+    item.originalSourceTitle,
+    item.originalSource,
+    item.source?.title,
+    item.source?.query,
+    item.video,
+    frame?.sourceQualityType,
+    frame?.sourceType,
+    frame?.originalSourceTitle,
+    frame?.originalSource,
+    frame?.source?.title,
+    frame?.source?.query,
+    frame?.filmTitle,
+    frame?.title,
+    ...(Array.isArray(item.collections) ? item.collections : []),
+    ...(Array.isArray(item.tags) ? item.tags : []),
+    ...(frame?.collections || []),
+    ...(frame?.tags || []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+
+function sourceQualityTypeFor(item: MetadataItem, frame?: Partial<Frame>) {
+  const text = sourceSearchText(item, frame);
+
+  if (/\b(uhd\s*blu[-\s]?ray|ultra\s*hd\s*blu[-\s]?ray|4k\s*blu[-\s]?ray)\b/.test(text)) {
+    return "UHD Blu-ray";
+  }
+
+  if (/\b(blu[-\s]?ray|bluray|criterion|remastered\s+clip)\b/.test(text)) {
+    return "Blu-ray";
+  }
+
+  if (/\b(music\s+video|vevo)\b/.test(text)) {
+    return "Music Video";
+  }
+
+  if (/\b(commercial|campaign|advert|tvc|fashion\s+film)\b/.test(text)) {
+    return "Commercial";
+  }
+
+  if (/\b(official\s+clip|official\s+scene|scene\s+no\s+commentary|film\s+clip|movie\s+clip|movieclips)\b/.test(text)) {
+    return "Official Clip";
+  }
+
+  if (/\b(official\s+trailer|trailer|teaser|promo)\b/.test(text)) {
+    return "Official Trailer";
+  }
+
+  return "Unknown";
+}
+
+function isVerifiedCurated(frame: Frame) {
+  return (
+    (frame.metadataVerified || frame.verifiedMetadata) &&
+    (frame.curationStatus ? frame.curationStatus === "curated" : frame.mainFeed)
+  );
+}
+
+function hasCleanPremiumContent(frame: Frame) {
+  const searchable = [
+    frame.filename,
+    frame.title,
+    frame.filmTitle || "",
+    frame.originalTitle || "",
+    frame.originalSourceTitle || "",
+    frame.originalSource || "",
+    frame.source?.title || "",
+    frame.source?.query || "",
+    frame.sourceType || "",
+    frame.sourceQualityType || "",
+    ...(frame.genres || []),
+    ...(frame.tags || []),
+    ...(frame.collections || []),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const blockedByText =
+    /\b(animation|animated|anime|manga|subtitles?|subbed|captioned|cc\b|youtube\s+shorts?|shorts\b|reaction|review|breakdown|explained|tutorial|how\s+to|gameplay|walkthrough|ui|interface|thumbnail)\b/.test(
+      searchable,
+    );
+  const blockedByMetrics = Boolean(
+    frame.metrics?.uiGraphicRisk ||
+      frame.metrics?.thumbnailStyleRisk ||
+      frame.metrics?.splitScreenRisk,
+  );
+
+  return !blockedByText && !blockedByMetrics;
+}
+
+export function isPremiumFrame(frame: Frame) {
+  const sourceQuality = frame.sourceQualityType || sourceQualityTypeFor({}, frame);
+  const premiumSource =
+    sourceQuality === "Blu-ray" ||
+    sourceQuality === "UHD Blu-ray" ||
+    sourceQuality === "Official Clip";
+
+  return (
+    isVerifiedCurated(frame) &&
+    premiumSource &&
+    frame.quality.overall > 80 &&
+    hasCleanPremiumContent(frame)
+  );
+}
+
+function statsFor(frames: Frame[], premiumFrames: Frame[]): FeedQualityStats {
+  if (!frames.length) {
+    return {
+      count: 0,
+      averageScore: 0,
+      verifiedPercent: 0,
+      curatedPercent: 0,
+      premiumSourcePercent: 0,
+    };
+  }
+
+  const verified = frames.filter((frame) => frame.metadataVerified || frame.verifiedMetadata).length;
+  const curated = frames.filter((frame) => frame.curationStatus === "curated" || frame.mainFeed).length;
+
+  return {
+    count: frames.length,
+    averageScore: Math.round(frames.reduce((total, frame) => total + frame.quality.overall, 0) / frames.length),
+    verifiedPercent: Math.round((verified / frames.length) * 100),
+    curatedPercent: Math.round((curated / frames.length) * 100),
+    premiumSourcePercent: Math.round((premiumFrames.length / frames.length) * 100),
+  };
+}
+
+export function archiveQualityComparison(frames: Frame[]): FeedQualityComparison {
+  const currentFeed = frames.filter(isVerifiedCurated);
+  const premiumFeed = frames.filter(isPremiumFrame);
+
+  return {
+    current: statsFor(currentFeed, premiumFeed),
+    premium: statsFor(premiumFeed, premiumFeed),
+  };
+}
+
 function isCinematicFrame(frame: Frame) {
   return (
     frame.aspectRatio >= 1.55 &&
@@ -445,7 +595,7 @@ function isReferenceFrame(frame: Partial<Frame> & { filename: string; title: str
   );
 }
 
-async function getFrames(): Promise<Frame[]> {
+export async function getFrames(): Promise<Frame[]> {
   const files = readFrameFiles();
   const metadata = files.length ? readMetadata() : {};
   const hasReadableMetadata = Object.keys(metadata).length > 0;
@@ -492,6 +642,7 @@ async function getFrames(): Promise<Frame[]> {
       sourceConfidence: item.sourceConfidence,
       verifiedMetadata: item.verifiedMetadata,
       sourceType: item.sourceType,
+      sourceQualityType: item.sourceQualityType || sourceQualityTypeFor(item),
       genres: normalizeTags(item.genres),
       originalSourceTitle: item.originalSourceTitle || item.originalSource || item.source?.title || videoInfo?.title,
       originalSource: item.originalSourceTitle || item.originalSource || item.source?.title || videoInfo?.title,
@@ -552,6 +703,7 @@ async function getFrames(): Promise<Frame[]> {
       director: cleanMetadataValue(item.director),
       cinematographer: cleanMetadataValue(item.cinematographer),
       lens: item.lens,
+      sourceQualityType: item.sourceQualityType || sourceQualityTypeFor(item, frameDraft),
       mood: inferredMood,
       lighting: item.lighting,
       palette,
@@ -570,6 +722,7 @@ async function getFrames(): Promise<Frame[]> {
 export default async function Home() {
   const frames = await getFrames();
   const heroFrame = frames[0];
+  const comparison = archiveQualityComparison(frames);
 
   return (
     <main className="feed-shell">
@@ -596,7 +749,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <GalleryFeed frames={frames} />
+      <GalleryFeed frames={frames} comparison={comparison} />
     </main>
   );
 }

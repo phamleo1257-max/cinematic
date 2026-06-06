@@ -26,6 +26,7 @@ export type Frame = {
   sourceConfidence?: number;
   verifiedMetadata?: boolean;
   sourceType?: string;
+  sourceQualityType?: string;
   genres?: string[];
   originalSourceTitle?: string;
   originalSource?: string;
@@ -55,6 +56,11 @@ export type Frame = {
     diversity?: number;
     edgeEnergy?: number;
     saturation?: number;
+    blockiness?: number;
+    blackBars?: boolean;
+    splitScreenRisk?: boolean;
+    thumbnailStyleRisk?: boolean;
+    uiGraphicRisk?: boolean;
   } | null;
   source: {
     title?: string;
@@ -91,6 +97,21 @@ export type LightingAnalysis = {
 type GalleryFeedProps = {
   frames: Frame[];
   showAllStatuses?: boolean;
+  feedMode?: "standard" | "premium";
+  comparison?: FeedQualityComparison;
+};
+
+export type FeedQualityComparison = {
+  current: FeedQualityStats;
+  premium: FeedQualityStats;
+};
+
+export type FeedQualityStats = {
+  count: number;
+  averageScore: number;
+  verifiedPercent: number;
+  curatedPercent: number;
+  premiumSourcePercent: number;
 };
 
 const INITIAL_RENDER_COUNT = 72;
@@ -312,6 +333,10 @@ function sourceTypeLabel(value?: string) {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
+function feedModeLabel(mode: "standard" | "premium") {
+  return mode === "premium" ? "Premium Feed" : "Current Feed";
+}
+
 function displayFilmTitle(frame: Frame) {
   return metadataValue(frame.filmTitle || frame.title);
 }
@@ -331,7 +356,12 @@ function cleanFilterValue(value?: string) {
   return cleaned === "Unverified metadata" ? "" : cleaned;
 }
 
-export default function GalleryFeed({ frames, showAllStatuses = false }: GalleryFeedProps) {
+export default function GalleryFeed({
+  frames,
+  showAllStatuses = false,
+  feedMode = "standard",
+  comparison,
+}: GalleryFeedProps) {
   const [activeTag, setActiveTag] = useState("All");
   const [activeMood, setActiveMood] = useState("All");
   const [activeFilm, setActiveFilm] = useState("All");
@@ -632,6 +662,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
   const averageScore = Math.round(
     frames.reduce((total, frame) => total + frame.score, 0) / frames.length,
   );
+  const activeStats = comparison?.[feedMode === "premium" ? "premium" : "current"];
   const activeFilters = [
     activeTag !== "All" ? activeTag : null,
     activeMood !== "All" ? activeMood : null,
@@ -646,7 +677,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
         <div className="studio-brand">
           <span>CF</span>
           <div>
-            <strong>Cinematic Index</strong>
+            <strong>{feedModeLabel(feedMode)}</strong>
             <p>
               {visibleFrames.length} of {filteredFrames.length} shots loaded
             </p>
@@ -679,6 +710,50 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
           </select>
         </label>
       </section>
+
+      <section className="feed-mode-bar" aria-label="Feed mode">
+        <div>
+          <span>Archive Mode</span>
+          <strong>{feedModeLabel(feedMode)}</strong>
+        </div>
+        <nav>
+          <Link className={feedMode === "standard" ? "active" : ""} href="/">
+            Current Feed
+          </Link>
+          <Link className={feedMode === "premium" ? "active" : ""} href="/premium">
+            Premium Feed
+          </Link>
+        </nav>
+      </section>
+
+      {comparison ? (
+        <section className="quality-comparison" aria-label="Archive quality comparison">
+          <div>
+            <span>Current Feed</span>
+            <strong>{comparison.current.count}</strong>
+            <p>
+              Avg {comparison.current.averageScore} · {comparison.current.premiumSourcePercent}% premium source
+            </p>
+          </div>
+          <div className="quality-comparison-featured">
+            <span>Premium Feed</span>
+            <strong>{comparison.premium.count}</strong>
+            <p>
+              Avg {comparison.premium.averageScore} · verified curated clips only
+            </p>
+          </div>
+          <div>
+            <span>Quality Lift</span>
+            <strong>
+              {comparison.premium.averageScore - comparison.current.averageScore > 0 ? "+" : ""}
+              {comparison.premium.averageScore - comparison.current.averageScore}
+            </strong>
+            <p>
+              {activeStats?.verifiedPercent || 0}% verified · {activeStats?.curatedPercent || 0}% curated
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mood-tabs" aria-label="Mood filters">
         {MOODS.map((mood) => (
@@ -909,6 +984,9 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
                           <span>{frame.quality.overall}</span>
                         </div>
                         <div className="frame-card-tags" aria-label="Frame tags">
+                          {frame.sourceQualityType ? (
+                            <span className="source-quality-badge">{frame.sourceQualityType}</span>
+                          ) : null}
                           {frame.curationStatus ? (
                             <span className={`status-badge status-${frame.curationStatus}`}>
                               {frame.curationStatus}
@@ -1086,7 +1164,7 @@ export default function GalleryFeed({ frames, showAllStatuses = false }: Gallery
                         </div>
                         <div className="metadata-row">
                           <span>Type</span>
-                          <strong>{sourceTypeLabel(activeFrame.sourceType)}</strong>
+                          <strong>{sourceTypeLabel(activeFrame.sourceQualityType || activeFrame.sourceType)}</strong>
                         </div>
                         <div className="metadata-row">
                           <span>Status</span>
